@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  strapi:
+    container_name: gandom_strapi_prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-strapi}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-strapi}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-strapi_prod_password}
+      DATABASE_SSL: 'false'
+    ports:
+      - '1337:1337'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - strapi-prod-net
+
+  postgres:
+    container_name: gandom_postgres_prod
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-strapi}
+      POSTGRES_USER: ${DATABASE_USERNAME:-strapi}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-strapi_prod_password}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-strapi} -d ${DATABASE_NAME:-strapi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - strapi-prod-net
+
+volumes:
+  postgres_prod_data:
+
+networks:
+  strapi-prod-net:
+    driver: bridge

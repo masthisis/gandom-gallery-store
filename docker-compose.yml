@@ -1,0 +1,78 @@
+services:
+  strapi:
+    container_name: gandom_strapi_dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi
+      DATABASE_SSL: 'false'
+    volumes:
+      - ./backend/src:/opt/app/src
+      - ./backend/config:/opt/app/config
+      - ./backend/public:/opt/app/public
+      - ./backend/database:/opt/app/database
+    ports:
+      - '1337:1337'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - strapi-net
+
+  frontend:
+    container_name: gandom_frontend_dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    networks:
+      - strapi-net
+
+  backoffice:
+    container_name: gandom_backoffice_dev
+    build:
+      context: ./backoffice
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '5174:80'
+    networks:
+      - strapi-net
+
+  postgres:
+    container_name: gandom_postgres_dev
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi -d strapi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - strapi-net
+
+volumes:
+  postgres_data:
+
+networks:
+  strapi-net:
+    driver: bridge

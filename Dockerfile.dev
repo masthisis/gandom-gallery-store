@@ -1,0 +1,20 @@
+FROM node:20-alpine
+
+# Set node environment
+ENV NODE_ENV=development
+
+WORKDIR /opt/app
+
+# Copy package files
+COPY backend/package.json backend/package-lock.json* ./
+
+# Install dependencies
+RUN npm install
+
+# Copy application source
+COPY backend/ ./
+
+# Expose Strapi port
+EXPOSE 1337
+
+CMD ["npm", "run", "develop"]
