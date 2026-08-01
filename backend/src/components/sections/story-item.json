@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_sections_story_items",
+  "info": {
+    "displayName": "Story Item",
+    "description": "Quick-access circular item"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "imageUrl": { "type": "string" },
+    "link": { "type": "string" },
+    "color": { "type": "string" }
+  }
+}

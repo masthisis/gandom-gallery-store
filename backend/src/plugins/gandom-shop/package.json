@@ -1,0 +1,29 @@
+{
+  "name": "gandom-shop",
+  "version": "1.0.0",
+  "description": "گندم گالری — داشبورد مالک فروشگاه",
+  "strapi": {
+    "name": "gandom-shop",
+    "displayName": "فروشگاه گندم",
+    "description": "داشبورد، دیدگاه‌ها و مشتریان",
+    "kind": "plugin"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "source": "./admin/src/index.js",
+      "import": "./admin/src/index.js",
+      "require": "./admin/src/index.js",
+      "default": "./admin/src/index.js"
+    },
+    "./strapi-server": "./server/src/index.js"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@strapi/strapi": "^5.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
+  }
+}

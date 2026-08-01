@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "digipay_logs",
+  "info": {
+    "singularName": "digipay",
+    "pluralName": "digipays",
+    "displayName": "Digipay Log",
+    "description": "Internal Digipay audit"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": false }
+  },
+  "attributes": {
+    "providerId": { "type": "string" },
+    "payload": { "type": "json" }
+  }
+}

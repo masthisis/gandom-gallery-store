@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_sections_banner_items",
+  "info": {
+    "displayName": "Banner Item",
+    "description": "Promo banner tile"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string" },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "imageUrl": { "type": "string" },
+    "link": { "type": "string" }
+  }
+}

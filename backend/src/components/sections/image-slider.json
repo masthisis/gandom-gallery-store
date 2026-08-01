@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_sections_image_sliders",
+  "info": {
+    "displayName": "Image Slider",
+    "icon": "landscape"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string" },
+    "slides": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.slide"
+    }
+  }
+}

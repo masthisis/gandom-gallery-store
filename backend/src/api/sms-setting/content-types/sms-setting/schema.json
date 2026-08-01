@@ -1,0 +1,38 @@
+{
+  "kind": "singleType",
+  "collectionName": "sms_settings",
+  "info": {
+    "singularName": "sms-setting",
+    "pluralName": "sms-settings",
+    "displayName": "تنظیمات پیامک",
+    "description": "پیکربندی SMS.ir و کد OTP توسعه"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "devMode": {
+      "type": "boolean",
+      "default": true,
+      "description": "Accept OTP 11111 and skip real SMS"
+    },
+    "apiKey": {
+      "type": "string",
+      "private": true
+    },
+    "templateId": {
+      "type": "integer"
+    },
+    "lineNumber": {
+      "type": "string"
+    },
+    "devOtpCode": {
+      "type": "string",
+      "default": "11111"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_sections_slides",
+  "info": {
+    "displayName": "Slide",
+    "description": "Hero/image slide item"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string" },
+    "subtitle": { "type": "string" },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "imageUrl": {
+      "type": "string",
+      "description": "Optional external image URL if media empty"
+    },
+    "link": { "type": "string" }
+  }
+}

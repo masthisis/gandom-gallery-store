@@ -1,0 +1,53 @@
+{
+  "kind": "singleType",
+  "collectionName": "store_settings",
+  "info": {
+    "singularName": "store-setting",
+    "pluralName": "store-settings",
+    "displayName": "تنظیمات فروشگاه",
+    "description": "پیکربندی کلی فروشگاه، هزینه ارسال و آستانه موجودی"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "storeName": {
+      "type": "string",
+      "default": "گندم گالری"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "address": {
+      "type": "text"
+    },
+    "currencyLabel": {
+      "type": "string",
+      "default": "تومان"
+    },
+    "shippingFlatToman": {
+      "type": "integer",
+      "default": 0
+    },
+    "taxEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "lowStockThreshold": {
+      "type": "integer",
+      "default": 5,
+      "min": 0
+    },
+    "seoDefaults": {
+      "type": "json"
+    }
+  }
+}

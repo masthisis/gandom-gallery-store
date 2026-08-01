@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_story_rows",
+  "info": {
+    "displayName": "Story / Quick Access",
+    "icon": "walk"
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.story-item"
+    }
+  }
+}

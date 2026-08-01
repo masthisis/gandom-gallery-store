@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_metas",
+  "info": {
+    "singularName": "product-meta",
+    "pluralName": "product-metas",
+    "displayName": "مشخصات و گالری محصول",
+    "description": "مشخصات فنی و آدرس تصاویر اضافه بر اساس اسلاگ محصول"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "productSlug": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "specifications": {
+      "type": "json",
+      "required": false
+    },
+    "gallery_urls": {
+      "type": "json",
+      "required": false
+    }
+  }
+}

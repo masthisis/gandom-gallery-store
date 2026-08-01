@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_sections_product_sliders",
+  "info": {
+    "displayName": "Product Slider",
+    "icon": "shoppingCart"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string" },
+    "link": { "type": "string" },
+    "source": {
+      "type": "enumeration",
+      "enum": ["newest", "sale", "category", "manual"],
+      "default": "newest"
+    },
+    "categorySlug": { "type": "string" },
+    "productIds": {
+      "type": "text",
+      "description": "Comma-separated product documentIds/slugs when source=manual"
+    },
+    "limit": { "type": "integer", "default": 8 }
+  }
+}

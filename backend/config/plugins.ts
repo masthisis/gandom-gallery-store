@@ -41,11 +41,15 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
   },
   webbycommerce: {
     enabled: true,
-    resolve: require.resolve('@webbycrown/webbycommerce'),
+    resolve: './node_modules/@webbycrown/webbycommerce',
+  },
+  'gandom-shop': {
+    enabled: true,
+    resolve: './src/plugins/gandom-shop',
   },
   chartbrew: {
     enabled: true,
-    resolve: require.resolve('@chartbrew/plugin-strapi'),
+    resolve: './node_modules/@chartbrew/plugin-strapi',
   },
 });
 

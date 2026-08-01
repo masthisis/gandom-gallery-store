@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_sections_banner_grids",
+  "info": {
+    "displayName": "Banner Grid",
+    "icon": "dashboard"
+  },
+  "options": {},
+  "attributes": {
+    "columns": {
+      "type": "enumeration",
+      "enum": ["2", "4"],
+      "default": "2"
+    },
+    "banners": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.banner-item"
+    }
+  }
+}

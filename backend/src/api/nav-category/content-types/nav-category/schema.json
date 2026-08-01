@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nav_categories",
+  "info": {
+    "singularName": "nav-category",
+    "pluralName": "nav-categories",
+    "displayName": "دسته‌بندی‌ها",
+    "description": "درخت دسته‌بندی و زیردسته برای منو و فروشگاه (با commerceSlug به دسته محصول وصل می‌شود)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "description": { "type": "text" },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "commerceSlug": {
+      "type": "string",
+      "description": "اسلاگ دسته محصول در WebbyCommerce برای فیلتر فروشگاه"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::nav-category.nav-category",
+      "inversedBy": "children"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::nav-category.nav-category",
+      "mappedBy": "parent"
+    },
+    "menu_order": { "type": "integer", "default": 0 },
+    "show_in_menu": { "type": "boolean", "default": true }
+  }
+}

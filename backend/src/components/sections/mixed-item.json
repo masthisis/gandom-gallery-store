@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_sections_mixed_items",
+  "info": {
+    "displayName": "Mixed Slider Item",
+    "description": "Image or product entry in a mixed slider"
+  },
+  "options": {},
+  "attributes": {
+    "kind": {
+      "type": "enumeration",
+      "enum": ["image", "product"],
+      "default": "image",
+      "required": true
+    },
+    "title": { "type": "string" },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "imageUrl": { "type": "string" },
+    "link": { "type": "string" },
+    "productDocumentId": {
+      "type": "string",
+      "description": "WebbyCommerce product documentId when kind=product"
+    }
+  }
+}

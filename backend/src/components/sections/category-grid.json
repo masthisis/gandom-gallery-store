@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_category_grids",
+  "info": {
+    "displayName": "Category Grid",
+    "icon": "folder"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "default": "دسته‌بندی‌ها" },
+    "categorySlugs": {
+      "type": "text",
+      "description": "Comma-separated category slugs (empty = top-level menu categories)"
+    }
+  }
+}

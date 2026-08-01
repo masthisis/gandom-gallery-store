@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cms_pages",
+  "info": {
+    "singularName": "page",
+    "pluralName": "pages",
+    "displayName": "صفحات محتوا",
+    "description": "صفحات ثابت و حقوقی فارسی"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
+    }
+  }
+}

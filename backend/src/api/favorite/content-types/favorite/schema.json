@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "favorites",
+  "info": {
+    "singularName": "favorite",
+    "pluralName": "favorites",
+    "displayName": "علاقه‌مندی‌ها",
+    "description": "محصولات مورد علاقه کاربران"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "productSlug": {
+      "type": "string",
+      "required": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_sections_incredible_offers",
+  "info": {
+    "displayName": "Incredible Offers",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "default": "پیشنهاد شگفت‌انگیز" },
+    "themeColor": { "type": "string", "default": "#ef4056" },
+    "endsAt": { "type": "datetime" },
+    "link": { "type": "string" },
+    "source": {
+      "type": "enumeration",
+      "enum": ["sale", "manual", "newest"],
+      "default": "sale"
+    },
+    "productIds": { "type": "text" },
+    "limit": { "type": "integer", "default": 8 }
+  }
+}

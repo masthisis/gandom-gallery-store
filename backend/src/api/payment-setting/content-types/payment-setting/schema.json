@@ -1,0 +1,47 @@
+{
+  "kind": "singleType",
+  "collectionName": "payment_settings",
+  "info": {
+    "singularName": "payment-setting",
+    "pluralName": "payment-settings",
+    "displayName": "تنظیمات پرداخت",
+    "description": "پیکربندی درگاه دیجی‌پی"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "mockMode": {
+      "type": "boolean",
+      "default": true,
+      "description": "When true, skip real Digipay and auto-confirm payments"
+    },
+    "baseUrl": {
+      "type": "string",
+      "default": "https://uat.mydigipay.info"
+    },
+    "clientId": {
+      "type": "string",
+      "private": true
+    },
+    "clientSecret": {
+      "type": "string",
+      "private": true
+    },
+    "username": {
+      "type": "string",
+      "private": true
+    },
+    "password": {
+      "type": "string",
+      "private": true
+    },
+    "callbackUrl": {
+      "type": "string"
+    }
+  }
+}

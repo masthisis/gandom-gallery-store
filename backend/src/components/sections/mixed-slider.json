@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_sections_mixed_sliders",
+  "info": {
+    "displayName": "Mixed Slider",
+    "icon": "layer"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string" },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.mixed-item"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_sections_trust_items",
+  "info": {
+    "displayName": "Trust Item",
+    "description": "Trust badge"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "text": { "type": "string" }
+  }
+}

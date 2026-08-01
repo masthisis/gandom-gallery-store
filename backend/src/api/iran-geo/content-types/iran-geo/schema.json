@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "iran_geos",
+  "info": {
+    "singularName": "iran-geo",
+    "pluralName": "iran-geos",
+    "displayName": "Iran Geo API",
+    "description": "Provinces and cities of Iran"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "placeholder": { "type": "string", "private": true }
+  }
+}

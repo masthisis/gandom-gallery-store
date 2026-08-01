@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_trust_badges",
+  "info": {
+    "displayName": "Trust Badges",
+    "icon": "check"
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.trust-item"
+    }
+  }
+}

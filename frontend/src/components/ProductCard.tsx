@@ -1,92 +1,120 @@
-import React from 'react';
-import type { Product } from '../types';
-import { formatPrice, toFarsiDigits } from '../types';
-import { Star, ShoppingCart, ShieldCheck, Truck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { formatPrice, mediaUrl, toFarsiDigits } from '../lib/format';
 
-interface ProductCardProps {
-  product: Product;
-  onAddToCart: (product: Product) => void;
+export type ProductCardData = {
+  id?: number | string;
+  documentId?: string;
+  slug?: string;
+  name: string;
+  price: number;
+  sale_price?: number | null;
+  images?: unknown;
+  gallery_urls?: string[];
+  specifications?: { label: string; value: string }[];
+};
+
+const PALETTE = ['#ef4056', '#39ae00', '#3f4064', '#19bfd3', '#f9a825', '#ed1944'];
+
+function placeholderDataUri(seed: string, title: string) {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  const c = PALETTE[hash % PALETTE.length];
+  const label = (title || 'گندم').slice(0, 12);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${c}" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#f0f0f1"/>
+    </linearGradient></defs>
+    <rect width="800" height="800" fill="url(#g)"/>
+    <circle cx="400" cy="340" r="110" fill="${c}" opacity="0.22"/>
+    <text x="400" y="560" text-anchor="middle" font-family="Tahoma,sans-serif" font-size="42" fill="#424750">${label}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
-  const hasDiscount = Boolean(product.discountPrice && product.discountPrice < product.price);
-  const discountPercent = hasDiscount
-    ? Math.round(((product.price - (product.discountPrice || 0)) / product.price) * 100)
-    : 0;
+function resolveImage(product: ProductCardData): string {
+  const raw = Array.isArray(product.images) ? product.images[0] : product.images;
+  const url = raw ? mediaUrl(raw as Parameters<typeof mediaUrl>[0]) : null;
+  if (url) return url;
+  if (Array.isArray(product.gallery_urls) && product.gallery_urls[0]) {
+    return String(product.gallery_urls[0]);
+  }
+  const seed = String(product.slug || product.id || product.name || 'p');
+  return placeholderDataUri(seed, product.name);
+}
+
+function discountPercent(price: number, salePrice: number): number {
+  if (!price || salePrice >= price) return 0;
+  return Math.round(((price - salePrice) / price) * 100);
+}
+
+export function ProductCard({
+  product,
+  onAdd,
+  compact = false,
+}: {
+  product: ProductCardData;
+  onAdd?: () => void;
+  compact?: boolean;
+}) {
+  const href = `/product/${product.slug || product.documentId || product.id}`;
+  const fallback = useMemo(() => resolveImage(product), [product]);
+  const [img, setImg] = useState(fallback);
+  const price = Number(product.price) || 0;
+  const salePrice = product.sale_price != null ? Number(product.sale_price) : null;
+  const hasSale = salePrice != null && salePrice < price;
+  const pct = hasSale ? discountPercent(price, salePrice!) : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative">
-      {/* Incredible Offer Badge */}
-      {product.isIncredible && (
-        <span className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-          شگفت‌انگیز
-        </span>
-      )}
-
-      <div>
-        {/* Product Image */}
-        <div className="relative w-full h-48 mb-3 overflow-hidden rounded-lg bg-gray-50 flex items-center justify-center">
-          <img
-            src={product.image}
-            alt={product.titleFa}
-            className="h-full w-full object-contain p-2 group-hover:scale-105 transition duration-300"
-          />
+    <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group">
+      <Link to={href} className="block relative aspect-square overflow-hidden bg-[var(--dk-surface)] p-3">
+        {hasSale && pct > 0 && (
+          <span className="absolute top-2 start-2 z-10 bg-[var(--dk-cta)] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+            {toFarsiDigits(pct)}٪
+          </span>
+        )}
+        <img
+          src={img}
+          alt=""
+          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+          onError={() => setImg(placeholderDataUri(String(product.slug || 'p'), product.name))}
+        />
+      </Link>
+      <div className={`flex flex-col gap-1.5 flex-1 ${compact ? 'p-2.5' : 'p-3'}`}>
+        <Link
+          to={href}
+          className={`font-normal text-[#3f4064] line-clamp-2 hover:text-[var(--dk-cta)] ${compact ? 'text-xs min-h-[2rem]' : 'text-sm min-h-[2.5rem]'}`}
+        >
+          {product.name}
+        </Link>
+        <div className="mt-auto flex flex-col gap-0.5">
+          {hasSale ? (
+            <>
+              <span className={`text-[var(--dk-muted)] line-through ${compact ? 'text-[10px]' : 'text-xs'}`}>
+                {formatPrice(price)}
+              </span>
+              <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-base'}`}>
+                {formatPrice(salePrice)}
+              </span>
+            </>
+          ) : (
+            <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-base'}`}>
+              {formatPrice(price)}
+            </span>
+          )}
         </div>
-
-        {/* Seller Info */}
-        <div className="flex items-center gap-1.5 text-[11px] text-gray-500 mb-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>{product.sellerName}</span>
-        </div>
-
-        {/* Title */}
-        <h3 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-relaxed mb-3 min-h-[36px]">
-          {product.titleFa}
-        </h3>
-      </div>
-
-      <div>
-        {/* Rating & Fast Delivery */}
-        <div className="flex items-center justify-between text-[11px] text-gray-500 mb-3">
-          <div className="flex items-center gap-1">
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="font-bold text-gray-700">{toFarsiDigits(product.rating)}</span>
-          </div>
-
-          <div className="flex items-center gap-1 text-emerald-600 font-medium">
-            <Truck className="w-3.5 h-3.5" />
-            <span>ارسال سریع</span>
-          </div>
-        </div>
-
-        {/* Pricing */}
-        <div className="flex items-end justify-between border-t border-gray-100 pt-3">
+        {onAdd && !compact && (
           <button
-            onClick={() => onAddToCart(product)}
-            className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition"
-            title="افزودن به سبد خرید"
+            type="button"
+            onClick={onAdd}
+            className="w-full mt-1 text-sm border border-[var(--dk-cta)] text-[var(--dk-cta)] rounded-lg py-2 hover:bg-[#fff0f2] transition"
           >
-            <ShoppingCart className="w-4 h-4" />
+            افزودن به سبد
           </button>
-
-          <div className="text-left">
-            {hasDiscount && (
-              <div className="flex items-center gap-1.5 justify-end">
-                <span className="bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-                  %{toFarsiDigits(discountPercent)}
-                </span>
-                <span className="text-xs text-gray-400 line-through">
-                  {formatPrice(product.price)}
-                </span>
-              </div>
-            )}
-
-            <div className="text-sm font-black text-gray-900 mt-0.5">
-              {formatPrice(product.discountPrice || product.price)}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+    </article>
   );
-};
+}

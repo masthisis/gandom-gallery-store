@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "category_trees",
+  "info": {
+    "singularName": "category-tree",
+    "pluralName": "category-trees",
+    "displayName": "Category Tree API",
+    "description": "Public nested category tree (no editable fields)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "placeholder": {
+      "type": "string",
+      "private": true
+    }
+  }
+}

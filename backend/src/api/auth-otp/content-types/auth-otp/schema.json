@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "auth_otp_logs",
+  "info": {
+    "singularName": "auth-otp",
+    "pluralName": "auth-otps",
+    "displayName": "Auth OTP Log",
+    "description": "Internal OTP audit (optional)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": false }
+  },
+  "attributes": {
+    "mobile": { "type": "string" },
+    "note": { "type": "string" }
+  }
+}

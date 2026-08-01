@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "catalogs",
+  "info": {
+    "singularName": "catalog",
+    "pluralName": "catalogs",
+    "displayName": "Catalog API",
+    "description": "Public catalog helpers"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "placeholder": { "type": "string", "private": true }
+  }
+}

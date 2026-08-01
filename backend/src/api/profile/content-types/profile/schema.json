@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "profiles",
+  "info": {
+    "singularName": "profile",
+    "pluralName": "profiles",
+    "displayName": "Profile API",
+    "description": "User profile and addresses"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "placeholder": { "type": "string", "private": true }
+  }
+}

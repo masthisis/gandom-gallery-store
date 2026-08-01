@@ -1,0 +1,36 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "صفحه اصلی",
+    "description": "بخش‌های صفحه اصلی گندم گالری"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.hero-slider",
+        "sections.image-slider",
+        "sections.product-slider",
+        "sections.product-row",
+        "sections.mixed-slider",
+        "sections.incredible-offers",
+        "sections.banner-grid",
+        "sections.story-row",
+        "sections.category-grid",
+        "sections.trust-badges"
+      ]
+    }
+  }
+}

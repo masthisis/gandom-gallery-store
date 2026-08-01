@@ -1,174 +1,67 @@
-/* ======================================================================
-   DigiKala Design System — CSS Custom Properties & Global Styles
-   Source: designsystem.md (Figma extraction)
-   ====================================================================== */
+@import "tailwindcss";
 
-/* --- Web Fonts --- */
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
-
-/* --- Design Tokens as CSS Variables --- */
-:root {
-  /* Color Palette */
-  --dk-background: #ffffff;
-  --dk-background-alt: #fafafa;
-  --dk-surface: #f0f0f1;
-  --dk-surface-alt: #e0e0e2;
-  --dk-surface-alt-2: #c0c2c5;
-  --dk-surface-3: #d9d9d9;
-  --dk-surface-alt-alt: #bdbdbd;
-  --dk-border: #a1a3a8;
-
-  --dk-text-primary: #0c0c0c;
-  --dk-text-primary-alt: #000000;
-  --dk-text-secondary: #424750;
-  --dk-text-secondary-alt: #4f4f4f;
-  --dk-text-secondary-3: #424242;
-  --dk-text-tertiary: #81858b;
-  --dk-text-tertiary-alt: #62666d;
-
-  --dk-accent: #39ae00;           /* DigiKala green */
-  --dk-accent-alt: #3f4064;
-  --dk-accent-3: #19bfd3;         /* Teal */
-  --dk-accent-4: #d32f2f;         /* Red/danger */
-  --dk-accent-5: #23254e;         /* Dark navy */
-  --dk-accent-6: #029a49;         /* Deep green */
-  --dk-accent-7: #ed1944;         /* Vivid red */
-  --dk-accent-8: #e6123d;         /* DigiKala red */
-  --dk-accent-9: #f9bc00;         /* Gold/yellow */
-  --dk-accent-10: #f9a825;        /* Amber */
-  --dk-accent-11: #ef4056;        /* DigiKala pink-red (primary CTA) */
-  --dk-accent-12: #f57f17;        /* Orange */
-  --dk-accent-13: #3c4b6d;        /* Steel blue */
-
-  /* Border Radius */
-  --dk-radius-sm-3: 2px;
-  --dk-radius-sm-2: 4px;
-  --dk-radius-sm: 8px;
-  --dk-radius-md: 16px;
-  --dk-radius-lg: 20px;
-  --dk-radius-xl: 25px;
-  --dk-radius-full: 9999px;
-
-  /* Shadow / Elevation */
-  --dk-elevation-1: 0px 2px 0px 0px rgba(0, 0, 0, 0.05), 0px 1px 0px 0px rgba(0, 0, 0, 0.14);
-  --dk-elevation-2: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  --dk-elevation-3: 0px 8px 24px rgba(0, 0, 0, 0.12);
-
-  /* Typography */
-  --dk-font-primary: 'Vazirmatn', 'IRANSansFaNum', system-ui, sans-serif;
-  --dk-font-display: 'Vazirmatn', sans-serif;
-
-  /* Spacing */
-  --dk-space-2: 2px;
-  --dk-space-4: 4px;
-  --dk-space-6: 6px;
-  --dk-space-8: 8px;
-  --dk-space-10: 10px;
-  --dk-space-12: 12px;
-  --dk-space-16: 16px;
-  --dk-space-20: 20px;
-  --dk-space-24: 24px;
-  --dk-space-32: 32px;
-  --dk-space-40: 40px;
-
-  /* Layout */
-  --dk-max-width: 1336px;
-  --dk-content-width: 1184px;
+@theme {
+  --color-dk-bg: #ffffff;
+  --color-dk-surface: #f0f0f1;
+  --color-dk-text: #0c0c0c;
+  --color-dk-muted: #81858b;
+  --color-dk-accent: #39ae00;
+  --color-dk-cta: #ef4056;
+  --color-dk-navy: #3f4064;
+  --font-sans: "Vazirmatn", system-ui, sans-serif;
 }
 
-/* --- Global Reset & Base Styles --- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --dk-accent: #39ae00;
+  --dk-cta: #ef4056;
+  --dk-text: #0c0c0c;
+  --dk-muted: #81858b;
+  --dk-surface: #f0f0f1;
+  --dk-max-width: 1336px;
 }
 
 html {
   direction: rtl;
-  font-size: 15px;
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: var(--dk-font-primary);
-  color: var(--dk-text-primary);
-  background-color: var(--dk-surface);
+  margin: 0;
+  font-family: "Vazirmatn", system-ui, sans-serif;
+  color: var(--dk-text);
+  background: #fafafa;
   min-height: 100vh;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+#root {
+  min-height: 100vh;
 }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-input, select, textarea {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-/* --- Typography Scale --- */
-.dk-display { font-size: 128px; font-weight: 400; line-height: 1; font-family: var(--dk-font-display); }
-.dk-h1 { font-size: 28px; font-weight: 400; line-height: 60px; }
-.dk-h2 { font-size: 26px; font-weight: 900; line-height: 55px; }
-.dk-h2-bold { font-size: 26px; font-weight: 700; line-height: 55px; }
-.dk-h3 { font-size: 21px; font-weight: 700; line-height: 44px; }
-.dk-h3-medium { font-size: 21px; font-weight: 500; line-height: 44px; }
-.dk-h4 { font-size: 20px; font-weight: 400; }
-.dk-body-lg { font-size: 18px; font-weight: 400; line-height: 39px; }
-.dk-body { font-size: 15px; font-weight: 400; }
-.dk-body-bold { font-size: 16px; font-weight: 700; line-height: 34px; }
-.dk-body-bold-2 { font-size: 15px; font-weight: 700; line-height: 32px; }
-.dk-body-black { font-size: 16px; font-weight: 900; line-height: 55px; }
-.dk-body-sm { font-size: 14px; font-weight: 400; line-height: 30px; }
-.dk-body-sm-bold { font-size: 14px; font-weight: 700; line-height: 24px; }
-.dk-body-sm-black { font-size: 13px; font-weight: 900; line-height: 55px; }
-.dk-caption { font-size: 12px; font-weight: 400; line-height: 20px; }
-.dk-caption-2 { font-size: 11px; font-weight: 400; line-height: 24px; }
-.dk-caption-3 { font-size: 10px; font-weight: 400; line-height: 24px; }
-.dk-caption-bold { font-size: 12px; font-weight: 700; line-height: 26px; }
-.dk-caption-bold-2 { font-size: 11px; font-weight: 700; line-height: 24px; }
-
-/* --- Utility Classes --- */
 .dk-container {
+  width: 100%;
   max-width: var(--dk-max-width);
-  margin: 0 auto;
-  padding: 0 var(--dk-space-16);
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 
-.dk-content {
-  max-width: var(--dk-content-width);
-  margin: 0 auto;
+.font-vazir {
+  font-family: "Vazirmatn", system-ui, sans-serif;
 }
 
-.dk-card {
-  background: var(--dk-background);
-  border-radius: var(--dk-radius-md);
-  box-shadow: var(--dk-elevation-1);
-  overflow: hidden;
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-.dk-card:hover {
-  box-shadow: var(--dk-elevation-2);
-  transition: box-shadow 0.2s ease;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
-
-/* --- Scrollbar Styling --- */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--dk-surface); }
-::-webkit-scrollbar-thumb { background: var(--dk-surface-alt-2); border-radius: var(--dk-radius-full); }
-::-webkit-scrollbar-thumb:hover { background: var(--dk-border); }

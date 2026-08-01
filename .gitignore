@@ -1,0 +1,11 @@
+# Local / secret files — never commit
+.env
+.env.local
+.env.production
+backend/.env
+frontend/.env
+backoffice/.env
+liara
+*.pem
+*.key
+credentials.json

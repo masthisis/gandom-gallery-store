@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "product_comments",
+  "info": {
+    "singularName": "product-comment",
+    "pluralName": "product-comments",
+    "displayName": "Product Comment API",
+    "description": "Virtual API for product reviews"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-api": { "visible": true }
+  },
+  "attributes": {
+    "placeholder": { "type": "string", "private": true }
+  }
+}

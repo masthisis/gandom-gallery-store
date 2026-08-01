@@ -1,0 +1,171 @@
+'use strict';
+
+async function getLowStockThreshold(strapi) {
+  try {
+    const store = await strapi.documents('api::store-setting.store-setting').findFirst({});
+    const n = Number(store?.lowStockThreshold);
+    return Number.isFinite(n) && n >= 0 ? n : 5;
+  } catch {
+    return 5;
+  }
+}
+
+module.exports = ({ strapi }) => ({
+  async overview() {
+    const threshold = await getLowStockThreshold(strapi);
+
+    const orders = await strapi.db.query('plugin::webbycommerce.order').findMany({
+      populate: ['items', 'user'],
+      orderBy: { id: 'desc' },
+      limit: 500,
+    });
+
+    const list = orders || [];
+    const paid = list.filter(
+      (o) =>
+        o.payment_status === 'paid' &&
+        o.status !== 'cancelled' &&
+        o.status !== 'refunded'
+    );
+
+    const incomeToman = paid.reduce((s, o) => s + (Number(o.total) || 0), 0);
+    const soldUnits = paid.reduce((s, o) => {
+      const items = Array.isArray(o.items) ? o.items : [];
+      return s + items.length;
+    }, 0);
+
+    const products = await strapi.db.query('plugin::webbycommerce.product').findMany({
+      limit: 500,
+      orderBy: { stock_quantity: 'asc' },
+    });
+
+    const lowStockProducts = (products || [])
+      .filter((p) => (Number(p.stock_quantity) || 0) < threshold)
+      .slice(0, 50)
+      .map((p) => ({
+        id: p.id,
+        documentId: p.documentId,
+        name: p.name,
+        slug: p.slug,
+        sku: p.sku,
+        stock_quantity: p.stock_quantity,
+        stock_status: p.stock_status,
+      }));
+
+    let pendingCommentsCount = 0;
+    try {
+      pendingCommentsCount = await strapi.db.query('api::store-comment.store-comment').count({
+        where: { is_visible: false },
+      });
+    } catch {
+      pendingCommentsCount = 0;
+    }
+
+    const recentOrders = list.slice(0, 10).map((o) => ({
+      id: o.id,
+      documentId: o.documentId,
+      order_number: o.order_number,
+      total: o.total,
+      status: o.status,
+      payment_status: o.payment_status,
+      createdAt: o.createdAt,
+      user: o.user
+        ? {
+            id: o.user.id,
+            display_name: o.user.display_name || o.user.username,
+            phone_no: o.user.phone_no,
+          }
+        : null,
+      itemCount: Array.isArray(o.items) ? o.items.length : 0,
+    }));
+
+    return {
+      incomeToman,
+      ordersCount: list.length,
+      paidOrdersCount: paid.length,
+      soldUnits,
+      soldUnitsNote: 'تعداد اقلام سفارش‌های پرداخت‌شده (بدون تعداد خطی جداگانه در WC)',
+      lowStockThreshold: threshold,
+      lowStockProducts,
+      pendingCommentsCount,
+      recentOrders,
+    };
+  },
+
+  async pendingComments() {
+    const rows = await strapi.db.query('api::store-comment.store-comment').findMany({
+      where: { is_visible: false },
+      populate: ['user', 'parent'],
+      orderBy: { id: 'desc' },
+      limit: 100,
+    });
+    return (rows || []).map((r) => ({
+      id: r.id,
+      documentId: r.documentId,
+      productSlug: r.productSlug,
+      body: r.body,
+      rating: r.rating,
+      createdAt: r.createdAt,
+      parentId: r.parent?.id || null,
+      user: r.user
+        ? {
+            id: r.user.id,
+            display_name: r.user.display_name || r.user.username || r.user.phone_no,
+            phone_no: r.user.phone_no,
+          }
+        : null,
+    }));
+  },
+
+  async setCommentVisibility(id, isVisible) {
+    const updated = await strapi.db.query('api::store-comment.store-comment').update({
+      where: { id: Number(id) },
+      data: { is_visible: !!isVisible },
+    });
+    return updated;
+  },
+
+  async deleteComment(id) {
+    await strapi.db.query('api::store-comment.store-comment').delete({
+      where: { id: Number(id) },
+    });
+    return { ok: true };
+  },
+
+  async customers() {
+    const users = await strapi.db.query('plugin::users-permissions.user').findMany({
+      orderBy: { id: 'desc' },
+      limit: 200,
+    });
+
+    const result = [];
+    for (const u of users || []) {
+      const orders = await strapi.db.query('plugin::webbycommerce.order').findMany({
+        where: { user: u.id },
+        orderBy: { id: 'desc' },
+        limit: 20,
+      });
+      result.push({
+        id: u.id,
+        documentId: u.documentId,
+        username: u.username,
+        email: u.email,
+        phone_no: u.phone_no,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        display_name: u.display_name,
+        createdAt: u.createdAt,
+        ordersCount: (orders || []).length,
+        orders: (orders || []).map((o) => ({
+          id: o.id,
+          order_number: o.order_number,
+          total: o.total,
+          status: o.status,
+          payment_status: o.payment_status,
+          createdAt: o.createdAt,
+        })),
+      });
+    }
+    return result;
+  },
+});
