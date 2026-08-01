@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Minus, Plus, Star, ShieldCheck, Heart, Share2 } from 'lucide-react';
 import { api, getToken } from '../lib/api';
+import { getCategoryTree, getProductMetas, getProducts } from '../lib/catalog';
 import { formatPrice, mediaUrl, toFarsiDigits } from '../lib/format';
 import { Breadcrumbs, type Crumb } from '../components/Breadcrumbs';
 import { SimilarProducts } from '../components/SimilarProducts';
@@ -33,7 +34,7 @@ function collectImages(product: Record<string, unknown>): string[] {
   const fromMedia = (
     Array.isArray(product.images) ? product.images : product.images ? [product.images] : []
   )
-    .map((img) => mediaUrl(img))
+    .map((img) => mediaUrl(img, 'large'))
     .filter(Boolean) as string[];
   const fromUrls = parseGalleryUrls(product.gallery_urls);
   const merged = [...fromMedia, ...fromUrls];
@@ -87,41 +88,49 @@ export function ProductPage({
     setTab('description');
     setReviewMsg('');
     setReplyTo(null);
+    setProduct(null);
+    setError('');
+    let cancelled = false;
     (async () => {
       try {
-        const [prodRes, metaRes, treeRes] = await Promise.all([
-          api.wc.products(),
-          api.productMetas().catch(() => ({ data: [] })),
-          api.categoryTree().catch(() => ({ data: [] })),
+        const [oneRes, metaRes, treeRes] = await Promise.all([
+          api.wc.product(slug!),
+          getProductMetas().catch(() => ({ data: [] })),
+          getCategoryTree().catch(() => ({ data: [] })),
         ]);
-        setCategoryTree((treeRes?.data || []) as NavNode[]);
-        const list = normalizeList(prodRes);
-        const metaMap = metasFromResponse(metaRes);
-        const enriched = list.map((p) =>
-          mergeProductMeta(p as Record<string, unknown>, metaMap[String(p.slug || '')])
-        ) as ProductCardData[];
-        setAllProducts(enriched);
+        if (cancelled) return;
 
-        let found = enriched.find(
-          (p) => p.slug === slug || String(p.id) === slug || p.documentId === slug
-        );
-        if (!found) {
-          try {
-            const one = await api.wc.product(slug!);
-            const r = one as Record<string, unknown>;
-            const raw = (r?.data || r?.product || one) as Record<string, unknown>;
-            found = mergeProductMeta(raw, metaMap[String(raw.slug || slug)]) as unknown as ProductCardData;
-          } catch {
-            setError('محصول یافت نشد');
-            return;
-          }
+        setCategoryTree((treeRes as { data?: NavNode[] })?.data || []);
+        const metaMap = metasFromResponse(metaRes);
+        const r = oneRes as Record<string, unknown>;
+        const raw = (r?.data || r?.product || oneRes) as Record<string, unknown>;
+        if (!raw || (!(raw as { name?: string }).name && !(raw as { slug?: string }).slug)) {
+          setError('محصول یافت نشد');
+          return;
         }
+        const found = mergeProductMeta(raw, metaMap[String(raw.slug || slug)]) as unknown as ProductCardData;
         setProduct(found as unknown as Record<string, unknown>);
-        setError('');
+
+        // Load catalog in background for similar products (shared cache)
+        getProducts()
+          .then((prodRes) => {
+            if (cancelled) return;
+            const list = normalizeList(prodRes);
+            const enriched = list.map((p) =>
+              mergeProductMeta(p as Record<string, unknown>, metaMap[String(p.slug || '')])
+            ) as ProductCardData[];
+            setAllProducts(enriched);
+          })
+          .catch(() => {
+            if (!cancelled) setAllProducts([]);
+          });
       } catch {
-        setError('خطا در دریافت محصول');
+        if (!cancelled) setError('خطا در دریافت محصول');
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   useEffect(() => {
@@ -306,6 +315,8 @@ export function ProductPage({
                 src={mainImg}
                 alt={String(product.name)}
                 className="w-full h-full object-contain p-4"
+                fetchPriority="high"
+                decoding="async"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/placeholders/product.svg';
                 }}
@@ -322,7 +333,7 @@ export function ProductPage({
                       i === activeImg ? 'border-[var(--dk-cta)]' : 'border-transparent'
                     }`}
                   >
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </button>
                 ))}
               </div>

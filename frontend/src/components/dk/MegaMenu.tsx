@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, Menu, X } from 'lucide-react';
-import { api } from '../../lib/api';
+import { getCategoryTree } from '../../lib/catalog';
 import type { CategoryItem } from './types';
 
 type Props = {
@@ -15,10 +15,13 @@ export function MegaMenu({ open, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    api
-      .categoryTree()
+    getCategoryTree()
       .then((res) => {
-        const data = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+        const data = Array.isArray((res as { data?: unknown })?.data)
+          ? (res as { data: CategoryItem[] }).data
+          : Array.isArray(res)
+            ? (res as CategoryItem[])
+            : [];
         setTree(data);
         if (data.length) setActive(data[0]);
       })

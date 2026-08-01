@@ -10,7 +10,7 @@ type Props = {
 function storyImage(item: StoryItem): string {
   if (!item.image) return '/placeholders/product.svg';
   if (typeof item.image === 'string') return item.image;
-  return mediaUrl(item.image) || '/placeholders/product.svg';
+  return mediaUrl(item.image, 'thumbnail') || '/placeholders/product.svg';
 }
 
 export function StoryRow({ items = [], title }: Props) {
@@ -32,6 +32,7 @@ export function StoryRow({ items = [], title }: Props) {
                 alt={item.title || ''}
                 className="w-full h-full rounded-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
             </div>
             <span className="text-xs text-center line-clamp-2 text-[#3f4064]">{item.title}</span>

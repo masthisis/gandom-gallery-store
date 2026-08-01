@@ -24,10 +24,42 @@ export const PAYMENT_STATUS_FA: Record<string, string> = {
   refunded: 'مسترد شده',
 };
 
-export function mediaUrl(img: any): string | null {
+export type MediaSize = 'thumbnail' | 'small' | 'medium' | 'large' | 'original';
+
+const FORMAT_PREF: Record<MediaSize, string[]> = {
+  thumbnail: ['thumbnail', 'small', 'medium', 'large'],
+  small: ['small', 'thumbnail', 'medium', 'large'],
+  medium: ['medium', 'small', 'large', 'thumbnail'],
+  large: ['large', 'medium', 'small', 'thumbnail'],
+  original: [],
+};
+
+function pickFormatUrl(
+  formats: Record<string, { url?: string }> | undefined,
+  size: MediaSize
+): string | null {
+  if (!formats) return null;
+  for (const key of FORMAT_PREF[size]) {
+    const u = formats[key]?.url;
+    if (u) return u;
+  }
+  return null;
+}
+
+export function mediaUrl(img: unknown, size: MediaSize = 'medium'): string | null {
   if (!img) return null;
-  let url: string | null =
-    typeof img === 'string' ? img : img.url || img?.formats?.medium?.url || img?.formats?.small?.url || null;
+
+  let url: string | null = null;
+  if (typeof img === 'string') {
+    url = img;
+  } else {
+    const media = img as { url?: string; formats?: Record<string, { url?: string }> };
+    if (size === 'original') {
+      url = media.url || pickFormatUrl(media.formats, 'large');
+    } else {
+      url = pickFormatUrl(media.formats, size) || media.url || null;
+    }
+  }
   if (!url) return null;
 
   const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:1337').replace(/\/$/, '');

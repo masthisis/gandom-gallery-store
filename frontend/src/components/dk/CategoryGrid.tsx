@@ -10,7 +10,7 @@ type Props = {
 function catImage(c: CategoryItem): string {
   if (!c.image) return '/placeholders/product.svg';
   if (typeof c.image === 'string') return c.image;
-  return mediaUrl(c.image) || '/placeholders/product.svg';
+  return mediaUrl(c.image, 'thumbnail') || '/placeholders/product.svg';
 }
 
 export function CategoryGrid({ categories = [], title }: Props) {
@@ -27,7 +27,7 @@ export function CategoryGrid({ categories = [], title }: Props) {
             className="flex flex-col items-center gap-2 group"
           >
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-[var(--dk-surface)] group-hover:ring-2 ring-[var(--dk-cta)] transition">
-              <img src={catImage(c)} alt={c.name} className="w-full h-full object-cover" loading="lazy" />
+              <img src={catImage(c)} alt={c.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
             </div>
             <span className="text-xs text-center line-clamp-2 text-[#3f4064] group-hover:text-[var(--dk-cta)]">
               {c.name}

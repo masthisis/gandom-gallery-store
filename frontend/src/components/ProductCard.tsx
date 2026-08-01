@@ -35,7 +35,7 @@ function placeholderDataUri(seed: string, title: string) {
 
 function resolveImage(product: ProductCardData): string {
   const raw = Array.isArray(product.images) ? product.images[0] : product.images;
-  const url = raw ? mediaUrl(raw as Parameters<typeof mediaUrl>[0]) : null;
+  const url = raw ? mediaUrl(raw, 'small') : null;
   if (url) return url;
   if (Array.isArray(product.gallery_urls) && product.gallery_urls[0]) {
     return String(product.gallery_urls[0]);
@@ -79,6 +79,8 @@ export function ProductCard({
           alt=""
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
+          decoding="async"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
           onError={() => setImg(placeholderDataUri(String(product.slug || 'p'), product.name))}
         />
       </Link>

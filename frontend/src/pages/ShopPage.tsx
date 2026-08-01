@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
-import { api } from '../lib/api';
+import { getCategoryTree, getProductMetas, getProducts } from '../lib/catalog';
 import { ProductCard, type ProductCardData } from '../components/ProductCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { toFarsiDigits } from '../lib/format';
@@ -65,8 +65,7 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
   const [inStockOnly, setInStockOnly] = useState(false);
 
   useEffect(() => {
-    api
-      .categoryTree()
+    getCategoryTree()
       .then((res) => {
         const data = Array.isArray((res as { data?: unknown })?.data)
           ? (res as { data: CategoryItem[] }).data
@@ -83,8 +82,8 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
       setLoading(true);
       try {
         const [prodRes, metaRes] = await Promise.all([
-          api.wc.products(),
-          api.productMetas().catch(() => ({ data: [] })),
+          getProducts(),
+          getProductMetas().catch(() => ({ data: [] })),
         ]);
         const metaMap = metasFromResponse(metaRes);
         const list = normalizeList(prodRes).map((p) =>

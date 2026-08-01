@@ -12,12 +12,14 @@ type Props = {
 function slideImage(slide: SlideItem): string | null {
   if (!slide.image) return null;
   if (typeof slide.image === 'string') return slide.image;
-  return mediaUrl(slide.image);
+  return mediaUrl(slide.image, 'large');
 }
 
 export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
   const [index, setIndex] = useState(0);
-  const items = slides.length ? slides : [{ title: 'گندم گالری', subtitle: 'مجموعه‌ای منتخب از دکوری و هنری', link: '/shop' }];
+  const items = slides.length
+    ? slides
+    : [{ title: 'گندم گالری', subtitle: 'مجموعه‌ای منتخب از دکوری و هنری', link: '/shop' }];
 
   useEffect(() => {
     if (items.length <= 1) return;
@@ -34,19 +36,31 @@ export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
       <div className="relative rounded-2xl overflow-hidden bg-[var(--dk-surface)] aspect-[2.4/1] md:aspect-[3.2/1]">
         {items.map((slide, i) => {
           const src = slideImage(slide);
+          const active = i === index;
           return (
             <Link
               key={i}
               to={slide.link || '/shop'}
-              className={`absolute inset-0 transition-opacity duration-500 ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+              className={`absolute inset-0 transition-opacity duration-500 ${active ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+              tabIndex={active ? 0 : -1}
+              aria-hidden={!active}
             >
               {src ? (
-                <img src={src} alt={slide.title || ''} className="w-full h-full object-cover" />
+                <img
+                  src={src}
+                  alt={slide.title || ''}
+                  className="w-full h-full object-cover"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={i === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                />
               ) : (
                 <div className="w-full h-full bg-gradient-to-l from-[#3f4064] to-[var(--dk-cta)] flex items-center">
                   <div className="p-8 md:p-12 text-white max-w-lg">
                     <h2 className="text-2xl md:text-4xl font-bold mb-2">{slide.title}</h2>
-                    {slide.subtitle && <p className="text-white/85 text-sm md:text-base">{slide.subtitle}</p>}
+                    {slide.subtitle && (
+                      <p className="text-white/85 text-sm md:text-base">{slide.subtitle}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -95,7 +109,10 @@ export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
         )}
 
         {!img && items.length === 1 && (
-          <Link to={href} className="absolute bottom-6 start-8 z-20 bg-white text-[var(--dk-cta)] font-bold px-5 py-2.5 rounded-lg text-sm">
+          <Link
+            to={href}
+            className="absolute bottom-6 start-8 z-20 bg-white text-[var(--dk-cta)] font-bold px-5 py-2.5 rounded-lg text-sm"
+          >
             مشاهده فروشگاه
           </Link>
         )}

@@ -10,7 +10,7 @@ type Props = {
 function bannerImage(b: BannerItem): string | null {
   if (!b.image) return null;
   if (typeof b.image === 'string') return b.image;
-  return mediaUrl(b.image);
+  return mediaUrl(b.image, 'medium');
 }
 
 export function BannerGrid({ banners = [], title }: Props) {

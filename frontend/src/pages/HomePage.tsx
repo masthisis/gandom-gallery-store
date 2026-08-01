@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
+import { getProducts } from '../lib/catalog';
 import { SectionRenderer } from '../components/dk/SectionRenderer';
 import type { HomeSection } from '../components/dk/types';
 import type { ProductCardData } from '../components/ProductCard';
@@ -16,6 +17,19 @@ function normalizeList(res: unknown): ProductCardData[] {
   return [];
 }
 
+const PRODUCT_SECTION_TYPES = new Set([
+  'incredible_offers',
+  'product_slider',
+  'product_row',
+]);
+
+function needsProductFallback(sections: HomeSection[]): boolean {
+  if (!sections.length) return true;
+  return sections.some(
+    (s) => PRODUCT_SECTION_TYPES.has(String(s.type)) && !s.products?.length
+  );
+}
+
 export function HomePage({ onAdd }: Props) {
   const [sections, setSections] = useState<HomeSection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,19 +38,24 @@ export function HomePage({ onAdd }: Props) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [homeRes, prodRes] = await Promise.allSettled([api.homepage(), api.wc.products()]);
-      if (cancelled) return;
-
-      if (homeRes.status === 'fulfilled') {
-        const val = homeRes.value as Record<string, unknown>;
+      try {
+        const homeRes = await api.homepage();
+        if (cancelled) return;
+        const val = homeRes as Record<string, unknown>;
         const data = val?.data as Record<string, unknown> | undefined;
-        const secs = data?.sections || val?.sections || [];
-        setSections(Array.isArray(secs) ? (secs as HomeSection[]) : []);
+        const secs = (data?.sections || val?.sections || []) as HomeSection[];
+        const list = Array.isArray(secs) ? secs : [];
+        setSections(list);
+
+        if (needsProductFallback(list)) {
+          const prodRes = await getProducts().catch(() => null);
+          if (!cancelled && prodRes) setFallbackProducts(normalizeList(prodRes));
+        }
+      } catch {
+        if (!cancelled) setSections([]);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      if (prodRes.status === 'fulfilled') {
-        setFallbackProducts(normalizeList(prodRes.value));
-      }
-      setLoading(false);
     })();
     return () => {
       cancelled = true;

@@ -13,7 +13,7 @@ type Props = {
 function imageSrc(img?: string | Record<string, unknown>): string | null {
   if (!img) return null;
   if (typeof img === 'string') return img;
-  return mediaUrl(img);
+  return mediaUrl(img, 'medium');
 }
 
 export function MixedSlider({ title, items = [], onAdd }: Props) {

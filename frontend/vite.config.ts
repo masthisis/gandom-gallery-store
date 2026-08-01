@@ -8,4 +8,18 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (id.includes('react-router')) return 'router'
+          if (id.includes('react-dom') || id.includes('/react/') || id.endsWith('/react')) return 'react'
+          if (id.includes('lucide-react')) return 'icons'
+        },
+      },
+    },
+  },
 })

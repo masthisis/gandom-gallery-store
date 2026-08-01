@@ -1,23 +1,40 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import type { CartLine } from './components/CartDrawer';
 import { AuthModal } from './components/AuthModal';
 import { Toast } from './components/Toast';
-import { HomePage } from './pages/HomePage';
-import { ShopPage } from './pages/ShopPage';
-import { ProductPage } from './pages/ProductPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { PaymentCallbackPage } from './pages/PaymentCallbackPage';
-import { AccountPage } from './pages/AccountPage';
-import { CmsPage } from './pages/CmsPage';
 import { getToken } from './lib/api';
 import { mediaUrl } from './lib/format';
 
+const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
+const ShopPage = lazy(() => import('./pages/ShopPage').then((m) => ({ default: m.ShopPage })));
+const ProductPage = lazy(() =>
+  import('./pages/ProductPage').then((m) => ({ default: m.ProductPage }))
+);
+const CartPage = lazy(() => import('./pages/CartPage').then((m) => ({ default: m.CartPage })));
+const CheckoutPage = lazy(() =>
+  import('./pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage }))
+);
+const PaymentCallbackPage = lazy(() =>
+  import('./pages/PaymentCallbackPage').then((m) => ({ default: m.PaymentCallbackPage }))
+);
+const AccountPage = lazy(() =>
+  import('./pages/AccountPage').then((m) => ({ default: m.AccountPage }))
+);
+const CmsPage = lazy(() => import('./pages/CmsPage').then((m) => ({ default: m.CmsPage })));
+
 const CART_KEY = 'gandom_cart_v1';
 const USER_KEY = 'gandom_user';
+
+function RouteFallback() {
+  return (
+    <div className="dk-container py-16 text-center text-[var(--dk-muted)] text-sm">
+      در حال بارگذاری...
+    </div>
+  );
+}
 
 function loadCart(): CartLine[] {
   try {
@@ -56,7 +73,7 @@ function AppShell() {
     const id = (p.documentId || p.id || p.slug) as string | number;
     const price = Number(p.sale_price ?? p.price) || 0;
     const rawImg = Array.isArray(p.images) ? p.images[0] : p.images;
-    const image = rawImg ? mediaUrl(rawImg) || undefined : undefined;
+    const image = rawImg ? mediaUrl(rawImg, 'small') || undefined : undefined;
 
     setCart((prev) => {
       const existing = prev.find((i) => i.id === id);
@@ -99,47 +116,49 @@ function AppShell() {
         }
       />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<HomePage onAdd={addProduct} />} />
-          <Route path="/shop" element={<ShopPage onAdd={addProduct} />} />
-          <Route path="/category/:slug" element={<ShopPage onAdd={addProduct} />} />
-          <Route path="/search" element={<ShopPage onAdd={addProduct} />} />
-          <Route
-            path="/product/:slug"
-            element={
-              <ProductPage onAdd={addProduct} onNeedAuth={() => setAuthOpen(true)} />
-            }
-          />
-          <Route
-            path="/cart"
-            element={<CartPage items={cart} onInc={inc} onDec={dec} onRemove={remove} />}
-          />
-          <Route
-            path="/checkout"
-            element={
-              <CheckoutPage
-                items={cart}
-                user={user}
-                onNeedAuth={() => setAuthOpen(true)}
-                onClearCart={() => setCart([])}
-              />
-            }
-          />
-          <Route path="/payment/callback" element={<PaymentCallbackPage />} />
-          <Route
-            path="/account"
-            element={
-              <AccountPage
-                user={user}
-                onNeedAuth={() => setAuthOpen(true)}
-                onLogout={() => setUser(null)}
-                onUserUpdate={(u) => setUser(u)}
-              />
-            }
-          />
-          <Route path="/page/:slug" element={<CmsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage onAdd={addProduct} />} />
+            <Route path="/shop" element={<ShopPage onAdd={addProduct} />} />
+            <Route path="/category/:slug" element={<ShopPage onAdd={addProduct} />} />
+            <Route path="/search" element={<ShopPage onAdd={addProduct} />} />
+            <Route
+              path="/product/:slug"
+              element={
+                <ProductPage onAdd={addProduct} onNeedAuth={() => setAuthOpen(true)} />
+              }
+            />
+            <Route
+              path="/cart"
+              element={<CartPage items={cart} onInc={inc} onDec={dec} onRemove={remove} />}
+            />
+            <Route
+              path="/checkout"
+              element={
+                <CheckoutPage
+                  items={cart}
+                  user={user}
+                  onNeedAuth={() => setAuthOpen(true)}
+                  onClearCart={() => setCart([])}
+                />
+              }
+            />
+            <Route path="/payment/callback" element={<PaymentCallbackPage />} />
+            <Route
+              path="/account"
+              element={
+                <AccountPage
+                  user={user}
+                  onNeedAuth={() => setAuthOpen(true)}
+                  onLogout={() => setUser(null)}
+                  onUserUpdate={(u) => setUser(u)}
+                />
+              }
+            />
+            <Route path="/page/:slug" element={<CmsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
       <AuthModal

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, TrendingUp, X } from 'lucide-react';
-import { api } from '../lib/api';
+import { getProducts } from '../lib/catalog';
 import { formatPrice, mediaUrl } from '../lib/format';
 
 const POPULAR = ['گلدان', 'تابلو', 'شمع', 'هدیه', 'دکوری', 'سرامیک'];
@@ -42,8 +42,7 @@ export function SearchDropdown({ open, query, onQueryChange, onClose, onSubmit }
   useEffect(() => {
     if (!open) return;
     inputRef.current?.focus();
-    api.wc
-      .products()
+    getProducts()
       .then((res) => setAll(normalizeList(res)))
       .catch(() => setAll([]));
   }, [open]);
@@ -166,7 +165,7 @@ export function SearchDropdown({ open, query, onQueryChange, onClose, onSubmit }
                   {hits.map((p) => {
                     const href = `/product/${p.slug || p.documentId || p.id}`;
                     const img =
-                      mediaUrl(Array.isArray(p.images) ? p.images[0] : p.images) ||
+                      mediaUrl(Array.isArray(p.images) ? p.images[0] : p.images, 'thumbnail') ||
                       '/placeholders/product.svg';
                     const price = p.sale_price ?? p.price;
                     return (
@@ -180,6 +179,8 @@ export function SearchDropdown({ open, query, onQueryChange, onClose, onSubmit }
                             src={img}
                             alt=""
                             className="w-14 h-14 rounded-lg object-cover bg-[var(--dk-surface)] shrink-0"
+                            loading="lazy"
+                            decoding="async"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/placeholders/product.svg';
                             }}
