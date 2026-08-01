@@ -53,5 +53,5 @@ jobs:
             --platform=docker \
             --port=80 \
             --build-arg="VITE_API_URL=${VITE_API_URL}" \
-            --build-location=germany \
+            --build-location=iran \
             --no-app-logs
