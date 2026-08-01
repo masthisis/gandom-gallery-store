@@ -11,6 +11,7 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
+    "seed": "echo 'Set GANDOM_SEED=true (and optionally GANDOM_SEED_FORCE=true) then restart Strapi (npm run develop). Seed runs in bootstrap.'",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },

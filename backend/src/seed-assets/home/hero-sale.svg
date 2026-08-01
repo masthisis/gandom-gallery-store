@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f9a825"/>
+      <stop offset="100%" stop-color="#ef4056"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#g)"/>
+  <circle cx="1248" cy="245" r="196" fill="#ffffff" opacity="0.12"/>
+  <text x="64" y="336" font-family="Tahoma,Arial,sans-serif" font-size="77" font-weight="700" fill="#ffffff">پیشنهاد ویژه</text>
+  <text x="64" y="434" font-family="Tahoma,Arial,sans-serif" font-size="39" fill="#ffffff" opacity="0.9">تخفیف‌های منتخب این هفته</text>
+</svg>

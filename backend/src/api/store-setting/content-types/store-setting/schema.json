@@ -18,7 +18,8 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": ["images"],
+      "required": false
     },
     "phone": {
       "type": "string"

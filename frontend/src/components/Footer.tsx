@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Truck, ShieldCheck, CreditCard, Headphones } from 'lucide-react';
+import { useStoreSettings } from '../lib/store-settings';
 
 const TRUST = [
   { icon: Truck, title: 'ارسال اکسپرس', text: 'تحویل سریع' },
@@ -9,6 +10,8 @@ const TRUST = [
 ];
 
 export function Footer() {
+  const { storeName, logoUrl, address, phone } = useStoreSettings();
+
   return (
     <footer className="mt-8 sm:mt-12 bg-white border-t border-gray-200">
       <div className="dk-container py-6 sm:py-8">
@@ -28,13 +31,25 @@ export function Footer() {
 
         <div className="grid gap-6 sm:gap-8 grid-cols-2 md:grid-cols-4 text-sm border-t border-gray-100 pt-6 sm:pt-8">
           <div>
-            <h3 className="font-bold text-[var(--dk-cta)] mb-3">گندم گالری</h3>
+            <Link to="/" className="inline-flex items-center gap-2 mb-3">
+              {logoUrl ? (
+                <img src={logoUrl} alt={storeName} className="h-8 w-auto max-w-[140px] object-contain" />
+              ) : (
+                <h3 className="font-bold text-[var(--dk-cta)]">{storeName}</h3>
+              )}
+            </Link>
             <p className="text-[var(--dk-muted)] leading-7 text-xs">
               فروشگاه آنلاین محصولات دکوری، هنری و هدیه با ارسال سریع در سراسر ایران.
             </p>
+            {(address || phone) && (
+              <p className="text-[var(--dk-muted)] text-xs mt-2 leading-6">
+                {address ? <span className="block">{address}</span> : null}
+                {phone ? <span className="block">{phone}</span> : null}
+              </p>
+            )}
           </div>
           <div>
-            <h4 className="font-semibold text-[#3f4064] mb-3">با گندم گالری</h4>
+            <h4 className="font-semibold text-[#3f4064] mb-3">با {storeName}</h4>
             <ul className="space-y-2 text-[var(--dk-muted)] text-xs">
               <li><Link to="/page/about" className="hover:text-[var(--dk-cta)]">درباره ما</Link></li>
               <li><Link to="/page/contact" className="hover:text-[var(--dk-cta)]">تماس با ما</Link></li>
@@ -60,7 +75,7 @@ export function Footer() {
         </div>
       </div>
       <div className="bg-[var(--dk-surface)] text-center text-xs text-[var(--dk-muted)] py-4">
-        © گندم گالری — تمامی حقوق محفوظ است
+        © {storeName} — تمامی حقوق محفوظ است
       </div>
     </footer>
   );

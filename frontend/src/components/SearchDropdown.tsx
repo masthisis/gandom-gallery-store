@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, TrendingUp, X } from 'lucide-react';
 import { getProducts } from '../lib/catalog';
 import { formatPrice, mediaUrl } from '../lib/format';
+import { useStoreSettings } from '../lib/store-settings';
 
 const POPULAR = ['گلدان', 'تابلو', 'شمع', 'هدیه', 'دکوری', 'سرامیک'];
 
@@ -38,6 +39,7 @@ export function SearchDropdown({ open, query, onQueryChange, onClose, onSubmit }
   const [all, setAll] = useState<ProductHit[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { storeName } = useStoreSettings();
 
   useEffect(() => {
     if (!open) return;
@@ -143,7 +145,7 @@ export function SearchDropdown({ open, query, onQueryChange, onClose, onSubmit }
                   onClick={onClose}
                   className="block rounded-2xl overflow-hidden bg-gradient-to-l from-[#3f4064] to-[var(--dk-cta)] text-white p-5"
                 >
-                  <div className="text-lg font-bold mb-1">گندم گالری</div>
+                  <div className="text-lg font-bold mb-1">{storeName}</div>
                   <p className="text-sm text-white/85 mb-3">مشاهده همه کالاها و پیشنهادهای ویژه</p>
                   <span className="inline-block bg-white text-[var(--dk-cta)] text-sm font-bold px-4 py-2 rounded-full">
                     شروع خرید

@@ -7,6 +7,7 @@ import { AuthModal } from './components/AuthModal';
 import { Toast } from './components/Toast';
 import { getToken } from './lib/api';
 import { mediaUrl } from './lib/format';
+import { StoreSettingsProvider } from './lib/store-settings';
 
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
 const ShopPage = lazy(() => import('./pages/ShopPage').then((m) => ({ default: m.ShopPage })));
@@ -177,7 +178,9 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppShell />
+      <StoreSettingsProvider>
+        <AppShell />
+      </StoreSettingsProvider>
     </BrowserRouter>
   );
 }

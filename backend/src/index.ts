@@ -165,7 +165,8 @@ export default {
     if (process.env.GANDOM_SEED === 'true') {
       try {
         await seedPersianCatalog(strapi);
-        await seedHomepageSections(strapi);
+        // Always refresh homepage presentation when full demo seed runs
+        await seedHomepageSections(strapi, { force: true });
       } catch (e) {
         strapi.log.warn('[bootstrap] seed', e);
       }

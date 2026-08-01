@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toFarsiDigits } from '../lib/format';
+import { useStoreSettings } from '../lib/store-settings';
 import { MegaMenu, MegaMenuTrigger } from './dk/MegaMenu';
 import { SearchDropdown } from './SearchDropdown';
 import { MiniCartDropdown } from './MiniCartDropdown';
@@ -34,6 +35,7 @@ export function Header({
   const navigate = useNavigate();
   const cartTimer = useRef<number | null>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const { storeName, logoUrl } = useStoreSettings();
 
   const closeMega = useCallback(() => setMegaOpen(false), []);
 
@@ -83,7 +85,7 @@ export function Header({
         <div className="flex w-full items-center rounded-xl bg-[var(--dk-surface)] px-3 py-2.5 text-start pointer-events-none">
           <Search className="w-4 h-4 text-[var(--dk-muted)] me-2 shrink-0" />
           <span className="text-sm text-[var(--dk-muted)] truncate">
-            {q || 'جستجو در گندم گالری'}
+            {q || `جستجو در ${storeName}`}
           </span>
         </div>
       </button>
@@ -109,10 +111,21 @@ export function Header({
 
           <Link
             to="/"
-            className="text-lg sm:text-xl font-extrabold text-[var(--dk-cta)] whitespace-nowrap tracking-tight shrink-0"
+            className="flex items-center gap-2 shrink-0 min-w-0"
             onClick={() => setMobileMenu(false)}
+            aria-label={storeName}
           >
-            گندم گالری
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={storeName}
+                className="h-8 sm:h-9 w-auto max-w-[140px] sm:max-w-[180px] object-contain"
+              />
+            ) : (
+              <span className="text-lg sm:text-xl font-extrabold text-[var(--dk-cta)] whitespace-nowrap tracking-tight">
+                {storeName}
+              </span>
+            )}
           </Link>
 
           <div className="hidden md:block">

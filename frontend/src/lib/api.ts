@@ -43,7 +43,7 @@ async function request<T = any>(
 export const api = {
   homepage: () => request('/api/homepage', { auth: false }),
   categoryTree: () => request('/api/category-tree', { auth: false }),
-  storeSettings: () => request('/api/store-setting', { auth: false }),
+  storeSettings: () => request('/api/store-setting?populate=logo', { auth: false }),
   pageBySlug: (slug: string) =>
     request(`/api/pages?filters[slug][$eq]=${encodeURIComponent(slug)}&status=published`, {
       auth: false,
