@@ -6,6 +6,8 @@ const px = (id: number | string, file?: string) => {
   const fname = file || `pexels-photo-${id}.jpeg`;
   return `https://images.pexels.com/photos/${id}/${fname}?auto=compress&cs=tinysrgb&w=1200`;
 };
+/** Bundled JPEG — preferred on Liara where outbound CDN fetch often fails. */
+const localPx = (id: number | string) => `downloaded/px-${id}.jpg`;
 
 type Spec = { label: string; value: string };
 type CatSeed = {
@@ -25,7 +27,7 @@ const categoryTree: CatSeed[] = [
     description: 'لوازم دکوری و آشپزخانه برای خانه‌ای زیباتر',
     menu_order: 1,
     imageUrl: px(1080696),
-    imageAsset: 'downloaded/home-kitchen.jpg',
+    imageAsset: localPx(1080696),
     children: [
       {
         name: 'دکوری',
@@ -33,7 +35,7 @@ const categoryTree: CatSeed[] = [
         description: 'گلدان، کوسن و اشیای دکوری',
         menu_order: 1,
         imageUrl: px(1571460),
-        imageAsset: 'downloaded/decor.jpg',
+        imageAsset: localPx(1571460),
       },
       {
         name: 'آشپزخانه',
@@ -41,7 +43,7 @@ const categoryTree: CatSeed[] = [
         description: 'سرویس و لوازم سرو غذا و نوشیدنی',
         menu_order: 2,
         imageUrl: px(3738085),
-        imageAsset: 'categories/kitchen.svg',
+        imageAsset: localPx(3738085),
       },
     ],
   },
@@ -51,7 +53,7 @@ const categoryTree: CatSeed[] = [
     description: 'آثار هنری و تابلو برای فضای مدرن',
     menu_order: 2,
     imageUrl: px(1575329),
-    imageAsset: 'downloaded/art-gallery.jpg',
+    imageAsset: localPx(1575329),
     children: [
       {
         name: 'هنری',
@@ -59,7 +61,7 @@ const categoryTree: CatSeed[] = [
         description: 'مجسمه و آثار هنری دست‌ساز',
         menu_order: 1,
         imageUrl: px(2693529),
-        imageAsset: 'categories/art.svg',
+        imageAsset: localPx(2693529),
       },
       {
         name: 'تابلو',
@@ -67,7 +69,7 @@ const categoryTree: CatSeed[] = [
         description: 'تابلو نقاشی و خطاطی',
         menu_order: 2,
         imageUrl: px(102127),
-        imageAsset: 'categories/canvas.svg',
+        imageAsset: localPx(102127),
       },
     ],
   },
@@ -77,7 +79,7 @@ const categoryTree: CatSeed[] = [
     description: 'انتخاب هدیه برای هر مناسبت',
     menu_order: 3,
     imageUrl: px(1191710),
-    imageAsset: 'categories/gifts.svg',
+    imageAsset: localPx(1191710),
     children: [
       {
         name: 'هدیه',
@@ -85,7 +87,7 @@ const categoryTree: CatSeed[] = [
         description: 'پیشنهادهای هدیه آماده',
         menu_order: 1,
         imageUrl: px(931177),
-        imageAsset: 'categories/gift.svg',
+        imageAsset: localPx(931177),
       },
       {
         name: 'لوازم جانبی',
@@ -93,7 +95,7 @@ const categoryTree: CatSeed[] = [
         description: 'اکسسوری و زیورآلات تزئینی',
         menu_order: 2,
         imageUrl: px(1191531),
-        imageAsset: 'categories/accessories.svg',
+        imageAsset: localPx(1191531),
       },
     ],
   },
@@ -103,7 +105,7 @@ const categoryTree: CatSeed[] = [
     description: 'لپ‌تاپ و تجهیزات دیجیتال',
     menu_order: 4,
     imageUrl: px(205421),
-    imageAsset: 'categories/digital.svg',
+    imageAsset: localPx(205421),
     children: [
       {
         name: 'لپ‌تاپ',
@@ -111,7 +113,7 @@ const categoryTree: CatSeed[] = [
         description: 'لپ‌تاپ دانشجویی و حرفه‌ای',
         menu_order: 1,
         imageUrl: px(18105, 'pexels-photo.jpg'),
-        imageAsset: 'categories/laptop.svg',
+        imageAsset: localPx(18105),
       },
     ],
   },
@@ -166,7 +168,7 @@ const products: ProductSeed[] = [
       px(2693529),
       px(4207785),
     ],
-    imageAssets: ['products/ceramic-vase-v1.svg', 'products/ceramic-vase-v2.svg', 'products/ceramic-vase-v3.svg'],
+    imageAssets: [localPx(1090638), localPx(2693529), localPx(4207785)],
   },
   {
     name: 'تابلو نقاشی مینیمال',
@@ -189,7 +191,7 @@ const products: ProductSeed[] = [
       { label: 'سبک', value: 'مینیمال' },
     ],
     imageUrls: [px(1572386), px(102127)],
-    imageAssets: ['products/minimal-canvas-v1.svg', 'products/minimal-canvas-v2.svg'],
+    imageAssets: [localPx(1572386), localPx(102127)],
   },
   {
     name: 'ست شمع معطر',
@@ -212,7 +214,7 @@ const products: ProductSeed[] = [
       { label: 'جنس موم', value: 'سویا' },
     ],
     imageUrls: [px(4207892), px(374885)],
-    imageAssets: ['products/scented-candle-v1.svg', 'products/scented-candle-v2.svg'],
+    imageAssets: [localPx(4207892), localPx(374885)],
   },
   {
     name: 'آویز برنجی',
@@ -234,7 +236,7 @@ const products: ProductSeed[] = [
       { label: 'ساخت', value: 'ایران' },
     ],
     imageUrls: [px(1191531), px(604426)],
-    imageAssets: ['products/brass-pendant-v1.svg', 'products/brass-pendant-v2.svg'],
+    imageAssets: [localPx(1191531), localPx(604426)],
   },
   {
     name: 'کوسن گالری',
@@ -256,7 +258,7 @@ const products: ProductSeed[] = [
       { label: 'قابل شستشو', value: 'بله' },
     ],
     imageUrls: [px(1123262), px(1571460)],
-    imageAssets: ['products/gallery-cushion-v1.svg', 'products/gallery-cushion-v2.svg'],
+    imageAssets: [localPx(1123262), localPx(1571460)],
   },
   {
     name: 'مجسمه سفالی کوچک',
@@ -278,7 +280,7 @@ const products: ProductSeed[] = [
       { label: 'دست‌ساز', value: 'بله' },
     ],
     imageUrls: [px(2693529), px(6065420)],
-    imageAssets: ['products/clay-sculpture-v1.svg', 'products/clay-sculpture-v2.svg'],
+    imageAssets: [localPx(2693529), localPx(6065420)],
   },
   {
     name: 'سرویس چای‌خوری',
@@ -304,7 +306,7 @@ const products: ProductSeed[] = [
       px(3735149),
       px(3738355),
     ],
-    imageAssets: ['products/tea-set-v1.svg', 'products/tea-set-v2.svg', 'products/tea-set-v3.svg'],
+    imageAssets: [localPx(1838554), localPx(3735149), localPx(3738355)],
   },
   {
     name: 'تابلو خطاطی',
@@ -326,7 +328,7 @@ const products: ProductSeed[] = [
       { label: 'قاب', value: 'چوب راش' },
     ],
     imageUrls: [px(102127), px(1575329)],
-    imageAssets: ['products/calligraphy-v1.svg', 'products/calligraphy-v2.svg'],
+    imageAssets: [localPx(102127), localPx(1575329)],
   },
   {
     name: 'لپ‌تاپ گندم بوک ۱۵',
@@ -355,7 +357,7 @@ const products: ProductSeed[] = [
       px(1229861),
       px(205421),
     ],
-  },
+    imageAssets: [localPx(18105), localPx(1229861), localPx(205421)],},
   {
     name: 'لپ‌تاپ گندم بوک پرو',
     slug: 'gandom-book-pro',
@@ -378,7 +380,7 @@ const products: ProductSeed[] = [
       { label: 'سیستم‌عامل', value: 'Windows 11' },
     ],
     imageUrls: [px(7974, 'pexels-photo.jpg'), px(18105, 'pexels-photo.jpg')],
-  },
+    imageAssets: [localPx(7974), localPx(18105)],},
   {
     name: 'گلدان مینیمال سفید',
     slug: 'minimal-white-vase',
@@ -398,7 +400,7 @@ const products: ProductSeed[] = [
       { label: 'رنگ', value: 'سفید مات' },
     ],
     imageUrls: [px(404319), px(604426)],
-    imageAssets: ['products/ceramic-vase-v2.svg', 'products/ceramic-vase-v1.svg'],
+    imageAssets: [localPx(404319), localPx(604426)],
   },
   {
     name: 'ست هدیه آرامش',
@@ -418,7 +420,7 @@ const products: ProductSeed[] = [
       { label: 'بسته‌بندی', value: 'جعبه کادویی' },
     ],
     imageUrls: [px(931177), px(1191710)],
-    imageAssets: ['products/scented-candle-v1.svg', 'products/brass-pendant-v1.svg'],
+    imageAssets: [localPx(931177), localPx(1191710)],
   },
   {
     name: 'تابلو آبستره رنگی',
@@ -439,7 +441,7 @@ const products: ProductSeed[] = [
       { label: 'قاب', value: 'چوب روشن' },
     ],
     imageUrls: [px(1572386), px(102127)],
-    imageAssets: ['products/minimal-canvas-v2.svg', 'products/calligraphy-v2.svg'],
+    imageAssets: [localPx(1572386), localPx(102127)],
   },
   {
     name: 'فنجان سرامیکی دسته‌دار',
@@ -460,7 +462,7 @@ const products: ProductSeed[] = [
       { label: 'ماشین ظرفشویی', value: 'بله' },
     ],
     imageUrls: [px(2788792), px(374885)],
-    imageAssets: ['products/tea-set-v3.svg', 'products/tea-set-v1.svg'],
+    imageAssets: [localPx(2788792), localPx(374885)],
   },
   {
     name: 'مجسمه پرنده سفالی',
@@ -481,7 +483,7 @@ const products: ProductSeed[] = [
       { label: 'دست‌ساز', value: 'بله' },
     ],
     imageUrls: [px(1350789), px(2693529)],
-    imageAssets: ['products/clay-sculpture-v2.svg', 'products/clay-sculpture-v1.svg'],
+    imageAssets: [localPx(1350789), localPx(2693529)],
   },
 ];
 
@@ -579,7 +581,7 @@ async function upsertNavCategory(
     const file = await uploadSeedImage(strapi, {
       url: c.imageUrl,
       asset: c.imageAsset,
-      name: `nav-cat-${c.slug}.jpg`,
+      name: `nav-cat-${c.slug}-photo.jpg`,
       alternativeText: c.name,
     });
     imageId = file?.id;
@@ -634,7 +636,7 @@ async function upsertWcCategory(
     const file = await uploadSeedImage(strapi, {
       url: c.imageUrl,
       asset: c.imageAsset,
-      name: `wc-cat-${c.slug}.jpg`,
+      name: `wc-cat-${c.slug}-photo.jpg`,
       alternativeText: c.name,
     });
     imageId = file?.id;
@@ -927,7 +929,7 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
       const uploaded = await uploadSeedImage(strapi, {
         url,
         asset,
-        name: `${p.slug}-${i + 1}.jpg`,
+        name: `${p.slug}-${i + 1}-photo.jpg`,
         alternativeText: `${p.name} — تصویر ${i + 1}`,
       });
       if (uploaded?.id) {
@@ -1052,8 +1054,8 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
     const store = await strapi.documents('api::store-setting.store-setting').findFirst({});
     const logo = await uploadSeedImage(strapi, {
       url: px(1350789),
-      asset: 'categories/gifts.svg',
-      name: 'gandom-logo.jpg',
+      asset: localPx(1350789),
+      name: 'gandom-logo-photo.jpg',
       alternativeText: 'لوگوی گندم گالری',
     });
     const payload: any = {
@@ -1099,68 +1101,68 @@ export async function seedHomepageSections(
   try {
     const hero1 = await uploadSeedImage(strapi, {
       url: px(1571460),
-      asset: 'home/hero-welcome.svg',
+      asset: localPx(1571460),
       name: 'home-hero-welcome.jpg',
       alternativeText: 'به گندم گالری خوش آمدید',
     });
     const hero2 = await uploadSeedImage(strapi, {
       url: px(931177),
-      asset: 'home/hero-sale.svg',
+      asset: localPx(931177),
       name: 'home-hero-sale.jpg',
       alternativeText: 'پیشنهاد ویژه',
     });
     const hero3 = await uploadSeedImage(strapi, {
-      url: px(18105, 'pexels-photo.jpg'),
-      asset: 'home/hero-laptop.svg',
+      url: px(18105),
+      asset: localPx(18105),
       name: 'home-hero-laptop.jpg',
       alternativeText: 'لپ‌تاپ‌های گندم',
     });
     const bannerDecor = await uploadSeedImage(strapi, {
       url: px(3738085),
-      asset: 'home/banner-decor.svg',
+      asset: localPx(3738085),
       name: 'home-banner-decor.jpg',
       alternativeText: 'دکوری خانه',
     });
     const bannerLaptop = await uploadSeedImage(strapi, {
       url: px(1229861),
-      asset: 'home/banner-laptop.svg',
+      asset: localPx(1229861),
       name: 'home-banner-laptop.jpg',
       alternativeText: 'لپ‌تاپ‌ها',
     });
     const bannerGift = await uploadSeedImage(strapi, {
       url: px(1191710),
-      asset: 'home/banner-gift.svg',
+      asset: localPx(1191710),
       name: 'home-banner-gift.jpg',
       alternativeText: 'هدیه خاص',
     });
 
     const storySale = await uploadSeedImage(strapi, {
       url: px(4207892),
-      asset: 'home/story-sale.svg',
+      asset: localPx(4207892),
       name: 'home-story-sale.jpg',
       alternativeText: 'شگفت‌انگیز',
     });
     const storyDecor = await uploadSeedImage(strapi, {
       url: px(1090638),
-      asset: 'home/story-decor.svg',
+      asset: localPx(1090638),
       name: 'home-story-decor.jpg',
       alternativeText: 'دکوری',
     });
     const storyLaptop = await uploadSeedImage(strapi, {
       url: px(205421),
-      asset: 'home/story-laptop.svg',
+      asset: localPx(205421),
       name: 'home-story-laptop.jpg',
       alternativeText: 'لپ‌تاپ',
     });
     const storyGift = await uploadSeedImage(strapi, {
       url: px(931177),
-      asset: 'home/story-gift.svg',
+      asset: localPx(931177),
       name: 'home-story-gift.jpg',
       alternativeText: 'هدیه',
     });
     const storyAll = await uploadSeedImage(strapi, {
       url: px(1080696),
-      asset: 'home/story-all.svg',
+      asset: localPx(1080696),
       name: 'home-story-all.jpg',
       alternativeText: 'همه کالاها',
     });

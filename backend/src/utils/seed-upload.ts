@@ -223,7 +223,7 @@ export async function uploadSeedFromUrl(
   }
 }
 
-/** Prefer remote URL; fall back to a local SVG/PNG under seed-assets. */
+/** Prefer bundled assets (Liara Iran often cannot reach Pexels); URL is optional fallback. */
 export async function uploadSeedImage(
   strapi: Core.Strapi,
   opts: {
@@ -233,19 +233,22 @@ export async function uploadSeedImage(
     alternativeText?: string;
   }
 ): Promise<UploadResult | null> {
-  if (opts.url) {
-    const fromUrl = await uploadSeedFromUrl(strapi, opts.url, {
-      name: opts.name,
+  if (opts.asset) {
+    const assetExt = path.extname(opts.asset) || '';
+    const wantsRaster = /\.(jpe?g|png|webp)$/i.test(opts.name || '');
+    const assetName =
+      wantsRaster && /^\.(svg)$/i.test(assetExt)
+        ? opts.name.replace(/\.(jpe?g|png|webp)$/i, assetExt)
+        : opts.name || path.basename(opts.asset);
+    const fromAsset = await uploadSeedAsset(strapi, opts.asset, {
+      name: assetName,
       alternativeText: opts.alternativeText,
     });
-    if (fromUrl) return fromUrl;
+    if (fromAsset) return fromAsset;
   }
-  if (opts.asset) {
-    const assetName = opts.name?.endsWith('.jpg') || opts.name?.endsWith('.jpeg')
-      ? opts.name.replace(/\.(jpe?g)$/i, path.extname(opts.asset) || '.svg')
-      : opts.name;
-    return uploadSeedAsset(strapi, opts.asset, {
-      name: assetName || path.basename(opts.asset),
+  if (opts.url) {
+    return uploadSeedFromUrl(strapi, opts.url, {
+      name: opts.name,
       alternativeText: opts.alternativeText,
     });
   }
