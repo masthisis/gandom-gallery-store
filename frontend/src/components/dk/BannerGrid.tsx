@@ -16,14 +16,20 @@ function bannerImage(b: BannerItem): string | null {
 export function BannerGrid({ banners = [], title }: Props) {
   if (!banners.length) return null;
 
-  const cols = banners.length === 1 ? 1 : banners.length === 2 ? 2 : banners.length <= 4 ? 2 : 3;
+  const cols =
+    banners.length === 1 ? 1 : banners.length === 2 ? 2 : banners.length <= 4 ? 2 : 3;
 
   return (
     <section className="dk-container py-4">
       {title && <h2 className="text-base font-bold mb-3 text-[#3f4064]">{title}</h2>}
       <div
-        className="grid gap-3"
-        style={{ gridTemplateColumns: `repeat(${Math.min(cols, 3)}, minmax(0, 1fr))` }}
+        className={`grid gap-3 ${
+          cols === 1
+            ? 'grid-cols-1'
+            : cols === 2
+              ? 'grid-cols-1 sm:grid-cols-2'
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+        }`}
       >
         {banners.map((b, i) => {
           const src = bannerImage(b);

@@ -10,23 +10,23 @@ const TRUST = [
 
 export function Footer() {
   return (
-    <footer className="mt-12 bg-white border-t border-gray-200">
-      <div className="dk-container py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+    <footer className="mt-8 sm:mt-12 bg-white border-t border-gray-200">
+      <div className="dk-container py-6 sm:py-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
           {TRUST.map((item) => (
-            <div key={item.title} className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-[var(--dk-surface)] flex items-center justify-center text-[var(--dk-muted)] shrink-0">
-                <item.icon className="w-6 h-6" />
+            <div key={item.title} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[var(--dk-surface)] flex items-center justify-center text-[var(--dk-muted)] shrink-0">
+                <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <div>
-                <div className="text-sm font-semibold text-[#3f4064]">{item.title}</div>
-                <div className="text-xs text-[var(--dk-muted)]">{item.text}</div>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-semibold text-[#3f4064]">{item.title}</div>
+                <div className="text-[11px] sm:text-xs text-[var(--dk-muted)]">{item.text}</div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="grid gap-8 md:grid-cols-4 text-sm border-t border-gray-100 pt-8">
+        <div className="grid gap-6 sm:gap-8 grid-cols-2 md:grid-cols-4 text-sm border-t border-gray-100 pt-6 sm:pt-8">
           <div>
             <h3 className="font-bold text-[var(--dk-cta)] mb-3">گندم گالری</h3>
             <p className="text-[var(--dk-muted)] leading-7 text-xs">

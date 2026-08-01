@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import { getCategoryTree, getProductMetas, getProducts } from '../lib/catalog';
 import { ProductCard, type ProductCardData } from '../components/ProductCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -289,7 +289,7 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
   );
 
   return (
-    <div className="dk-container py-6">
+    <div className="dk-container py-4 sm:py-6">
       <Breadcrumbs
         items={[
           { label: 'فروشگاه', to: '/shop' },
@@ -297,32 +297,63 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
         ]}
       />
 
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg md:text-xl font-bold text-[#3f4064]">{title}</h1>
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <h1 className="text-base sm:text-lg md:text-xl font-bold text-[#3f4064] min-w-0 truncate">
+          {title}
+        </h1>
         <button
           type="button"
-          className="md:hidden flex items-center gap-1 text-sm border rounded-lg px-3 py-2"
-          onClick={() => setFilterOpen((v) => !v)}
+          className="md:hidden flex items-center gap-1.5 text-sm border border-gray-200 bg-white rounded-xl px-3 py-2.5 shrink-0"
+          onClick={() => setFilterOpen(true)}
         >
           <SlidersHorizontal className="w-4 h-4" />
           فیلتر
-          <ChevronDown className={`w-4 h-4 transition ${filterOpen ? 'rotate-180' : ''}`} />
         </button>
       </div>
 
-      <div className="flex gap-6">
-        <div className={`w-full md:w-56 shrink-0 ${filterOpen ? 'block' : 'hidden md:block'}`}>
-          {sidebar}
+      {/* Mobile filter bottom sheet */}
+      {filterOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="بستن فیلتر"
+            onClick={() => setFilterOpen(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl p-4 pb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold text-[#3f4064]">فیلترها</h2>
+              <button
+                type="button"
+                className="text-sm text-[var(--dk-cta)] font-medium px-2 py-1"
+                onClick={() => setFilterOpen(false)}
+              >
+                بستن
+              </button>
+            </div>
+            {sidebar}
+            <button
+              type="button"
+              className="mt-4 w-full bg-[var(--dk-cta)] text-white py-3 rounded-xl font-medium"
+              onClick={() => setFilterOpen(false)}
+            >
+              مشاهده نتایج
+            </button>
+          </div>
         </div>
+      )}
+
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+        <div className="hidden md:block w-56 shrink-0">{sidebar}</div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
+          <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-3 scrollbar-hide -mx-1 px-1">
             {SORT_TABS.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
                 onClick={() => setSort(tab.key)}
-                className={`shrink-0 px-4 py-2 rounded-lg text-sm transition ${
+                className={`shrink-0 px-3.5 py-2 rounded-xl text-sm transition ${
                   sort === tab.key
                     ? 'bg-[#3f4064] text-white'
                     : 'bg-white text-[#3f4064] hover:bg-[var(--dk-surface)]'
@@ -339,9 +370,9 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
           </p>
 
           {loading ? (
-            <p className="text-[var(--dk-muted)] text-sm">در حال بارگذاری...</p>
+            <p className="text-[var(--dk-muted)] text-sm py-10 text-center">در حال بارگذاری...</p>
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
               {filtered.map((p) => (
                 <ProductCard key={p.id || p.slug} product={p} onAdd={() => onAdd(p)} />
               ))}

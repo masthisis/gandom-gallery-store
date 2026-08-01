@@ -68,9 +68,9 @@ export function ProductCard({
 
   return (
     <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group">
-      <Link to={href} className="block relative aspect-square overflow-hidden bg-[var(--dk-surface)] p-3">
+      <Link to={href} className="block relative aspect-square overflow-hidden bg-[var(--dk-surface)] p-2 sm:p-3">
         {hasSale && pct > 0 && (
-          <span className="absolute top-2 start-2 z-10 bg-[var(--dk-cta)] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+          <span className="absolute top-2 start-2 z-10 bg-[var(--dk-cta)] text-white text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full">
             {toFarsiDigits(pct)}٪
           </span>
         )}
@@ -84,25 +84,25 @@ export function ProductCard({
           onError={() => setImg(placeholderDataUri(String(product.slug || 'p'), product.name))}
         />
       </Link>
-      <div className={`flex flex-col gap-1.5 flex-1 ${compact ? 'p-2.5' : 'p-3'}`}>
+      <div className={`flex flex-col gap-1 flex-1 ${compact ? 'p-2' : 'p-2.5 sm:p-3'}`}>
         <Link
           to={href}
-          className={`font-normal text-[#3f4064] line-clamp-2 hover:text-[var(--dk-cta)] ${compact ? 'text-xs min-h-[2rem]' : 'text-sm min-h-[2.5rem]'}`}
+          className={`font-normal text-[#3f4064] line-clamp-2 hover:text-[var(--dk-cta)] ${compact ? 'text-xs min-h-[2rem]' : 'text-xs sm:text-sm min-h-[2.25rem] sm:min-h-[2.5rem]'}`}
         >
           {product.name}
         </Link>
         <div className="mt-auto flex flex-col gap-0.5">
           {hasSale ? (
             <>
-              <span className={`text-[var(--dk-muted)] line-through ${compact ? 'text-[10px]' : 'text-xs'}`}>
+              <span className={`text-[var(--dk-muted)] line-through ${compact ? 'text-[10px]' : 'text-[10px] sm:text-xs'}`}>
                 {formatPrice(price)}
               </span>
-              <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-base'}`}>
+              <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-sm sm:text-base'}`}>
                 {formatPrice(salePrice)}
               </span>
             </>
           ) : (
-            <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-base'}`}>
+            <span className={`text-[#3f4064] font-bold ${compact ? 'text-sm' : 'text-sm sm:text-base'}`}>
               {formatPrice(price)}
             </span>
           )}
@@ -111,7 +111,7 @@ export function ProductCard({
           <button
             type="button"
             onClick={onAdd}
-            className="w-full mt-1 text-sm border border-[var(--dk-cta)] text-[var(--dk-cta)] rounded-lg py-2 hover:bg-[#fff0f2] transition"
+            className="hidden sm:block w-full mt-1 text-sm border border-[var(--dk-cta)] text-[var(--dk-cta)] rounded-lg py-2 hover:bg-[#fff0f2] transition"
           >
             افزودن به سبد
           </button>

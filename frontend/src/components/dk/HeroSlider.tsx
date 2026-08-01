@@ -33,7 +33,7 @@ export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
 
   return (
     <section className="dk-container py-3">
-      <div className="relative rounded-2xl overflow-hidden bg-[var(--dk-surface)] aspect-[2.4/1] md:aspect-[3.2/1]">
+      <div className="relative rounded-2xl overflow-hidden bg-[var(--dk-surface)] aspect-[16/10] sm:aspect-[2.4/1] md:aspect-[3.2/1]">
         {items.map((slide, i) => {
           const src = slideImage(slide);
           const active = i === index;
@@ -55,11 +55,11 @@ export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
                   decoding="async"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-l from-[#3f4064] to-[var(--dk-cta)] flex items-center">
-                  <div className="p-8 md:p-12 text-white max-w-lg">
-                    <h2 className="text-2xl md:text-4xl font-bold mb-2">{slide.title}</h2>
+                <div className="w-full h-full bg-gradient-to-l from-[#3f4064] to-[var(--dk-cta)] flex items-end sm:items-center">
+                  <div className="p-5 sm:p-8 md:p-12 text-white max-w-lg pb-14 sm:pb-8">
+                    <h2 className="text-xl sm:text-2xl md:text-4xl font-bold mb-2">{slide.title}</h2>
                     {slide.subtitle && (
-                      <p className="text-white/85 text-sm md:text-base">{slide.subtitle}</p>
+                      <p className="text-white/85 text-xs sm:text-sm md:text-base line-clamp-2">{slide.subtitle}</p>
                     )}
                   </div>
                 </div>
@@ -111,7 +111,7 @@ export function HeroSlider({ slides = [], autoPlayMs = 5000 }: Props) {
         {!img && items.length === 1 && (
           <Link
             to={href}
-            className="absolute bottom-6 start-8 z-20 bg-white text-[var(--dk-cta)] font-bold px-5 py-2.5 rounded-lg text-sm"
+            className="absolute bottom-4 start-5 sm:bottom-6 sm:start-8 z-20 bg-white text-[var(--dk-cta)] font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm"
           >
             مشاهده فروشگاه
           </Link>

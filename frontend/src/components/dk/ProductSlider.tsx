@@ -26,7 +26,7 @@ export function ProductSlider({ title, products = [], link = '/shop', limit = 12
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {list.map((p) => (
-          <div key={p.id || p.slug} className="w-[160px] md:w-[200px] shrink-0">
+          <div key={p.id || p.slug} className="w-[148px] sm:w-[160px] md:w-[200px] shrink-0">
             <ProductCard product={p} onAdd={onAdd ? () => onAdd(p) : undefined} compact />
           </div>
         ))}

@@ -38,8 +38,9 @@ export function CartPage({
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 space-y-3">
             {items.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
-                <div className="w-20 h-20 rounded-xl bg-[var(--dk-surface)] shrink-0 overflow-hidden">
+              <div key={item.id} className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4 shadow-sm">
+                <div className="flex gap-3 flex-1 min-w-0">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[var(--dk-surface)] shrink-0 overflow-hidden">
                   {item.image ? (
                     <img src={item.image} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -51,17 +52,17 @@ export function CartPage({
                   <div className="text-[var(--dk-cta)] text-sm font-bold mt-1">{formatPrice(item.price)}</div>
                   <div className="flex items-center gap-3 mt-3">
                     <div className="flex items-center border rounded-lg">
-                      <button type="button" className="p-2 hover:bg-[var(--dk-surface)]" onClick={() => onDec(item.id)}>
+                      <button type="button" className="p-2.5 hover:bg-[var(--dk-surface)]" onClick={() => onDec(item.id)}>
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="w-8 text-center text-sm">{toFarsiDigits(item.quantity)}</span>
-                      <button type="button" className="p-2 hover:bg-[var(--dk-surface)]" onClick={() => onInc(item.id)}>
+                      <button type="button" className="p-2.5 hover:bg-[var(--dk-surface)]" onClick={() => onInc(item.id)}>
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>
                     <button
                       type="button"
-                      className="text-[var(--dk-muted)] hover:text-red-600 p-1"
+                      className="text-[var(--dk-muted)] hover:text-red-600 p-2"
                       onClick={() => onRemove(item.id)}
                       aria-label="حذف"
                     >
@@ -69,7 +70,8 @@ export function CartPage({
                     </button>
                   </div>
                 </div>
-                <div className="text-sm font-bold text-[#3f4064] shrink-0">
+                </div>
+                <div className="text-sm font-bold text-[#3f4064] shrink-0 self-end sm:self-start">
                   {formatPrice(item.price * item.quantity)}
                 </div>
               </div>

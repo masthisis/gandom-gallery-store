@@ -281,10 +281,10 @@ export function ProductPage({
   ];
 
   return (
-    <div className="dk-container py-6">
+    <div className="dk-container py-4 sm:py-6 pb-8">
       <Breadcrumbs items={pageCrumbs} />
 
-      <div className="grid lg:grid-cols-12 gap-6">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <div className="bg-white rounded-2xl p-4 shadow-sm sticky top-24 relative">
             <div className="absolute top-6 start-6 z-10 flex flex-col gap-2">
@@ -410,7 +410,7 @@ export function ProductPage({
         </div>
 
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 sticky top-24 space-y-4">
+          <div className="hidden lg:block bg-white rounded-2xl p-5 shadow-sm border border-gray-100 sticky top-24 space-y-4">
             {hasSale && (
               <div className="text-sm text-[var(--dk-muted)] line-through">{formatPrice(price)}</div>
             )}
@@ -446,6 +446,42 @@ export function ProductPage({
             >
               {outOfStock ? 'ناموجود' : 'افزودن به سبد خرید'}
             </button>
+          </div>
+
+          {/* Mobile purchase card (in-flow) */}
+          <div className="lg:hidden bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+            {hasSale && (
+              <div className="text-sm text-[var(--dk-muted)] line-through">{formatPrice(price)}</div>
+            )}
+            <div className="text-xl font-bold text-[#3f4064]">{formatPrice(displayPrice)}</div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between border rounded-xl p-1.5 min-w-[120px]">
+                <button
+                  type="button"
+                  className="p-2.5 rounded-lg hover:bg-[var(--dk-surface)] disabled:opacity-40"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  disabled={qty <= 1}
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="font-medium px-2">{toFarsiDigits(qty)}</span>
+                <button
+                  type="button"
+                  className="p-2.5 rounded-lg hover:bg-[var(--dk-surface)]"
+                  onClick={() => setQty((q) => q + 1)}
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={handleAdd}
+                disabled={outOfStock}
+                className="flex-1 bg-[var(--dk-cta)] text-white py-3 rounded-xl font-medium disabled:opacity-50"
+              >
+                {outOfStock ? 'ناموجود' : 'افزودن به سبد'}
+              </button>
+            </div>
           </div>
         </div>
       </div>

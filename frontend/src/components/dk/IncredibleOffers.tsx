@@ -67,7 +67,7 @@ export function IncredibleOffers({ title, products = [], endsAt, limit = 12, onA
         </div>
         <div className="flex-1 overflow-x-auto p-4 flex gap-3 scrollbar-hide">
           {list.map((p) => (
-            <div key={p.id || p.slug} className="w-[160px] md:w-[180px] shrink-0">
+            <div key={p.id || p.slug} className="w-[148px] sm:w-[160px] md:w-[180px] shrink-0">
               <ProductCard product={p} onAdd={onAdd ? () => onAdd(p) : undefined} compact />
             </div>
           ))}
