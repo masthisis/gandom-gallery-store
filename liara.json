@@ -2,7 +2,7 @@
   "platform": "docker",
   "port": 1337,
   "build": {
-    "location": "iran"
+    "location": "germany"
   },
   "disks": [
     {

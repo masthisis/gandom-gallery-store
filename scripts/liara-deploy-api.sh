@@ -23,6 +23,6 @@ liara deploy \
   --api-token="$TOKEN" \
   --platform=docker \
   --port=1337 \
-  --build-location=iran \
+  --build-location=germany \
   --no-app-logs \
   "$@"
