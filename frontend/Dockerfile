@@ -10,7 +10,13 @@ COPY ./ ./
 RUN npm run build
 
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ARG VITE_API_URL=http://localhost:1337
+COPY nginx.conf /tmp/nginx.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
+# Bake API host into nginx so /uploads/* proxies to Strapi
+RUN HOST="$(echo "$VITE_API_URL" | sed -E 's#https?://##' | cut -d/ -f1)" \
+  && sed "s|__API_HOST__|${HOST}|g" /tmp/nginx.conf.template > /etc/nginx/conf.d/default.conf \
+  && rm /tmp/nginx.conf.template \
+  && cat /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

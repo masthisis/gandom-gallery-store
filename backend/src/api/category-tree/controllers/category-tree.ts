@@ -1,10 +1,4 @@
-function mediaUrl(file: any): string | null {
-  if (!file) return null;
-  const url = file.url || file?.formats?.small?.url;
-  if (!url) return null;
-  if (String(url).startsWith('http')) return url;
-  return `http://localhost:1337${url}`;
-}
+import { mediaUrl } from '../../../utils/media-url';
 
 function mapNode(c: any): any {
   return {

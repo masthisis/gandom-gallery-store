@@ -1,14 +1,5 @@
 import { factories } from '@strapi/strapi';
-
-function mediaUrl(file: any): string | null {
-  if (!file) return null;
-  if (typeof file === 'string') return file;
-  const url = file.url || file?.formats?.medium?.url || file?.formats?.small?.url;
-  if (!url) return null;
-  if (url.startsWith('http')) return url;
-  const base = process.env.PUBLIC_URL || process.env.FRONTEND_URL?.replace(':5173', ':1337') || 'http://localhost:1337';
-  return `${base.replace(/\/$/, '')}${url}`;
-}
+import { mediaUrl } from '../../../utils/media-url';
 
 function parseIds(raw: string | null | undefined): string[] {
   if (!raw) return [];

@@ -74,6 +74,8 @@ liara bucket create --name=gandom-media --permission=public --plan=20g-g2 --api-
 
 Until Object Storage is attached, media uses the `uploads` disk on `gandom-api` (`/opt/app/public/uploads`).
 
+Set `PUBLIC_URL=https://gandom-api.liara.run` on the API (never the storefront URL). Media links must use the API host (or S3 CDN). The storefront nginx also proxies `/uploads/*` to the API as a fallback.
+
 Docs: [create-bucket](https://docs.liara.ir/references/cli/create-bucket/)
 
 Optional uploads disk (fallback; primary media is Object Storage):

@@ -26,12 +26,29 @@ export const PAYMENT_STATUS_FA: Record<string, string> = {
 
 export function mediaUrl(img: any): string | null {
   if (!img) return null;
-  if (typeof img === 'string') return img;
-  const url = img.url || img?.formats?.medium?.url || img?.formats?.small?.url;
+  let url: string | null =
+    typeof img === 'string' ? img : img.url || img?.formats?.medium?.url || img?.formats?.small?.url || null;
   if (!url) return null;
-  if (url.startsWith('http')) return url;
-  const base = import.meta.env.VITE_API_URL || 'http://localhost:1337';
-  return `${base}${url}`;
+
+  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:1337').replace(/\/$/, '');
+
+  // Absolute URL wrongly pointed at the storefront → rewrite to API
+  try {
+    const u = new URL(url, apiBase);
+    if (u.pathname.startsWith('/uploads/')) {
+      const host = u.hostname;
+      const apiHost = new URL(apiBase).hostname;
+      if (host !== apiHost || !url.startsWith('http')) {
+        return `${apiBase}${u.pathname}${u.search}`;
+      }
+    }
+  } catch {
+    /* relative path */
+  }
+
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (!url.startsWith('/')) url = `/${url}`;
+  return `${apiBase}${url}`;
 }
 
 /** Map Iranian address form → WebbyCommerce address fields */
