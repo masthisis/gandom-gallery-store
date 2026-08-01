@@ -3,6 +3,7 @@
 .env.local
 .env.production
 backend/.env
+backend/.env.production
 frontend/.env
 backoffice/.env
 liara

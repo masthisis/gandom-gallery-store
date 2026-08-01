@@ -30,6 +30,8 @@
 - [ ] Rotate any token previously stored in workspace `liara` file if it was a real Liara JWT
 - [ ] Production `APP_KEYS`, `ADMIN_JWT_SECRET`, `JWT_SECRET`, DB password are unique & strong
 - [ ] SMS.ir / Digipay credentials only in CMS settings or env — not in frontend
+- [x] Admin notifications use Liara SMTP env (`MAIL_*`), not secrets in frontend
+- [x] Notification toggles + adminEmail in CMS (`اعلان‌های ایمیل`)
 
 ## Data / payments
 

@@ -19,8 +19,10 @@
     "@strapi/database": "5.51.0",
     "@strapi/plugin-cloud": "5.51.0",
     "@strapi/plugin-users-permissions": "5.51.0",
+    "@strapi/provider-upload-aws-s3": "^5.51.0",
     "@strapi/strapi": "5.51.0",
     "@webbycrown/webbycommerce": "^2.0.2",
+    "nodemailer": "^9.0.3",
     "pg": "8.20.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "typescript": "^5"

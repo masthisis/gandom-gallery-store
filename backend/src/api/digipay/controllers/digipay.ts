@@ -3,6 +3,7 @@
  */
 
 import { applyCheckoutProfile } from '../../../utils/apply-checkout-profile';
+import { notifyAdmin } from '../../../utils/notify-admin';
 
 type PaymentSettings = {
   enabled?: boolean;
@@ -265,7 +266,7 @@ export default {
               },
             });
 
-            const userId = meta.userId || order?.users_permissions_user?.id || order?.users_permissions_user;
+            const userId = meta.userId || order?.user?.id || order?.user;
             const snapshot = meta.profileSnapshot;
             if (userId && snapshot) {
               try {
@@ -276,9 +277,51 @@ export default {
             }
           }
         }
+
+        await notifyAdmin(strapi, 'order_paid', {
+          providerId,
+          order_number: order?.order_number || providerId,
+          ticket,
+          amountToman: order?.total ?? null,
+          userId: order?.user?.id || order?.user || null,
+          at: new Date().toISOString(),
+        });
       } catch (e) {
         strapi.log.error('[digipay] callback update failed', e);
       }
+    } else if (!success) {
+      let amountToman: number | null = null;
+      let userId: unknown = null;
+      try {
+        if (ticket) {
+          const tx = await strapi.db.query('plugin::webbycommerce.payment-transaction').findOne({
+            where: { transaction_id: ticket },
+          });
+          if (tx) {
+            amountToman = tx.amount != null ? Number(tx.amount) : null;
+            userId = tx.gateway_response?.userId || null;
+            await strapi.db.query('plugin::webbycommerce.payment-transaction').update({
+              where: { id: tx.id },
+              data: {
+                status: 'failed',
+                gateway_response: { ...(tx.gateway_response || {}), callback: q },
+              },
+            });
+          }
+        }
+      } catch (e) {
+        strapi.log.warn('[digipay] failed payment tx update', e);
+      }
+
+      await notifyAdmin(strapi, 'payment_failed', {
+        providerId,
+        ticket,
+        status,
+        amountToman,
+        userId,
+        at: new Date().toISOString(),
+        details: q,
+      });
     }
 
     if (!isMock && settings.enabled && !settings.mockMode && ticket) {

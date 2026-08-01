@@ -6,6 +6,7 @@ const CONTENT_SUBJECTS = [
   'api::store-setting.store-setting',
   'api::sms-setting.sms-setting',
   'api::payment-setting.payment-setting',
+  'api::notification-setting.notification-setting',
   'api::nav-category.nav-category',
   'api::product-meta.product-meta',
   'api::store-comment.store-comment',

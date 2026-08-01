@@ -20,7 +20,8 @@ docker compose up --build
 
 Dev OTP: `11111`  
 
-Plans: [docs/plans/00-index.md](docs/plans/00-index.md)
+Plans: [docs/plans/00-index.md](docs/plans/00-index.md)  
+Production (Liara): [docs/liara-production.md](docs/liara-production.md)
 
 ## Shop owner admin
 
@@ -46,3 +47,12 @@ Secrets belong in `backend/.env` (never commit). Use `SUPER_ADMIN_FORCE_PASSWORD
 - وضعیت سفارش: `pending` → `processing` → `shipped` → `delivered`
 
 Security: [docs/security-checklist.md](docs/security-checklist.md)
+
+## Admin email notifications (Liara)
+
+Uses [Liara Email Server SMTP](https://docs.liara.ir/email-server/how-tos/connect-via-platform/nodejs/) via `nodemailer`.
+
+1. In Liara: add sender address + SMTP user ([docs](https://docs.liara.ir/email-server/about/))
+2. Set `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASSWORD`, `MAIL_FROM` in `backend/.env`
+3. In Strapi Admin → **اعلان‌های ایمیل**: enable, set `adminEmail`, toggle events (low stock, payment failed, …)
+4. Optional: `POST /gandom-shop/test-email` (logged-in admin) to verify SMTP

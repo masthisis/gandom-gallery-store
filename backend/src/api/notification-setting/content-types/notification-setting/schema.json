@@ -1,0 +1,43 @@
+{
+  "kind": "singleType",
+  "collectionName": "notification_settings",
+  "info": {
+    "singularName": "notification-setting",
+    "pluralName": "notification-settings",
+    "displayName": "اعلان‌های ایمیل",
+    "description": "ایمیل اعلان‌های مدیر فروشگاه (SMTP لیارا از متغیرهای محیطی)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "adminEmail": {
+      "type": "email",
+      "required": false
+    },
+    "notifyLowStock": {
+      "type": "boolean",
+      "default": true
+    },
+    "notifyPaymentFailed": {
+      "type": "boolean",
+      "default": true
+    },
+    "notifyOrderPaid": {
+      "type": "boolean",
+      "default": false
+    },
+    "notifyPendingComment": {
+      "type": "boolean",
+      "default": false
+    },
+    "extraEventToggles": {
+      "type": "json",
+      "required": false
+    }
+  }
+}

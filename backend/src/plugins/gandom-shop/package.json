@@ -11,10 +11,10 @@
   "exports": {
     "./package.json": "./package.json",
     "./strapi-admin": {
-      "source": "./admin/src/index.js",
-      "import": "./admin/src/index.js",
-      "require": "./admin/src/index.js",
-      "default": "./admin/src/index.js"
+      "source": "./admin/src/index.jsx",
+      "import": "./admin/src/index.jsx",
+      "require": "./admin/src/index.jsx",
+      "default": "./admin/src/index.jsx"
     },
     "./strapi-server": "./server/src/index.js"
   },

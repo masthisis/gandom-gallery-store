@@ -44,6 +44,14 @@ module.exports = {
           policies: ['admin::isAuthenticatedAdmin'],
         },
       },
+      {
+        method: 'POST',
+        path: '/test-email',
+        handler: 'dashboard.testEmail',
+        config: {
+          policies: ['admin::isAuthenticatedAdmin'],
+        },
+      },
     ],
   },
 };

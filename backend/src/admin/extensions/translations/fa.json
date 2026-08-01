@@ -94,6 +94,13 @@
   "Menu order": "ترتیب منو",
   "Commerce slug": "اسلاگ فروشگاهی",
 
+  "اعلان‌های ایمیل": "اعلان‌های ایمیل",
+  "Admin email": "ایمیل مدیر",
+  "Notify low stock": "اعلان موجودی کم",
+  "Notify payment failed": "اعلان پرداخت ناموفق",
+  "Notify order paid": "اعلان پرداخت موفق",
+  "Notify pending comment": "اعلان دیدگاه جدید",
+
   "gandom-shop.menu.dashboard": "داشبورد فروشگاه",
   "gandom-shop.menu.comments": "دیدگاه‌های در انتظار",
   "gandom-shop.menu.customers": "مشتریان"

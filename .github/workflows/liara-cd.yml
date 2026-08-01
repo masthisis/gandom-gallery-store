@@ -1,0 +1,56 @@
+name: CD-Liara
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Liara CLI
+        run: npm install -g @liara/cli
+
+      - name: Prebuild Strapi admin (keeps Liara Docker build under timeout)
+        working-directory: backend
+        run: |
+          # Liara CLI honors .gitignore; allow dist into the deploy archive
+          sed -i '/^dist$/d' .gitignore || true
+          npm ci
+          npm run build
+
+      - name: Deploy API (gandom-api)
+        env:
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+        run: |
+          liara deploy \
+            --app=gandom-api \
+            --api-token="$LIARA_TOKEN" \
+            --platform=docker \
+            --port=1337 \
+            --build-location=iran \
+            --no-app-logs
+
+      - name: Deploy storefront (gandom-web)
+        env:
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          liara deploy \
+            --app=gandom-web \
+            --path=frontend \
+            --api-token="$LIARA_TOKEN" \
+            --platform=docker \
+            --port=80 \
+            --build-arg="VITE_API_URL=${VITE_API_URL}" \
+            --build-location=iran \
+            --no-app-logs

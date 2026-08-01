@@ -31,7 +31,9 @@
 - [ ] OTP `11111` / `devHint` disabled in production
 - [ ] Digipay ticket requires login; refund requires secret
 - [ ] Super Admin + Shop Owner both login; passwords only in env
+- [ ] Liara admin email notifications configured (اعلان‌های ایمیل + MAIL_*)
 - [ ] See [docs/security-checklist.md](security-checklist.md)
+
 ## Ops
 
 - [ ] `docker compose up` boots postgres + strapi + frontend

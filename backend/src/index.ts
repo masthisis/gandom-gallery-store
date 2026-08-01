@@ -2,6 +2,9 @@ import type { Core } from '@strapi/strapi';
 import { seedPersianCatalog, seedHomepageSections } from './utils/seed-persian';
 import { ensureShopOwnerRole, ensureShopOwnerUser } from './utils/shop-owner-role';
 import { ensureSuperAdminUser } from './utils/super-admin-user';
+import { registerNotificationHooks } from './utils/notification-hooks';
+import { isMailConfigured, sendMail } from './utils/mailer';
+import { notifyAdmin } from './utils/notify-admin';
 
 async function ensurePublicPermissions(strapi: Core.Strapi) {
   const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
@@ -114,14 +117,32 @@ async function ensureDefaultSettings(strapi: Core.Strapi) {
           address: 'تهران',
         },
       });
-    } else if (store.lowStockThreshold == null) {
+    } else if ((store as { lowStockThreshold?: number | null }).lowStockThreshold == null) {
       await strapi.documents('api::store-setting.store-setting').update({
         documentId: store.documentId,
-        data: { lowStockThreshold: 5 },
+        data: { lowStockThreshold: 5 } as Record<string, unknown>,
       });
     }
   } catch (e) {
     strapi.log.warn('[bootstrap] store-setting', e);
+  }
+
+  try {
+    const notif = await strapi.documents('api::notification-setting.notification-setting').findFirst({});
+    if (!notif) {
+      await strapi.documents('api::notification-setting.notification-setting').create({
+        data: {
+          enabled: false,
+          adminEmail: process.env.SUPER_ADMIN_EMAIL || '',
+          notifyLowStock: true,
+          notifyPaymentFailed: true,
+          notifyOrderPaid: false,
+          notifyPendingComment: false,
+        },
+      });
+    }
+  } catch (e) {
+    strapi.log.warn('[bootstrap] notification-setting', e);
   }
 }
 
@@ -134,6 +155,13 @@ export default {
     await ensureShopOwnerRole(strapi);
     await ensureSuperAdminUser(strapi);
     await ensureShopOwnerUser(strapi);
+    try {
+      registerNotificationHooks(strapi);
+      // Expose mail helpers to JS plugins (gandom-shop)
+      (strapi as any).gandomMail = { sendMail, isMailConfigured, notifyAdmin };
+    } catch (e) {
+      strapi.log.warn('[bootstrap] notification hooks', e);
+    }
     if (process.env.GANDOM_SEED === 'true') {
       try {
         await seedPersianCatalog(strapi);

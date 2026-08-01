@@ -1,0 +1,13 @@
+{
+  "platform": "docker",
+  "port": 1337,
+  "build": {
+    "location": "iran"
+  },
+  "disks": [
+    {
+      "name": "uploads",
+      "mountTo": "/opt/app/public/uploads"
+    }
+  ]
+}

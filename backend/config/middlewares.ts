@@ -1,9 +1,31 @@
 import type { Core } from '@strapi/strapi';
 
+function mediaSrcHosts(): string[] {
+  const hosts = ["'self'", 'data:', 'blob:', 'https:'];
+  const cdn = process.env.CDN_URL;
+  const endpoint = process.env.AWS_ENDPOINT;
+  if (cdn) hosts.push(cdn);
+  if (endpoint) hosts.push(endpoint);
+  return hosts;
+}
+
 const config: Core.Config.Middlewares = [
   'strapi::logger',
   'strapi::errors',
-  'strapi::security',
+  {
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'connect-src': ["'self'", 'https:'],
+          'img-src': mediaSrcHosts(),
+          'media-src': mediaSrcHosts(),
+          upgradeInsecureRequests: null,
+        },
+      },
+    },
+  },
   {
     name: 'strapi::cors',
     config: {
