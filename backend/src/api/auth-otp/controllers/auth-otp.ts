@@ -1,8 +1,20 @@
 /**
- * Auth OTP — phone login via SMS.ir (dev OTP 11111)
+ * Auth OTP — phone login via SMS.ir
  */
 
+import path from 'path';
+
 const PLUGIN_USER = 'plugin::users-permissions.user';
+
+function smsHelpers() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require(path.join((strapi as any).dirs.app.root, 'src/utils/sms-settings.js'));
+}
+
+function notifySmsHelper() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require(path.join((strapi as any).dirs.app.root, 'src/utils/notify-sms.js'));
+}
 
 function normalizePhone(raw: string): string {
   let p = String(raw || '').replace(/\D/g, '');
@@ -15,55 +27,6 @@ function isValidIranMobile(phone: string): boolean {
   return /^09\d{9}$/.test(phone);
 }
 
-async function getSmsSettings(strapi: any) {
-  try {
-    const settings = await strapi.documents('api::sms-setting.sms-setting').findFirst({});
-    return (
-      settings || {
-        enabled: false,
-        devMode: true,
-        devOtpCode: '11111',
-        apiKey: null,
-        templateId: null,
-        lineNumber: null,
-      }
-    );
-  } catch {
-    return { enabled: false, devMode: true, devOtpCode: '11111' };
-  }
-}
-
-/** Dev OTP only outside production (or ALLOW_DEV_OTP_IN_PRODUCTION=true emergency) */
-function isDevOtpMode(settings: any): boolean {
-  if (process.env.NODE_ENV === 'production') {
-    return settings.devMode === true && process.env.ALLOW_DEV_OTP_IN_PRODUCTION === 'true';
-  }
-  return settings.devMode !== false;
-}
-
-async function sendSmsIrVerify(settings: any, mobile: string, code: string) {
-  if (!settings.apiKey || !settings.templateId) {
-    throw new Error('SMS settings incomplete');
-  }
-  const res = await fetch('https://api.sms.ir/v1/send/verify', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-KEY': settings.apiKey,
-    },
-    body: JSON.stringify({
-      mobile,
-      templateId: Number(settings.templateId),
-      parameters: [{ name: 'CODE', value: code }],
-    }),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`SMS.ir error: ${res.status} ${text}`);
-  }
-  return res.json();
-}
-
 export default {
   async request(ctx: any) {
     const { mobile: rawMobile } = ctx.request.body || {};
@@ -72,8 +35,8 @@ export default {
       return ctx.badRequest('شماره موبایل معتبر نیست');
     }
 
-    const settings = await getSmsSettings(strapi);
-    const useDev = isDevOtpMode(settings);
+    const settings = await smsHelpers().getSmsSettings(strapi);
+    const useDev = smsHelpers().isDevOtpMode(settings);
     const otpCode = useDev
       ? String(settings.devOtpCode || process.env.OTP_DEV_CODE || '11111')
       : String(Math.floor(10000 + Math.random() * 90000));
@@ -108,22 +71,23 @@ export default {
       });
     }
 
-    if (useDev || !settings.enabled) {
+    if (useDev) {
       strapi.log.info(`[auth-otp] DEV OTP for ${mobile}: ${otpCode}`);
     } else {
-      try {
-        await sendSmsIrVerify(settings, mobile, otpCode);
-      } catch (err: any) {
-        strapi.log.error('[auth-otp] SMS send failed', err);
+      const result = await smsHelpers().sendSmsEvent(strapi, 'auth_otp', {
+        code: otpCode,
+        mobile,
+      });
+      if (!result.ok && !result.skipped) {
+        strapi.log.error('[auth-otp] SMS send failed', result);
         return ctx.badRequest('ارسال پیامک ناموفق بود');
       }
     }
 
     ctx.body = {
       ok: true,
-      message: useDev || !settings.enabled ? 'کد تایید ارسال شد (حالت توسعه)' : 'کد تایید ارسال شد',
+      message: useDev ? 'کد تایید ارسال شد (حالت توسعه)' : 'کد تایید ارسال شد',
       mobile,
-      // Never expose OTP in API responses in production
       ...(useDev && process.env.NODE_ENV !== 'production' ? { devHint: otpCode } : {}),
     };
   },
@@ -137,8 +101,8 @@ export default {
       return ctx.badRequest('شماره یا کد نامعتبر است');
     }
 
-    const settings = await getSmsSettings(strapi);
-    const useDev = isDevOtpMode(settings);
+    const settings = await smsHelpers().getSmsSettings(strapi);
+    const useDev = smsHelpers().isDevOtpMode(settings);
     const devCode = String(settings.devOtpCode || process.env.OTP_DEV_CODE || '11111');
 
     const user = await strapi.db.query(PLUGIN_USER).findOne({ where: { phone_no: mobile } });

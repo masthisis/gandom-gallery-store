@@ -21,10 +21,20 @@ export default {
 
     // Prefer dedicated nav-category tree (editable in Strapi Admin)
     try {
-      const rows = await strapi.db.query('api::nav-category.nav-category').findMany({
+      const rowsRaw = await strapi.db.query('api::nav-category.nav-category').findMany({
         populate: ['image', 'parent'],
         orderBy: [{ menu_order: 'asc' }, { name: 'asc' }],
       });
+      // Document Service stores draft + published rows; keep one row per documentId.
+      const byDocument = new Map<string, any>();
+      for (const c of rowsRaw || []) {
+        const key = c.documentId || `id:${c.id}`;
+        const prev = byDocument.get(key);
+        if (!prev || (c.publishedAt && !prev.publishedAt)) {
+          byDocument.set(key, c);
+        }
+      }
+      const rows = [...byDocument.values()];
       if (rows?.length) {
         const byId = new Map<number, any>();
         for (const c of rows) {
@@ -55,11 +65,19 @@ export default {
     }
 
     // Fallback: flat WebbyCommerce categories
-    const rows = await strapi.db.query('plugin::webbycommerce.product-category').findMany({
+    const rowsRaw = await strapi.db.query('plugin::webbycommerce.product-category').findMany({
       populate: ['image'],
     });
+    const byDocument = new Map<string, any>();
+    for (const c of rowsRaw || []) {
+      const key = c.documentId || `id:${c.id}`;
+      const prev = byDocument.get(key);
+      if (!prev || (c.publishedAt && !prev.publishedAt)) {
+        byDocument.set(key, c);
+      }
+    }
     ctx.body = {
-      data: (rows || []).map((c: any) => ({
+      data: [...byDocument.values()].map((c: any) => ({
         ...mapNode(c),
         commerceSlug: c.slug,
         children: [],

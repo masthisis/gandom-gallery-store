@@ -1,43 +1,28 @@
 ---
-description: Headroom context compression for Cursor models
+description: Headroom context compression (manual start only)
 alwaysApply: true
 ---
 
-This project routes LLM traffic through **Headroom** (`agent-90` profile, ~90% token savings, persistent memory).
+Headroom is **stopped** and **will not auto-start**. Graphify still works locally.
 
-## Status checks
-
-```bash
-headroom doctor
-headroom install status
-scripts/verify-memory-setup.sh
-```
-
-## Cursor setup (required once)
-
-Proxy must be healthy (`headroom install status`). Then in **Cursor → Settings → Models**:
-
-| Setting | Value |
-|---------|-------|
-| Override OpenAI Base URL | `http://127.0.0.1:8787/p/gandom_galery_shop/v1` |
-| Anthropic base URL (if shown) | `http://127.0.0.1:8787/p/gandom_galery_shop` |
-
-Use your normal provider API keys — Headroom forwards and compresses.
-
-Re-print project URLs anytime:
+## Start Headroom manually (when you want it)
 
 ```bash
-headroom wrap cursor --no-proxy
+headroom proxy --memory              # foreground; Ctrl+C to stop
+headroom doctor                      # verify it is running
 ```
 
-## Other agents (already configured globally)
+## Do not auto-start again unless you choose to
 
-- **Codex** — routed via `~/.codex/config.toml` (`headroom init -g codex`)
-- **Claude Code** — routed via `~/.claude/settings.json` (when Claude CLI installed)
+```bash
+# This re-enables boot + cron auto-start — only run if you want that:
+headroom deploy --providers manual --target cursor --memory --no-docker
+```
 
 ## With graphify
 
-1. `graphify query "<question>"` first (scoped subgraph, low tokens)
+1. `graphify query "<question>"` first
 2. Read only lines you will edit
 3. `graphify update .` after code changes
-4. `headroom dashboard` — view compression savings
+
+**Note:** Cursor cannot use `127.0.0.1` Headroom (cloud blocks private networks). Use normal Cursor models, or expose Headroom via a public tunnel if needed.

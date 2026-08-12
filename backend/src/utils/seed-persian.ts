@@ -1,4 +1,13 @@
 import type { Core } from '@strapi/strapi';
+import {
+  buildBulkSeedCatalog,
+  bulkSeedSummary,
+  isBulkSeedEnabled,
+  type CommentSeed,
+  type CustomerSeed,
+  type FavoriteSeed,
+  type OrderSeed,
+} from './seed-bulk-data';
 import { uploadSeedImage } from './seed-upload';
 
 /** Pexels CDN — downloaded into Strapi Media Library at seed time. */
@@ -17,6 +26,7 @@ type CatSeed = {
   menu_order?: number;
   imageUrl?: string;
   imageAsset?: string;
+  skipImage?: boolean;
   children?: CatSeed[];
 };
 
@@ -129,6 +139,7 @@ type ProductSeed = {
   stock_quantity: number;
   stock_status: 'in_stock' | 'out_of_stock' | 'on_backorder';
   categorySlug: string;
+  categorySlugs?: string[];
   weight?: number;
   specifications: Spec[];
   imageUrls: string[];
@@ -566,18 +577,50 @@ const pages = [
   },
 ];
 
+async function clearGhostRowsForSlug(strapi: Core.Strapi, uid: string, slug: string) {
+  const existing = await strapi.documents(uid as any).findMany({ filters: { slug } });
+  if (existing?.length) return existing[0];
+
+  const ghosts = await strapi.db.query(uid as any).findMany({ where: { slug } });
+  for (const g of ghosts || []) {
+    if (g.documentId) {
+      try {
+        await strapi.documents(uid as any).delete({ documentId: g.documentId });
+      } catch {
+        /* fall through to db delete */
+      }
+    }
+    await strapi.db.query(uid as any).delete({ where: { id: g.id } });
+  }
+  return null;
+}
+
+async function upsertDocumentBySlug(
+  strapi: Core.Strapi,
+  uid: string,
+  slug: string,
+  data: Record<string, unknown>,
+  status: 'published' | 'draft' = 'published'
+) {
+  const existing = await clearGhostRowsForSlug(strapi, uid, slug);
+  if (existing?.documentId) {
+    return strapi.documents(uid as any).update({
+      documentId: existing.documentId,
+      status,
+      data: data as any,
+    });
+  }
+  return strapi.documents(uid as any).create({ status, data: data as any });
+}
+
 async function upsertNavCategory(
   strapi: Core.Strapi,
   c: CatSeed,
-  parentId: number | null,
+  parentDocumentId: string | null,
   navMap: Record<string, any>
 ) {
-  let existing = await strapi.db.query('api::nav-category.nav-category').findOne({
-    where: { slug: c.slug },
-  });
-
   let imageId: number | undefined;
-  if (c.imageUrl || c.imageAsset) {
+  if (!c.skipImage && (c.imageUrl || c.imageAsset)) {
     const file = await uploadSeedImage(strapi, {
       url: c.imageUrl,
       asset: c.imageAsset,
@@ -594,45 +637,34 @@ async function upsertNavCategory(
     description: c.description || '',
     menu_order: c.menu_order ?? 0,
     show_in_menu: true,
-    publishedAt: new Date(),
   };
-  if (parentId) data.parent = parentId;
+  if (parentDocumentId) data.parent = parentDocumentId;
   if (imageId) data.image = imageId;
 
-  if (!existing) {
-    existing = await strapi.db.query('api::nav-category.nav-category').create({ data });
-  } else {
-    existing = await strapi.db.query('api::nav-category.nav-category').update({
-      where: { id: existing.id },
-      data: {
-        name: data.name,
-        description: data.description,
-        menu_order: data.menu_order,
-        show_in_menu: true,
-        commerceSlug: c.slug,
-        parent: parentId || null,
-        ...(imageId ? { image: imageId } : {}),
-      },
-    });
-  }
-  navMap[c.slug] = existing;
+  const doc = await upsertDocumentBySlug(
+    strapi,
+    'api::nav-category.nav-category',
+    c.slug,
+    data
+  );
+
+  const dbRow = await strapi.db.query('api::nav-category.nav-category').findOne({
+    where: { documentId: doc.documentId, publishedAt: { $notNull: true } },
+  });
+  navMap[c.slug] = { ...doc, id: dbRow?.id, documentId: doc.documentId };
   for (const child of c.children || []) {
-    await upsertNavCategory(strapi, child, existing.id, navMap);
+    await upsertNavCategory(strapi, child, doc.documentId, navMap);
   }
 }
 
 async function upsertWcCategory(
   strapi: Core.Strapi,
   c: CatSeed,
-  parentId: number | null,
+  parentDocumentId: string | null,
   catMap: Record<string, any>
 ) {
-  let existing = await strapi.db.query('plugin::webbycommerce.product-category').findOne({
-    where: { slug: c.slug },
-  });
-
   let imageId: number | undefined;
-  if (c.imageUrl || c.imageAsset) {
+  if (!c.skipImage && (c.imageUrl || c.imageAsset)) {
     const file = await uploadSeedImage(strapi, {
       url: c.imageUrl,
       asset: c.imageAsset,
@@ -648,29 +680,23 @@ async function upsertWcCategory(
     description: c.description || '',
     menu_order: c.menu_order ?? 0,
     show_in_menu: true,
-    publishedAt: new Date(),
   };
-  if (parentId) data.parent = parentId;
+  if (parentDocumentId) data.parent = parentDocumentId;
   if (imageId) data.image = imageId;
 
-  if (!existing) {
-    existing = await strapi.db.query('plugin::webbycommerce.product-category').create({ data });
-  } else {
-    existing = await strapi.db.query('plugin::webbycommerce.product-category').update({
-      where: { id: existing.id },
-      data: {
-        name: data.name,
-        description: data.description,
-        menu_order: data.menu_order,
-        show_in_menu: true,
-        parent: parentId || null,
-        ...(imageId ? { image: imageId } : {}),
-      },
-    });
-  }
-  catMap[c.slug] = existing;
+  const doc = await upsertDocumentBySlug(
+    strapi,
+    'plugin::webbycommerce.product-category',
+    c.slug,
+    data
+  );
+
+  const dbRow = await strapi.db.query('plugin::webbycommerce.product-category').findOne({
+    where: { documentId: doc.documentId, publishedAt: { $notNull: true } },
+  });
+  catMap[c.slug] = { ...doc, id: dbRow?.id, documentId: doc.documentId };
   for (const child of c.children || []) {
-    await upsertWcCategory(strapi, child, existing.id, catMap);
+    await upsertWcCategory(strapi, child, doc.documentId, catMap);
   }
 }
 
@@ -718,58 +744,102 @@ async function upsertProductMeta(
   }
 }
 
-async function seedOrders(strapi: Core.Strapi, userByPhone: Record<string, any>, productBySlug: Record<string, any>) {
-  const samples: Array<{
-    order_number: string;
-    phone: string;
-    status: string;
-    payment_status: string;
-    productSlugs: string[];
-    notes: string;
-  }> = [
-    {
-      order_number: 'GD-10001',
-      phone: '09121111111',
-      status: 'delivered',
-      payment_status: 'paid',
-      productSlugs: ['ceramic-vase-gandom', 'gallery-cushion'],
-      notes: 'تحویل در ساعات اداری',
-    },
-    {
-      order_number: 'GD-10002',
-      phone: '09122222222',
-      status: 'processing',
-      payment_status: 'paid',
-      productSlugs: ['gandom-book-15'],
-      notes: 'لطفاً قبل از ارسال تماس بگیرید',
-    },
-    {
-      order_number: 'GD-10003',
-      phone: '09123333333',
-      status: 'shipped',
-      payment_status: 'paid',
-      productSlugs: ['tea-set', 'scented-candle-set'],
-      notes: '',
-    },
-    {
-      order_number: 'GD-10004',
-      phone: '09124444444',
-      status: 'pending',
-      payment_status: 'pending',
-      productSlugs: ['minimal-canvas'],
-      notes: 'در انتظار پرداخت',
-    },
-    {
-      order_number: 'GD-10005',
-      phone: '09125555555',
-      status: 'delivered',
-      payment_status: 'paid',
-      productSlugs: ['calm-gift-box', 'brass-pendant'],
-      notes: 'هدیه — بدون فاکتور قیمت روی جعبه',
-    },
-  ];
+const legacyOrderSamples: OrderSeed[] = [
+  {
+    order_number: 'GD-10001',
+    phone: '09121111111',
+    status: 'delivered',
+    payment_status: 'paid',
+    productSlugs: ['ceramic-vase-gandom', 'gallery-cushion'],
+    notes: 'تحویل در ساعات اداری',
+  },
+  {
+    order_number: 'GD-10002',
+    phone: '09122222222',
+    status: 'processing',
+    payment_status: 'paid',
+    productSlugs: ['gandom-book-15'],
+    notes: 'لطفاً قبل از ارسال تماس بگیرید',
+  },
+  {
+    order_number: 'GD-10003',
+    phone: '09123333333',
+    status: 'shipped',
+    payment_status: 'paid',
+    productSlugs: ['tea-set', 'scented-candle-set'],
+    notes: '',
+  },
+  {
+    order_number: 'GD-10004',
+    phone: '09124444444',
+    status: 'pending',
+    payment_status: 'pending',
+    productSlugs: ['minimal-canvas'],
+    notes: 'در انتظار پرداخت',
+  },
+  {
+    order_number: 'GD-10005',
+    phone: '09125555555',
+    status: 'delivered',
+    payment_status: 'paid',
+    productSlugs: ['calm-gift-box', 'brass-pendant'],
+    notes: 'هدیه — بدون فاکتور قیمت روی جعبه',
+  },
+];
 
-  for (const sample of samples) {
+const legacyFavorites: FavoriteSeed[] = [
+  { phone: '09121111111', slug: 'gandom-book-pro' },
+  { phone: '09121111111', slug: 'tea-set' },
+  { phone: '09122222222', slug: 'ceramic-vase-gandom' },
+  { phone: '09125555555', slug: 'color-abstract-canvas' },
+];
+
+const legacyComments: CommentSeed[] = [
+  {
+    phone: '09123333333',
+    slug: 'gallery-cushion',
+    rating: 5,
+    body: 'کیفیت مخمل عالی است و رنگ‌ها زنده مانده‌اند.',
+  },
+  {
+    phone: '09124444444',
+    slug: 'calligraphy-canvas',
+    rating: 4,
+    body: 'قاب چوبی بسیار باکیفیت؛ پیشنهاد می‌کنم.',
+  },
+  {
+    phone: '09125555555',
+    slug: 'ceramic-mug',
+    rating: 5,
+    body: 'فنجان سبک و زیباست؛ هر روز استفاده می‌کنم.',
+  },
+];
+
+function resolveSeedCatalog() {
+  if (isBulkSeedEnabled()) {
+    const catalog = buildBulkSeedCatalog(px, localPx);
+    return { ...catalog, logSummary: bulkSeedSummary(catalog) };
+  }
+  return {
+    categoryTree,
+    products,
+    customers,
+    reviewSeeds,
+    orderSamples: legacyOrderSamples,
+    favorites: legacyFavorites,
+    comments: legacyComments,
+    logSummary: `${products.length} products, categories, orders, reviews, homepage-ready media`,
+  };
+}
+
+async function seedOrders(
+  strapi: Core.Strapi,
+  userByPhone: Record<string, any>,
+  productBySlug: Record<string, any>,
+  orderSamples: OrderSeed[],
+  customerList: CustomerSeed[]
+) {
+  for (const sample of orderSamples) {
     try {
       const existing = await strapi.db.query('plugin::webbycommerce.order').findOne({
         where: { order_number: sample.order_number },
@@ -777,7 +847,7 @@ async function seedOrders(strapi: Core.Strapi, userByPhone: Record<string, any>,
       if (existing) continue;
 
       const user = userByPhone[sample.phone];
-      const cust = customers.find((c) => c.phone === sample.phone);
+      const cust = customerList.find((c) => c.phone === sample.phone);
       if (!user || !cust) continue;
 
       const items = sample.productSlugs.map((s) => productBySlug[s]).filter(Boolean);
@@ -832,15 +902,11 @@ async function seedOrders(strapi: Core.Strapi, userByPhone: Record<string, any>,
 
 async function seedFavoritesAndComments(
   strapi: Core.Strapi,
-  userByPhone: Record<string, any>
+  userByPhone: Record<string, any>,
+  favorites: FavoriteSeed[],
+  comments: CommentSeed[]
 ) {
-  const favs = [
-    { phone: '09121111111', slug: 'gandom-book-pro' },
-    { phone: '09121111111', slug: 'tea-set' },
-    { phone: '09122222222', slug: 'ceramic-vase-gandom' },
-    { phone: '09125555555', slug: 'color-abstract-canvas' },
-  ];
-  for (const f of favs) {
+  for (const f of favorites) {
     try {
       const user = userByPhone[f.phone];
       if (!user) continue;
@@ -856,27 +922,8 @@ async function seedFavoritesAndComments(
     }
   }
 
-  const comments = [
-    {
-      phone: '09123333333',
-      slug: 'gallery-cushion',
-      rating: 5,
-      body: 'کیفیت مخمل عالی است و رنگ‌ها زنده مانده‌اند.',
-    },
-    {
-      phone: '09124444444',
-      slug: 'calligraphy-canvas',
-      rating: 4,
-      body: 'قاب چوبی بسیار باکیفیت؛ پیشنهاد می‌کنم.',
-    },
-    {
-      phone: '09125555555',
-      slug: 'ceramic-mug',
-      rating: 5,
-      body: 'فنجان سبک و زیباست؛ هر روز استفاده می‌کنم.',
-    },
-  ];
-  for (const c of comments) {
+  const commentsList = comments;
+  for (const c of commentsList) {
     try {
       const user = userByPhone[c.phone];
       if (!user) continue;
@@ -900,12 +947,33 @@ async function seedFavoritesAndComments(
 }
 
 export async function seedPersianCatalog(strapi: Core.Strapi) {
+  const catalog = resolveSeedCatalog();
+  const {
+    categoryTree: tree,
+    products: productList,
+    customers: customerList,
+    reviewSeeds: reviews,
+    orderSamples,
+    favorites,
+    comments,
+    logSummary,
+  } = catalog;
+  const bulk = isBulkSeedEnabled();
   const catMap: Record<string, any> = {};
   const productBySlug: Record<string, any> = {};
 
+  if (bulk) {
+    strapi.log.info(
+      `[gandom] bulk seed starting — ${logSummary} (products linked to primary subcategory)`
+    );
+  }
+
   try {
-    for (const root of categoryTree) {
-      await upsertWcCategory(strapi, root, null, catMap);
+    for (let i = 0; i < tree.length; i++) {
+      await upsertWcCategory(strapi, tree[i], null, catMap);
+      if (bulk && ((i + 1) % 5 === 0 || i + 1 === tree.length)) {
+        strapi.log.info(`[gandom] bulk wc categories: ${i + 1}/${tree.length} roots seeded`);
+      }
     }
   } catch (e) {
     strapi.log.warn('[gandom] wc category seed', e);
@@ -913,23 +981,30 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
 
   try {
     const navMap: Record<string, any> = {};
-    for (const root of categoryTree) {
-      await upsertNavCategory(strapi, root, null, navMap);
+    for (let i = 0; i < tree.length; i++) {
+      await upsertNavCategory(strapi, tree[i], null, navMap);
+      if (bulk && ((i + 1) % 5 === 0 || i + 1 === tree.length)) {
+        strapi.log.info(`[gandom] bulk nav categories: ${i + 1}/${tree.length} roots seeded`);
+      }
     }
   } catch (e) {
     strapi.log.warn('[gandom] nav-category seed', e);
   }
 
-  for (const p of products) {
+  for (let pi = 0; pi < productList.length; pi++) {
+    const p = productList[pi];
     const imageIds: number[] = [];
     const gallery_urls: string[] = [];
     for (let i = 0; i < p.imageUrls.length; i++) {
       const url = p.imageUrls[i];
       const asset = p.imageAssets?.[i];
+      const imgMatch = asset?.match(/px-(\d+)/);
+      const sharedName =
+        bulk && imgMatch ? `bulk-shared-px-${imgMatch[1]}-photo.jpg` : `${p.slug}-${i + 1}-photo.jpg`;
       const uploaded = await uploadSeedImage(strapi, {
         url,
         asset,
-        name: `${p.slug}-${i + 1}-photo.jpg`,
+        name: sharedName,
         alternativeText: `${p.name} — تصویر ${i + 1}`,
       });
       if (uploaded?.id) {
@@ -938,9 +1013,8 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
       }
     }
 
-    let existing = await strapi.db.query('plugin::webbycommerce.product').findOne({
-      where: { slug: p.slug },
-    });
+    const categorySlugs = p.categorySlugs?.length ? p.categorySlugs : [p.categorySlug];
+    const categoryDocIds = categorySlugs.map((s) => catMap[s]?.documentId).filter(Boolean);
 
     const data: any = {
       name: p.name,
@@ -952,37 +1026,40 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
       stock_quantity: p.stock_quantity,
       stock_status: p.stock_status,
       weight: p.weight ?? null,
-      product_categories: catMap[p.categorySlug] ? [catMap[p.categorySlug].id] : [],
+      product_categories: categoryDocIds,
       specifications: p.specifications,
       gallery_urls,
-      publishedAt: new Date(),
     };
     if (imageIds.length) data.images = imageIds;
 
-    if (!existing) {
-      existing = await strapi.db.query('plugin::webbycommerce.product').create({ data });
+    let existing: any = await clearGhostRowsForSlug(
+      strapi,
+      'plugin::webbycommerce.product',
+      p.slug
+    );
+
+    if (existing?.documentId) {
+      existing = await strapi.documents('plugin::webbycommerce.product').update({
+        documentId: existing.documentId,
+        status: 'published',
+        data,
+      });
     } else {
       try {
-        existing = await strapi.db.query('plugin::webbycommerce.product').update({
-          where: { id: existing.id },
-          data: {
-            name: data.name,
-            description: data.description,
-            price: data.price,
-            sale_price: data.sale_price,
-            stock_quantity: data.stock_quantity,
-            stock_status: data.stock_status,
-            weight: data.weight,
-            product_categories: data.product_categories,
-            specifications: data.specifications,
-            gallery_urls: data.gallery_urls,
-            ...(imageIds.length ? { images: imageIds } : {}),
-          },
+        existing = await strapi.documents('plugin::webbycommerce.product').create({
+          status: 'published',
+          data,
         });
       } catch (e) {
-        strapi.log.warn('[gandom] product update', p.slug, e);
+        strapi.log.warn('[gandom] product create', p.slug, e);
+        continue;
       }
     }
+
+    const dbRow = await strapi.db.query('plugin::webbycommerce.product').findOne({
+      where: { documentId: existing.documentId, publishedAt: { $notNull: true } },
+    });
+    existing = { ...existing, id: dbRow?.id };
 
     productBySlug[p.slug] = existing;
     try {
@@ -990,10 +1067,13 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
     } catch (e) {
       strapi.log.warn('[gandom] product-meta', p.slug, e);
     }
+    if (bulk && ((pi + 1) % 50 === 0 || pi + 1 === productList.length)) {
+      strapi.log.info(`[gandom] bulk products: ${pi + 1}/${productList.length} seeded`);
+    }
   }
 
   const userByPhone: Record<string, any> = {};
-  for (const c of customers) {
+  for (const c of customerList) {
     try {
       userByPhone[c.phone] = await ensureCustomer(strapi, c);
     } catch (e) {
@@ -1001,7 +1081,7 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
     }
   }
 
-  for (const r of reviewSeeds) {
+  for (const r of reviews) {
     try {
       const product = productBySlug[r.productSlug];
       const user = userByPhone[r.phone];
@@ -1024,8 +1104,8 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
     }
   }
 
-  await seedOrders(strapi, userByPhone, productBySlug);
-  await seedFavoritesAndComments(strapi, userByPhone);
+  await seedOrders(strapi, userByPhone, productBySlug, orderSamples, customerList);
+  await seedFavoritesAndComments(strapi, userByPhone, favorites, comments);
 
   for (const page of pages) {
     try {
@@ -1089,9 +1169,7 @@ export async function seedPersianCatalog(strapi: Core.Strapi) {
     strapi.log.warn('[gandom] store-setting enrich', e);
   }
 
-  strapi.log.info(
-    `[gandom] Persian demo seed complete — ${products.length} products, categories, orders, reviews, homepage-ready media`
-  );
+  strapi.log.info(`[gandom] Persian demo seed complete — ${logSummary}`);
 }
 
 export async function seedHomepageSections(
@@ -1169,6 +1247,14 @@ export async function seedHomepageSections(
 
     const endsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
+    const bulk = isBulkSeedEnabled();
+    const catDecor = bulk ? 'bulk-cat-01' : 'decor';
+    const catLaptop = bulk ? 'bulk-cat-04' : 'laptop';
+    const catGift = bulk ? 'bulk-cat-03' : 'gift';
+    const catGridSlugs = bulk
+      ? 'bulk-cat-01,bulk-cat-02,bulk-cat-03,bulk-cat-04,bulk-cat-05,bulk-cat-06'
+      : 'home-kitchen,art-gallery,gifts,digital,decor,laptop';
+
     const sectionsPayload: any[] = [
       {
         __component: 'sections.hero-slider',
@@ -1188,7 +1274,7 @@ export async function seedHomepageSections(
           {
             title: 'لپ‌تاپ‌های گندم بوک',
             subtitle: 'از دانشجویی تا حرفه‌ای — گارانتی اصالت',
-            link: '/category/laptop',
+            link: `/category/${catLaptop}`,
             ...(hero3?.id ? { image: hero3.id } : { imageUrl: '' }),
           },
         ],
@@ -1204,19 +1290,19 @@ export async function seedHomepageSections(
           },
           {
             title: 'دکوری',
-            link: '/category/decor',
+            link: `/category/${catDecor}`,
             color: '#19bfd3',
             ...(storyDecor?.id ? { image: storyDecor.id } : {}),
           },
           {
             title: 'لپ‌تاپ',
-            link: '/category/laptop',
+            link: `/category/${catLaptop}`,
             color: '#6366f1',
             ...(storyLaptop?.id ? { image: storyLaptop.id } : {}),
           },
           {
             title: 'هدیه',
-            link: '/category/gift',
+            link: `/category/${catGift}`,
             color: '#f9a825',
             ...(storyGift?.id ? { image: storyGift.id } : {}),
           },
@@ -1240,7 +1326,7 @@ export async function seedHomepageSections(
       {
         __component: 'sections.category-grid',
         title: 'دسته‌بندی‌ها',
-        categorySlugs: 'home-kitchen,art-gallery,gifts,digital,decor,laptop',
+        categorySlugs: catGridSlugs,
       },
       {
         __component: 'sections.banner-grid',
@@ -1248,17 +1334,17 @@ export async function seedHomepageSections(
         banners: [
           {
             title: 'دکوری خانه',
-            link: '/category/decor',
+            link: `/category/${catDecor}`,
             ...(bannerDecor?.id ? { image: bannerDecor.id } : { imageUrl: '' }),
           },
           {
             title: 'لپ‌تاپ‌ها',
-            link: '/category/laptop',
+            link: `/category/${catLaptop}`,
             ...(bannerLaptop?.id ? { image: bannerLaptop.id } : { imageUrl: '' }),
           },
           {
             title: 'هدیه خاص',
-            link: '/category/gift',
+            link: `/category/${catGift}`,
             ...(bannerGift?.id ? { image: bannerGift.id } : { imageUrl: '' }),
           },
         ],
@@ -1267,9 +1353,9 @@ export async function seedHomepageSections(
         __component: 'sections.product-slider',
         title: 'پرفروش‌های دکوری',
         source: 'category',
-        categorySlug: 'decor',
+        categorySlug: catDecor,
         limit: 8,
-        link: '/category/decor',
+        link: `/category/${catDecor}`,
       },
       {
         __component: 'sections.product-row',
@@ -1282,9 +1368,9 @@ export async function seedHomepageSections(
         __component: 'sections.product-slider',
         title: 'لپ‌تاپ و دیجیتال',
         source: 'category',
-        categorySlug: 'laptop',
+        categorySlug: catLaptop,
         limit: 6,
-        link: '/category/laptop',
+        link: `/category/${catLaptop}`,
       },
       {
         __component: 'sections.trust-badges',

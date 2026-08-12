@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 const WC_PREFIX = import.meta.env.VITE_WC_PREFIX || '/api/webbycommerce';
 
 export function getToken(): string | null {

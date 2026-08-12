@@ -2,7 +2,9 @@
 
 ## Memory & context (graphify + Headroom)
 
-This repo has a **graphify knowledge graph** at `graphify-out/` (**987 nodes**, code + docs). Use it as primary codebase memory:
+This repo has a **graphify knowledge graph** at `graphify-out/` (**1010 nodes**, code + docs + session memory). Use it as primary codebase memory:
+
+Session decisions & chat outcomes: `docs/memory/project-and-session-knowledge.md` (ingested into graphify).
 
 ```bash
 graphify query "<question>"     # scoped subgraph — use BEFORE Read/Grep/Glob
@@ -16,15 +18,7 @@ graphify update .               # refresh after code edits (AST-only, free)
 - Git hooks auto-rebuild on commit. Verify: `scripts/verify-memory-setup.sh`.
 - Gemini key: `GOOGLE_API_KEY` in `.env` (gitignored) or `~/.zshrc` — [AI Studio keys](https://aistudio.google.com/app/apikey).
 
-**Headroom** compresses LLM context (~90% savings, `agent-90` profile). Proxy: `http://127.0.0.1:8787` (persistent, memory on).
-
-| Client | Base URL override |
-|--------|-------------------|
-| Cursor (OpenAI models) | `http://127.0.0.1:8787/p/gandom_galery_shop/v1` |
-| Cursor (Anthropic models) | `http://127.0.0.1:8787/p/gandom_galery_shop` |
-| Claude Code / Codex | auto via `headroom init` → `~/.claude/settings.json`, `~/.codex/config.toml` |
-
-Cursor: **Settings → Models → Override OpenAI Base URL** (see `.cursor/rules/headroom.mdc`).
+**Headroom** compresses LLM context for **Codex / Claude Code** (not Cursor BYOK — localhost blocked by Cursor cloud). Proxy: `http://127.0.0.1:8787`. See `.cursor/rules/headroom.mdc`.
 
 Workflow: **graphify query → targeted Read → edit → graphify update**.
 
@@ -33,7 +27,7 @@ Workflow: **graphify query → targeted Read → edit → graphify update**.
 1. Use `@webbycrown/webbycommerce` — do not rebuild ecommerce in custom APIs.
 2. Remove any custom `products`/`orders` collection that collides with the plugin.
 3. Persian-only customer storefront; **Shop Owner Strapi Admin is Persian**. Super Admin (developer) may use English.
-4. Digipay UPG + SMS.ir via thin adapters; configure via Strapi content-types (store/SMS/payment settings).
+4. Digipay UPG + **SMS.ir only** for OTP and shop notifications (no email alerts); configure via **تنظیمات پیامک** in gandom-shop plugin. Line: `30002108020007`, admin mobile: `09366531567`.
 5. Dev OTP code: `11111` (non-production only).
 6. **Admin UI = Strapi `/admin` only** — plugin `gandom-shop` for dashboard / comments / customers.
 7. Homepage is a Strapi **dynamic zone** of section components (not raw JSON for owners).

@@ -9,6 +9,7 @@
 - [x] Profile / favorites / addresses require Bearer JWT (`resolveUser`)
 - [x] Digipay ticket creation requires logged-in user
 - [x] Digipay refund requires `x-refund-secret` / `DIGIPAY_REFUND_SECRET`
+- [x] Admin plugin refund + manual reconcile with audit log
 - [x] Digipay permission removed from Public role on bootstrap
 - [x] Mock payment callback rejected in production when real gateway enabled
 

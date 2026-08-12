@@ -7,6 +7,7 @@
 - [ ] Product detail + add to cart + favorites
 - [ ] OTP request + verify with `11111` in dev
 - [ ] Checkout address (استان/شهر validated) → Digipay mock → paid → profile/address saved
+- [ ] Payment harness: `./scripts/payment-harness.sh` (integration + Digipay stub)
 - [ ] Account: orders, addresses CRUD, favorites
 - [ ] CMS pages (about, shipping, …)
 - [ ] Comments require admin approve before public show; replies work

@@ -17,6 +17,9 @@ services:
       DATABASE_SSL: 'false'
       GANDOM_SEED: 'true'
       GANDOM_SEED_FORCE: 'true'
+      GANDOM_BULK_SEED: 'true'
+      # Repair ghost bulk categories (invisible in Content Manager):
+      #   docker exec gandom_strapi_dev node scripts/repair-bulk-documents.js
       OTP_DEV_CODE: '11111'
       DIGIPAY_CALLBACK_URL: http://localhost:5173/payment/callback
       FRONTEND_URL: http://localhost:5173
@@ -30,6 +33,7 @@ services:
       - ./backend/config:/opt/app/config
       - ./backend/public:/opt/app/public
       - ./backend/database:/opt/app/database
+      - ./backend/scripts:/opt/app/scripts
     ports:
       - '1337:1337'
     depends_on:

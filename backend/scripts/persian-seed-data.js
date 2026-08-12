@@ -6,7 +6,10 @@
  *   src/seed-assets/
  *
  * Run via Strapi bootstrap:
- *   GANDOM_SEED=true GANDOM_SEED_FORCE=true npm run develop
+ *   GANDOM_SEED=true GANDOM_SEED_FORCE=true GANDOM_BULK_SEED=true npm run develop
+ *
+ * Bulk local demo (default in docker-compose):
+ *   200 products, 20 categories × 50 subcategories, 100 customers
  *
  * After first successful seed in production, set GANDOM_SEED=false.
  */

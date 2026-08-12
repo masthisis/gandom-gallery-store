@@ -74,7 +74,7 @@ liara bucket create --name=gandom-media --permission=public --plan=20g-g2 --api-
 
 Until Object Storage is attached, media uses the `uploads` disk on `gandom-api` (`/opt/app/public/uploads`).
 
-Set `PUBLIC_URL=https://gandom-api.liara.run` on the API (never the storefront URL). Media links must use the API host (or S3 CDN). The storefront nginx also proxies `/uploads/*` to the API as a fallback.
+Set `PUBLIC_URL=https://api.gandomshop.com` on the API (never the storefront URL). Media links must use the API host (or S3 CDN). The storefront nginx also proxies `/uploads/*` to the API as a fallback.
 
 Docs: [create-bucket](https://docs.liara.ir/references/cli/create-bucket/)
 
@@ -184,7 +184,7 @@ liara deploy --app=gandom-api --api-token="$LIARA_TOKEN" --platform=docker --por
 
 # Storefront
 liara deploy --app=gandom-web --path=frontend --api-token="$LIARA_TOKEN" --platform=docker --port=80 \
-  --build-arg="VITE_API_URL=https://gandom-api.liara.run" --build-location=iran --no-app-logs
+  --build-arg="VITE_API_URL=https://api.gandomshop.com" --build-location=iran --no-app-logs
 ```
 
 Docs: [deploy](https://docs.liara.ir/references/cli/deploy-app/)
@@ -196,14 +196,14 @@ CI/CD: on push to `master`, [`.github/workflows/liara-cd.yml`](../.github/workfl
 | Secret | Value |
 |--------|--------|
 | `LIARA_API_TOKEN` | API token (same as local `liara` file) |
-| `VITE_API_URL` | Public API base, e.g. `https://gandom-api.liara.run` |
+| `VITE_API_URL` | Public API base: `https://api.gandomshop.com` |
 
 Set in GitHub → repo **Settings → Secrets and variables → Actions** (requires write access on `masthisis/gandom-gallery-store`).
 
 ```bash
 # From a machine authenticated as a repo admin (gh auth as the repo owner):
 gh secret set LIARA_API_TOKEN --repo masthisis/gandom-gallery-store < liara
-gh secret set VITE_API_URL --repo masthisis/gandom-gallery-store -b 'https://gandom-api.liara.run'
+gh secret set VITE_API_URL --repo masthisis/gandom-gallery-store -b 'https://api.gandomshop.com'
 ```
 
 Note: `basic` feature plan has a **5-minute** build timeout — too short for cold Strapi builds. Prefer `--feature-plan=standard` (15 min) or `pro` (60 min) when creating `gandom-api`. If recreate fails with “enough balance to cover one week's cost”, top up credit in the Liara console.
@@ -221,13 +221,30 @@ liara db list --api-token="$LIARA_TOKEN"
 liara bucket list --api-token="$LIARA_TOKEN"
 ```
 
-## Future custom domain
+## Custom domain (gandomshop.com)
 
-1. Optional DNS zone: `liara zone create -z example.com --api-token="$LIARA_TOKEN"` — [create-domain](https://docs.liara.ir/references/cli/create-domain/)
-2. In console, attach apex / `www` to `gandom-web` and `api.` to `gandom-api` with SSL — [domains](https://docs.liara.ir/paas/domains/about/)
-3. Update API envs: `FRONTEND_URL`, `DIGIPAY_CALLBACK_URL`
-4. Update GitHub secret `VITE_API_URL` to `https://api.example.com` and redeploy `gandom-web` (Vite bakes URL at build time)
-5. Restart `gandom-api` after env change
+| Host | Liara app | Purpose |
+|------|-----------|---------|
+| `gandomshop.com` + `www.gandomshop.com` | `gandom-web` | Storefront |
+| `api.gandomshop.com` | `gandom-api` | Strapi API + `/admin` |
+
+### One-time setup
+
+1. Optional DNS zone: `liara zone create -z gandomshop.com --api-token="$LIARA_TOKEN"` — [create-domain](https://docs.liara.ir/references/cli/create-domain/)
+2. In Liara console, attach `gandomshop.com` and `www.gandomshop.com` to `gandom-web`, and `api.gandomshop.com` to `gandom-api` (SSL auto-provisioned) — [domains](https://docs.liara.ir/paas/domains/about/)
+3. At your registrar, point DNS:
+   - `gandomshop.com` / `www` → `gandom-web.liara.run` (CNAME or A)
+   - `api.gandomshop.com` → `gandom-api.liara.run` (CNAME)
+4. Set API envs on `gandom-api`:
+   ```bash
+   liara env:set \
+     PUBLIC_URL=https://api.gandomshop.com \
+     FRONTEND_URL=https://gandomshop.com \
+     DIGIPAY_CALLBACK_URL=https://gandomshop.com/payment/callback \
+     -a gandom-api -f --api-token="$LIARA_TOKEN"
+   ```
+5. Update GitHub secret `VITE_API_URL` to `https://api.gandomshop.com` and redeploy `gandom-web` (Vite bakes URL at build time)
+6. Restart `gandom-api` after env change
 
 ## Deploy notes (Strapi build timeout)
 
@@ -235,7 +252,12 @@ Liara **basic** feature plan allows only ~**5 minutes** of remote Docker build. 
 
 **Required flow:** run `npm ci && npm run build` inside `backend/` before `liara deploy`, and temporarily remove the `dist` line from `backend/.gitignore` so the archive includes the admin build (GitHub Actions does this). Prefer upgrading `gandom-api` to `--feature-plan=standard` (15 min) when account credit allows so full remote builds work without prebuilding.
 
-## Default Liara URLs (before custom domain)
+## Production URLs
+
+- Store: `https://gandomshop.com`
+- Admin / API: `https://api.gandomshop.com` · `/admin`
+
+Liara default URLs (fallback before DNS propagates):
 
 - Store: `https://gandom-web.liara.run`
-- Admin / API: `https://gandom-api.liara.run` · `/admin`
+- API: `https://gandom-api.liara.run`

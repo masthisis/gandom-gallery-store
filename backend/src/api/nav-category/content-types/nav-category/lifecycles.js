@@ -15,22 +15,26 @@ async function upsertWcCategory(event) {
   const strapi = global.strapi;
 
   try {
-    const existing = await strapi.db.query('plugin::webbycommerce.product-category').findOne({
-      where: { slug },
+    const existing = await strapi.documents('plugin::webbycommerce.product-category').findMany({
+      filters: { slug },
     });
 
-    if (existing) {
-      await strapi.db.query('plugin::webbycommerce.product-category').update({
-        where: { id: existing.id },
-        data: { name, slug },
+    const data = {
+      name,
+      slug,
+      description: result.description || '',
+    };
+
+    if (existing?.length) {
+      await strapi.documents('plugin::webbycommerce.product-category').update({
+        documentId: existing[0].documentId,
+        status: 'published',
+        data,
       });
     } else {
-      await strapi.db.query('plugin::webbycommerce.product-category').create({
-        data: {
-          name,
-          slug,
-          description: result.description || '',
-        },
+      await strapi.documents('plugin::webbycommerce.product-category').create({
+        status: 'published',
+        data,
       });
     }
   } catch (e) {

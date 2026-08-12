@@ -62,7 +62,9 @@ export function mediaUrl(img: unknown, size: MediaSize = 'medium'): string | nul
   }
   if (!url) return null;
 
-  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:1337').replace(/\/$/, '');
+  const apiBase =
+    (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') ||
+    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:1337');
 
   // Absolute URL wrongly pointed at the storefront → rewrite to API
   try {

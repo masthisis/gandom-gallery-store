@@ -9,6 +9,26 @@ function mediaSrcHosts(): string[] {
   return hosts;
 }
 
+/** Local Vite ports + env URLs for storefront / backoffice. */
+function corsOrigins(): string[] {
+  const origins = new Set<string>();
+
+  for (let port = 5173; port <= 5180; port++) {
+    origins.add(`http://localhost:${port}`);
+    origins.add(`http://127.0.0.1:${port}`);
+  }
+
+  for (const key of ['FRONTEND_URL', 'BACKOFFICE_URL', 'PUBLIC_URL', 'STRAPI_URL'] as const) {
+    const value = process.env[key]?.trim();
+    if (value) origins.add(value.replace(/\/$/, ''));
+  }
+
+  const extra = process.env.CORS_ORIGINS?.split(',').map((s) => s.trim()).filter(Boolean) ?? [];
+  for (const o of extra) origins.add(o.replace(/\/$/, ''));
+
+  return [...origins];
+}
+
 const config: Core.Config.Middlewares = [
   'strapi::logger',
   'strapi::errors',
@@ -29,14 +49,7 @@ const config: Core.Config.Middlewares = [
   {
     name: 'strapi::cors',
     config: {
-      origin: [
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://127.0.0.1:5173',
-        'http://127.0.0.1:5174',
-        process.env.FRONTEND_URL,
-        process.env.BACKOFFICE_URL,
-      ].filter(Boolean),
+      origin: corsOrigins(),
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
     },
   },

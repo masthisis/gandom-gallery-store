@@ -1,5 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ListingPaginationFooter } from '../components/ListingPaginationFooter';
+import { OrderRowSkeleton, WishlistItemSkeleton } from '../components/skeletons/ListingSkeletons';
+import { PaginationBar } from '../components/PaginationBar';
+import { usePaginatedSlice } from '../hooks/usePaginatedSlice';
+import { useListingScrollReveal } from '../hooks/useListingScrollReveal';
 import {
   Package,
   MapPin,
@@ -22,6 +27,9 @@ import {
 } from '../lib/iranValidation';
 
 type Section = 'orders' | 'profile' | 'addresses' | 'wishlist' | 'messages';
+
+const ORDERS_PAGE_SIZE = 10;
+const FAV_PAGE_SIZE = 12;
 
 const MENU: { key: Section; label: string; icon: typeof Package }[] = [
   { key: 'orders', label: 'سفارش‌ها', icon: Package },
@@ -56,6 +64,7 @@ export function AccountPage({
   });
   const [msg, setMsg] = useState('');
   const [saving, setSaving] = useState(false);
+  const profileFormSynced = useRef(false);
 
   function reload() {
     if (!getToken()) return;
@@ -72,15 +81,14 @@ export function AccountPage({
       .profileMe()
       .then((res) => {
         const u = res?.data?.user;
-        if (u) {
+        if (u && !profileFormSynced.current) {
           setProfileForm({
             first_name: u.first_name || '',
             last_name: u.last_name || '',
             display_name: u.display_name || '',
             phone_no: u.phone_no || '',
           });
-          onUserUpdate?.(u);
-          localStorage.setItem('gandom_user', JSON.stringify(u));
+          profileFormSynced.current = true;
         }
         setAddresses(res?.data?.addresses || []);
       })
@@ -102,8 +110,71 @@ export function AccountPage({
   }
 
   useEffect(() => {
+    profileFormSynced.current = false;
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!getToken() || !user) return;
     reload();
-  }, [user]);
+  }, [user?.id]);
+
+  const {
+    visibleItems: visibleOrders,
+    page: ordersPage,
+    pageCount: ordersPageCount,
+    setPage: setOrdersPage,
+    loadingMore: ordersLoading,
+  } = usePaginatedSlice(orders, {
+    pageSize: ORDERS_PAGE_SIZE,
+    mode: 'pages',
+    resetKey: String(orders.length),
+  });
+
+  const {
+    visibleItems: visibleFavorites,
+    hasMore: hasMoreFavorites,
+    loadMore: loadMoreFavorites,
+    loadingMore: loadingMoreFavorites,
+    page: favPage,
+    pageCount: favPageCount,
+    setPage: setFavPage,
+    total: favTotal,
+    usePagination: favUsePagination,
+    paginationForced: favPaginationForced,
+  } = usePaginatedSlice(favorites, {
+    pageSize: FAV_PAGE_SIZE,
+    mode: 'hybrid',
+    maxAutoLoads: 4,
+    resetKey: String(favorites.length),
+  });
+
+  const ordersListingRef = useRef<HTMLDivElement>(null);
+  const favListingRef = useRef<HTMLDivElement>(null);
+  const favNewBatchAnchorRef = useRef<HTMLDivElement>(null);
+  const favNewBatchStartIndex =
+    !favUsePagination && favPage > 1 ? (favPage - 1) * FAV_PAGE_SIZE : -1;
+
+  useListingScrollReveal({
+    loadingMore: ordersLoading,
+    page: ordersPage,
+    visibleCount: visibleOrders.length,
+    pageSize: ORDERS_PAGE_SIZE,
+    usePagination: true,
+    listingRef: ordersListingRef,
+    newBatchAnchorRef: ordersListingRef,
+    resetKey: `${orders.length}-${section}`,
+  });
+
+  useListingScrollReveal({
+    loadingMore: loadingMoreFavorites,
+    page: favPage,
+    visibleCount: visibleFavorites.length,
+    pageSize: FAV_PAGE_SIZE,
+    usePagination: favUsePagination,
+    listingRef: favListingRef,
+    newBatchAnchorRef: favNewBatchAnchorRef,
+    resetKey: String(favorites.length),
+  });
 
   if (!getToken() || !user) {
     return (
@@ -237,22 +308,38 @@ export function AccountPage({
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {orders.map((o) => (
-                    <div key={String(o.id || o.order_number)} className="border border-gray-100 rounded-xl p-4">
-                      <div className="flex justify-between items-start text-sm">
-                        <span className="font-medium text-[#3f4064]">سفارش {String(o.order_number || o.id)}</span>
-                        <span className="text-[var(--dk-cta)]">
-                          {ORDER_STATUS_FA[String(o.status)] || String(o.status)}
-                        </span>
-                      </div>
-                      <div className="text-xs text-[var(--dk-muted)] mt-2 flex justify-between">
-                        <span>{PAYMENT_STATUS_FA[String(o.payment_status)] || String(o.payment_status)}</span>
-                        <span className="font-bold text-[#3f4064]">{formatPrice(Number(o.total))}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <>
+                  <div
+                    ref={ordersListingRef}
+                    key={`orders-${ordersPage}`}
+                    className="space-y-3 animate-[fadeIn_0.35s_ease] scroll-mt-24"
+                  >
+                    {ordersLoading ? (
+                      <OrderRowSkeleton count={3} />
+                    ) : (
+                      visibleOrders.map((o) => (
+                        <div key={String(o.id || o.order_number)} className="border border-gray-100 rounded-xl p-4">
+                          <div className="flex justify-between items-start text-sm">
+                            <span className="font-medium text-[#3f4064]">سفارش {String(o.order_number || o.id)}</span>
+                            <span className="text-[var(--dk-cta)]">
+                              {ORDER_STATUS_FA[String(o.status)] || String(o.status)}
+                            </span>
+                          </div>
+                          <div className="text-xs text-[var(--dk-muted)] mt-2 flex justify-between">
+                            <span>{PAYMENT_STATUS_FA[String(o.payment_status)] || String(o.payment_status)}</span>
+                            <span className="font-bold text-[#3f4064]">{formatPrice(Number(o.total))}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <PaginationBar
+                    page={ordersPage}
+                    pageCount={ordersPageCount}
+                    onPageChange={setOrdersPage}
+                    animating={ordersLoading}
+                  />
+                </>
               )}
             </>
           )}
@@ -403,37 +490,60 @@ export function AccountPage({
                   هنوز محصولی به علاقه‌مندی‌ها اضافه نشده
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {favorites.map((f) => {
-                    const p = (f.product || {}) as Record<string, unknown>;
-                    const slug = String(f.productSlug || p.slug || '');
-                    return (
-                      <div
-                        key={String(f.id || slug)}
-                        className="border border-gray-100 rounded-xl p-4 flex justify-between gap-3"
-                      >
-                        <div>
-                          <Link to={`/product/${slug}`} className="font-medium text-sm text-[#3f4064] hover:text-[var(--dk-cta)]">
-                            {String(p.name || slug)}
-                          </Link>
-                          {p.price != null && (
-                            <div className="text-xs text-[var(--dk-muted)] mt-1">
-                              {formatPrice(Number(p.sale_price ?? p.price))}
-                            </div>
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className="text-red-500 shrink-0"
-                          onClick={() => removeFav(slug)}
-                          aria-label="حذف از علاقه‌مندی"
+                <>
+                  <div
+                    ref={favListingRef}
+                    key={`fav-${favPage}-${favUsePagination ? 'p' : 'i'}`}
+                    className="grid sm:grid-cols-2 gap-3 animate-[fadeIn_0.35s_ease] scroll-mt-24"
+                  >
+                    {visibleFavorites.map((f, i) => {
+                      const p = (f.product || {}) as Record<string, unknown>;
+                      const slug = String(f.productSlug || p.slug || '');
+                      return (
+                        <div
+                          key={String(f.id || slug)}
+                          ref={i === favNewBatchStartIndex ? favNewBatchAnchorRef : undefined}
+                          className="border border-gray-100 rounded-xl p-4 flex justify-between gap-3"
                         >
-                          <Heart className="w-5 h-5 fill-current" />
-                        </button>
+                          <div>
+                            <Link to={`/product/${slug}`} className="font-medium text-sm text-[#3f4064] hover:text-[var(--dk-cta)]">
+                              {String(p.name || slug)}
+                            </Link>
+                            {p.price != null && (
+                              <div className="text-xs text-[var(--dk-muted)] mt-1">
+                                {formatPrice(Number(p.sale_price ?? p.price))}
+                              </div>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            className="text-red-500 shrink-0"
+                            onClick={() => removeFav(slug)}
+                            aria-label="حذف از علاقه‌مندی"
+                          >
+                            <Heart className="w-5 h-5 fill-current" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <ListingPaginationFooter
+                    hasMore={hasMoreFavorites}
+                    loadingMore={loadingMoreFavorites}
+                    onLoadMore={loadMoreFavorites}
+                    usePagination={favUsePagination}
+                    paginationForced={favPaginationForced}
+                    page={favPage}
+                    pageCount={favPageCount}
+                    onPageChange={setFavPage}
+                    total={favTotal}
+                    loadSkeleton={
+                      <div className="grid sm:grid-cols-2 gap-3 pt-2">
+                        <WishlistItemSkeleton count={2} />
                       </div>
-                    );
-                  })}
-                </div>
+                    }
+                  />
+                </>
               )}
             </>
           )}

@@ -4,22 +4,122 @@ const CONTENT_SUBJECTS = [
   'api::homepage.homepage',
   'api::page.page',
   'api::store-setting.store-setting',
-  'api::sms-setting.sms-setting',
-  'api::payment-setting.payment-setting',
-  'api::notification-setting.notification-setting',
   'api::nav-category.nav-category',
   'api::product-meta.product-meta',
   'api::store-comment.store-comment',
-  'api::favorite.favorite',
   'plugin::webbycommerce.product',
   'plugin::webbycommerce.product-category',
   'plugin::webbycommerce.order',
   'plugin::webbycommerce.coupon',
   'plugin::webbycommerce.product-review',
-  'plugin::webbycommerce.address',
-  'plugin::webbycommerce.payment-transaction',
-  'plugin::users-permissions.user',
 ];
+
+/** Field lists mirrored from super-admin CM permissions (+ WC extension fields). */
+const CONTENT_TYPE_FIELDS: Record<string, string[]> = {
+  'api::homepage.homepage': ['seoTitle', 'seoDescription', 'sections'],
+  'api::page.page': ['title', 'slug', 'body', 'seoTitle', 'seoDescription'],
+  'api::store-setting.store-setting': [
+    'storeName',
+    'logo',
+    'phone',
+    'email',
+    'address',
+    'currencyLabel',
+    'shippingFlatToman',
+    'taxEnabled',
+    'lowStockThreshold',
+    'seoDefaults',
+  ],
+  'api::nav-category.nav-category': [
+    'name',
+    'slug',
+    'description',
+    'image',
+    'commerceSlug',
+    'parent',
+    'children',
+    'menu_order',
+    'show_in_menu',
+  ],
+  'api::product-meta.product-meta': ['productSlug', 'specifications', 'gallery_urls'],
+  'api::store-comment.store-comment': [
+    'productSlug',
+    'body',
+    'rating',
+    'is_visible',
+    'user',
+    'parent',
+    'replies',
+  ],
+  'plugin::webbycommerce.product': [
+    'name',
+    'slug',
+    'description',
+    'price',
+    'sale_price',
+    'sku',
+    'stock_quantity',
+    'stock_status',
+    'weight',
+    'images',
+    'product_categories',
+    'specifications',
+    'gallery_urls',
+    'tags',
+    'variations',
+    'wishlists',
+    'compares',
+    'download_file',
+    'download_link',
+    'download_limit',
+    'external_url',
+    'external_button_text',
+    'grouped_products',
+    'parent_product',
+    'reviews',
+  ],
+  'plugin::webbycommerce.product-category': [
+    'name',
+    'slug',
+    'description',
+    'image',
+    'products',
+    'compares',
+  ],
+  'plugin::webbycommerce.order': [
+    'order_number',
+    'status',
+    'user',
+    'items',
+    'subtotal',
+    'tax_amount',
+    'shipping_amount',
+    'discount_amount',
+    'total',
+    'currency',
+    'billing_address',
+    'shipping_address',
+    'payment_method',
+    'payment_status',
+    'shipping_method',
+    'notes',
+    'tracking_number',
+    'estimated_delivery',
+    'payment_transactions',
+  ],
+  'plugin::webbycommerce.coupon': [
+    'code',
+    'type',
+    'value',
+    'description',
+    'usage_limit',
+    'used_count',
+    'minimum_order_amount',
+    'expires_at',
+    'is_active',
+  ],
+  'plugin::webbycommerce.product-review': ['review', 'rating', 'is_visible', 'user', 'product'],
+};
 
 const EXPLORER_ACTIONS = [
   'plugin::content-manager.explorer.create',
@@ -29,6 +129,12 @@ const EXPLORER_ACTIONS = [
   'plugin::content-manager.explorer.publish',
 ];
 
+const FIELD_LEVEL_ACTIONS = new Set([
+  'plugin::content-manager.explorer.create',
+  'plugin::content-manager.explorer.read',
+  'plugin::content-manager.explorer.update',
+]);
+
 const GLOBAL_ACTIONS = [
   'plugin::upload.read',
   'plugin::upload.assets.create',
@@ -36,6 +142,14 @@ const GLOBAL_ACTIONS = [
   'plugin::upload.assets.download',
   'plugin::upload.assets.copy-link',
 ];
+
+function permissionProperties(action: string, subject: string) {
+  const fields = CONTENT_TYPE_FIELDS[subject];
+  if (fields?.length && FIELD_LEVEL_ACTIONS.has(action)) {
+    return { fields };
+  }
+  return {};
+}
 
 /**
  * Ensures Shop Owner admin role (Content Manager + Media + payments + customers).
@@ -71,11 +185,16 @@ export async function ensureShopOwnerRole(strapi: Core.Strapi) {
     const permissions: any[] = [];
     for (const subject of CONTENT_SUBJECTS) {
       for (const action of EXPLORER_ACTIONS) {
-        permissions.push({ action, subject, conditions: [] });
+        permissions.push({
+          action,
+          subject,
+          conditions: [],
+          properties: permissionProperties(action, subject),
+        });
       }
     }
     for (const action of GLOBAL_ACTIONS) {
-      permissions.push({ action, subject: null, conditions: [] });
+      permissions.push({ action, subject: null, conditions: [], properties: {} });
     }
 
     try {
@@ -89,9 +208,21 @@ export async function ensureShopOwnerRole(strapi: Core.Strapi) {
           const exists = await strapi.db.query('admin::permission').findOne({
             where: { action: p.action, subject: p.subject, role: role.id },
           });
-          if (!exists) {
+          const props = p.properties || {};
+          if (exists) {
+            await strapi.db.query('admin::permission').update({
+              where: { id: exists.id },
+              data: { properties: props },
+            });
+          } else {
             await strapi.db.query('admin::permission').create({
-              data: { action: p.action, subject: p.subject, role: role.id, conditions: [] },
+              data: {
+                action: p.action,
+                subject: p.subject,
+                role: role.id,
+                conditions: [],
+                properties: props,
+              },
             });
           }
           ok += 1;
@@ -128,18 +259,8 @@ export async function ensureShopOwnerUser(strapi: Core.Strapi) {
 
     const byEmail = await strapi.admin.services.user.findOneByEmail(email);
     if (byEmail) {
-      const existingRoles = await strapi.db.query('admin::user').findOne({
-        where: { id: byEmail.id },
-        populate: ['roles'],
-      });
-      const roleIds = [
-        ...new Set([
-          ...((existingRoles?.roles || []).map((r: any) => r.id)),
-          role.id,
-        ]),
-      ];
       const data: Record<string, unknown> = {
-        roles: roleIds,
+        roles: [role.id],
         isActive: true,
       };
       if (forcePassword) data.password = password;

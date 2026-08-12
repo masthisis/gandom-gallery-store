@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payment_reconcile_logs",
+  "info": {
+    "singularName": "payment-reconcile-log",
+    "pluralName": "payment-reconcile-logs",
+    "displayName": "گزارش تطبیق پرداخت",
+    "description": "Audit log for manual payment reconciliation"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-api": { "visible": false }
+  },
+  "attributes": {
+    "orderId": {
+      "type": "integer",
+      "required": true
+    },
+    "orderNumber": {
+      "type": "string"
+    },
+    "action": {
+      "type": "enumeration",
+      "enum": ["mark_paid", "mark_failed"],
+      "required": true
+    },
+    "reason": {
+      "type": "text",
+      "required": true
+    },
+    "adminEmail": {
+      "type": "string"
+    },
+    "adminId": {
+      "type": "integer"
+    },
+    "metadata": {
+      "type": "json"
+    }
+  }
+}

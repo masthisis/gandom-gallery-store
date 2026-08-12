@@ -5,6 +5,15 @@
 import { applyCheckoutProfile } from '../../../utils/apply-checkout-profile';
 import { notifyAdmin } from '../../../utils/notify-admin';
 
+async function resolveUserPhone(strapi: any, userRef: unknown): Promise<string | null> {
+  const userId = typeof userRef === 'object' && userRef != null ? (userRef as { id?: number }).id : userRef;
+  if (!userId) return null;
+  const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+    where: { id: Number(userId) || 0 },
+  });
+  return user?.phone_no || null;
+}
+
 type PaymentSettings = {
   enabled?: boolean;
   mockMode?: boolean;
@@ -110,7 +119,6 @@ export default {
       profileSnapshot: profileSnapshot || null,
     };
 
-    // Block mock payments in production unless mockMode is intentionally on
     if (process.env.NODE_ENV === 'production' && !settings.mockMode && !settings.enabled) {
       return ctx.badRequest('درگاه پرداخت پیکربندی نشده است');
     }
@@ -208,7 +216,6 @@ export default {
 
     const settings = await getPaymentSettings(strapi);
 
-    // Reject forged mock callbacks when real gateway is enabled in production
     if (
       isMock &&
       process.env.NODE_ENV === 'production' &&
@@ -252,22 +259,24 @@ export default {
           });
         }
 
+        let gatewayMeta: Record<string, unknown> = {};
+
         if (ticket) {
           const tx = await strapi.db.query('plugin::webbycommerce.payment-transaction').findOne({
             where: { transaction_id: ticket },
           });
           if (tx) {
-            const meta = tx.gateway_response || {};
+            gatewayMeta = tx.gateway_response || {};
             await strapi.db.query('plugin::webbycommerce.payment-transaction').update({
               where: { id: tx.id },
               data: {
                 status: 'completed',
-                gateway_response: { ...meta, callback: q },
+                gateway_response: { ...gatewayMeta, callback: q },
               },
             });
 
-            const userId = meta.userId || order?.user?.id || order?.user;
-            const snapshot = meta.profileSnapshot;
+            const userId = gatewayMeta.userId || order?.user?.id || order?.user;
+            const snapshot = gatewayMeta.profileSnapshot as { phone?: string } | undefined;
             if (userId && snapshot) {
               try {
                 await applyCheckoutProfile(strapi, Number(userId), snapshot);
@@ -278,12 +287,21 @@ export default {
           }
         }
 
+        const profileSnapshot = gatewayMeta.profileSnapshot as { phone?: string } | undefined;
+        const customerPhone =
+          profileSnapshot?.phone ||
+          (gatewayMeta.cellNumber as string | undefined) ||
+          (order?.user ? await resolveUserPhone(strapi, order.user) : null);
+
         await notifyAdmin(strapi, 'order_paid', {
           providerId,
           order_number: order?.order_number || providerId,
+          orderNumber: order?.order_number || providerId,
           ticket,
           amountToman: order?.total ?? null,
-          userId: order?.user?.id || order?.user || null,
+          userId: order?.user?.id || order?.user || gatewayMeta.userId || null,
+          phone: customerPhone,
+          mobile: customerPhone,
           at: new Date().toISOString(),
         });
       } catch (e) {
@@ -292,19 +310,26 @@ export default {
     } else if (!success) {
       let amountToman: number | null = null;
       let userId: unknown = null;
+      let customerPhone: string | null = null;
       try {
         if (ticket) {
           const tx = await strapi.db.query('plugin::webbycommerce.payment-transaction').findOne({
             where: { transaction_id: ticket },
           });
           if (tx) {
+            const gatewayMeta = tx.gateway_response || {};
             amountToman = tx.amount != null ? Number(tx.amount) : null;
-            userId = tx.gateway_response?.userId || null;
+            userId = gatewayMeta.userId || null;
+            const snapshot = gatewayMeta.profileSnapshot as { phone?: string } | undefined;
+            customerPhone =
+              snapshot?.phone ||
+              gatewayMeta.cellNumber ||
+              (userId ? await resolveUserPhone(strapi, userId) : null);
             await strapi.db.query('plugin::webbycommerce.payment-transaction').update({
               where: { id: tx.id },
               data: {
                 status: 'failed',
-                gateway_response: { ...(tx.gateway_response || {}), callback: q },
+                gateway_response: { ...gatewayMeta, callback: q },
               },
             });
           }
@@ -315,10 +340,13 @@ export default {
 
       await notifyAdmin(strapi, 'payment_failed', {
         providerId,
+        orderNumber: providerId,
         ticket,
         status,
         amountToman,
         userId,
+        phone: customerPhone,
+        mobile: customerPhone,
         at: new Date().toISOString(),
         details: q,
       });
@@ -350,7 +378,6 @@ export default {
   },
 
   async refund(ctx: any) {
-    // Refunds are admin-only: require shared secret (not public)
     const secret = process.env.DIGIPAY_REFUND_SECRET || '';
     const provided = String(
       ctx.request.header['x-refund-secret'] || ctx.request.body?.refundSecret || ''

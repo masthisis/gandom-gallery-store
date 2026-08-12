@@ -5,7 +5,7 @@
     "singularName": "sms-setting",
     "pluralName": "sms-settings",
     "displayName": "تنظیمات پیامک",
-    "description": "پیکربندی SMS.ir و کد OTP توسعه"
+    "description": "پیکربندی SMS.ir، قالب پیامک رویدادها و OTP"
   },
   "options": {
     "draftAndPublish": false
@@ -18,7 +18,7 @@
     "devMode": {
       "type": "boolean",
       "default": true,
-      "description": "Accept OTP 11111 and skip real SMS"
+      "description": "OTP dev: accept fixed code and skip real SMS for login"
     },
     "apiKey": {
       "type": "string",
@@ -28,11 +28,19 @@
       "type": "integer"
     },
     "lineNumber": {
-      "type": "string"
+      "type": "string",
+      "default": "30002108020007"
+    },
+    "adminMobile": {
+      "type": "string",
+      "default": "09366531567"
     },
     "devOtpCode": {
       "type": "string",
       "default": "11111"
+    },
+    "eventTemplates": {
+      "type": "json"
     }
   }
 }

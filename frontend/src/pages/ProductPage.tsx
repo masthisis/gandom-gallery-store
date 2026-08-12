@@ -1,11 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Minus, Plus, Star, ShieldCheck, Heart, Share2 } from 'lucide-react';
 import { api, getToken } from '../lib/api';
 import { getCategoryTree, getProductMetas, getProducts } from '../lib/catalog';
 import { formatPrice, mediaUrl, toFarsiDigits } from '../lib/format';
+import { productDescriptionHtml } from '../lib/productDescription';
 import { Breadcrumbs, type Crumb } from '../components/Breadcrumbs';
 import { SimilarProducts } from '../components/SimilarProducts';
+import { PaginationBar } from '../components/PaginationBar';
+import { ReviewSkeleton } from '../components/skeletons/ListingSkeletons';
+import { usePaginatedSlice } from '../hooks/usePaginatedSlice';
+import { useListingScrollReveal } from '../hooks/useListingScrollReveal';
+import { Loader2 } from 'lucide-react';
+
+const REVIEW_PAGE_SIZE = 5;
 import type { ProductCardData } from '../components/ProductCard';
 import {
   mergeProductMeta,
@@ -186,6 +194,45 @@ export function ProductPage({
       .map((c) => ({ name: c.name || c.slug || '', slug: c.slug || '' }));
   }, [product, categoryTree]);
 
+  const topLevelReviews = useMemo(
+    () => reviews.filter((r) => !r.parentId),
+    [reviews]
+  );
+
+  const {
+    visibleItems: visibleReviews,
+    hasMore: hasMoreReviews,
+    loadMore: loadMoreReviews,
+    loadingMore: loadingMoreReviews,
+    usePagination: reviewsUsePagination,
+    paginationForced: reviewsPaginationForced,
+    page: reviewsPage,
+    pageCount: reviewsPageCount,
+    setPage: setReviewsPage,
+    total: reviewsTotal,
+  } = usePaginatedSlice(topLevelReviews, {
+    pageSize: REVIEW_PAGE_SIZE,
+    mode: 'hybrid',
+    maxAutoLoads: 4,
+    resetKey: `${slug}|${topLevelReviews.length}`,
+  });
+
+  const reviewsListingRef = useRef<HTMLDivElement>(null);
+  const reviewsNewBatchAnchorRef = useRef<HTMLDivElement>(null);
+  const reviewsNewBatchStartIndex =
+    !reviewsUsePagination && reviewsPage > 1 ? (reviewsPage - 1) * REVIEW_PAGE_SIZE : -1;
+
+  useListingScrollReveal({
+    loadingMore: loadingMoreReviews,
+    page: reviewsPage,
+    visibleCount: visibleReviews.length,
+    pageSize: REVIEW_PAGE_SIZE,
+    usePagination: reviewsUsePagination,
+    listingRef: reviewsListingRef,
+    newBatchAnchorRef: reviewsNewBatchAnchorRef,
+    resetKey: `${slug}|${topLevelReviews.length}`,
+  });
+
   if (error) return <div className="dk-container py-16 text-center">{error}</div>;
   if (!product)
     return <div className="dk-container py-16 text-center text-[var(--dk-muted)]">در حال بارگذاری...</div>;
@@ -200,12 +247,9 @@ export function ProductPage({
   const outOfStock = product.stock_status === 'out_of_stock' || stock === 0;
   const specs = (product.specifications as SpecItem[]) || [];
 
-  const desc =
-    typeof product.description === 'string'
-      ? product.description.replace(/<[^>]+>/g, '')
-      : '';
+  const rawDesc = typeof product.description === 'string' ? product.description : '';
+  const descHtml = productDescriptionHtml(rawDesc);
 
-  const topLevelReviews = reviews.filter((r) => !r.parentId);
   const avgRating =
     topLevelReviews.length > 0
       ? topLevelReviews.reduce((s, r) => s + (Number(r.rating) || 0), 0) / topLevelReviews.length
@@ -505,9 +549,14 @@ export function ProductPage({
         </div>
         <div className="p-6">
           {tab === 'description' && (
-            <div className="text-sm leading-8 text-[#3f4064] whitespace-pre-wrap">
-              {desc || 'توضیحاتی برای این محصول ثبت نشده است.'}
-            </div>
+            descHtml ? (
+              <div
+                className="product-description text-sm leading-8 text-[#3f4064] [&_img]:max-w-full [&_figure]:my-4"
+                dangerouslySetInnerHTML={{ __html: descHtml }}
+              />
+            ) : (
+              <div className="text-sm text-[var(--dk-muted)]">توضیحاتی برای این محصول ثبت نشده است.</div>
+            )
           )}
           {tab === 'specs' && (
             <div className="max-w-2xl">
@@ -591,59 +640,108 @@ export function ProductPage({
                   هنوز دیدگاهی ثبت نشده است.
                 </p>
               ) : (
-                topLevelReviews.map((r, i) => {
-                  const user = r.user as Record<string, unknown> | null;
-                  const replies = (Array.isArray(r.replies) ? r.replies : []) as Record<
-                    string,
-                    unknown
-                  >[];
-                  return (
-                    <div key={String(r.id || i)} className="border-b border-gray-100 pb-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">
-                          {String(user?.display_name || 'خریدار')}
-                        </span>
-                        <div className="flex text-amber-400 ms-auto">
-                          {Array.from({ length: Number(r.rating) || 0 }).map((_, j) => (
-                            <Star key={j} className="w-3 h-3 fill-current" />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-sm text-[#3f4064] leading-7">
-                        {String(r.review || r.body || '')}
-                      </p>
-                      {!r.legacy && (
-                        <button
-                          type="button"
-                          className="text-xs text-[var(--dk-cta)] mt-2"
-                          onClick={() => {
-                            setReplyTo(r.id as number | string);
-                            setTab('reviews');
-                          }}
+                <>
+                  <div
+                    ref={reviewsListingRef}
+                    key={`reviews-${reviewsPage}-${reviewsUsePagination ? 'p' : 'i'}`}
+                    className="animate-[fadeIn_0.35s_ease] scroll-mt-24"
+                  >
+                    {visibleReviews.map((r, i) => {
+                      const user = r.user as Record<string, unknown> | null;
+                      const replies = (Array.isArray(r.replies) ? r.replies : []) as Record<
+                        string,
+                        unknown
+                      >[];
+                      return (
+                        <div
+                          key={String(r.id || i)}
+                          ref={i === reviewsNewBatchStartIndex ? reviewsNewBatchAnchorRef : undefined}
+                          className="border-b border-gray-100 pb-4 mb-4 last:mb-0"
                         >
-                          پاسخ
-                        </button>
-                      )}
-                      {replies.length > 0 && (
-                        <div className="mt-3 ms-4 border-s-2 border-gray-100 ps-4 space-y-3">
-                          {replies.map((rep) => {
-                            const ru = rep.user as Record<string, unknown> | null;
-                            return (
-                              <div key={String(rep.id)}>
-                                <div className="font-medium text-xs text-[var(--dk-muted)] mb-1">
-                                  {String(ru?.display_name || 'کاربر')}
-                                </div>
-                                <p className="text-sm text-[#3f4064] leading-7">
-                                  {String(rep.review || rep.body || '')}
-                                </p>
-                              </div>
-                            );
-                          })}
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-sm">
+                              {String(user?.display_name || 'خریدار')}
+                            </span>
+                            <div className="flex text-amber-400 ms-auto">
+                              {Array.from({ length: Number(r.rating) || 0 }).map((_, j) => (
+                                <Star key={j} className="w-3 h-3 fill-current" />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-sm text-[#3f4064] leading-7">
+                            {String(r.review || r.body || '')}
+                          </p>
+                          {!r.legacy && (
+                            <button
+                              type="button"
+                              className="text-xs text-[var(--dk-cta)] mt-2"
+                              onClick={() => {
+                                setReplyTo(r.id as number | string);
+                                setTab('reviews');
+                              }}
+                            >
+                              پاسخ
+                            </button>
+                          )}
+                          {replies.length > 0 && (
+                            <div className="mt-3 ms-4 border-s-2 border-gray-100 ps-4 space-y-3">
+                              {replies.map((rep) => {
+                                const ru = rep.user as Record<string, unknown> | null;
+                                return (
+                                  <div key={String(rep.id)}>
+                                    <div className="font-medium text-xs text-[var(--dk-muted)] mb-1">
+                                      {String(ru?.display_name || 'کاربر')}
+                                    </div>
+                                    <p className="text-sm text-[#3f4064] leading-7">
+                                      {String(rep.review || rep.body || '')}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      );
+                    })}
+                  </div>
+
+                  {loadingMoreReviews && <ReviewSkeleton count={2} />}
+
+                  {reviewsPaginationForced && reviewsUsePagination && reviewsPageCount > 1 && (
+                    <p className="text-center text-xs text-[var(--dk-muted)] mb-3 animate-[fadeIn_0.4s_ease]">
+                      برای ادامه، از صفحه‌بندی زیر استفاده کنید
+                    </p>
+                  )}
+
+                  {hasMoreReviews && !reviewsUsePagination && (
+                    <div className="pt-4 text-center">
+                      <button
+                        type="button"
+                        onClick={loadMoreReviews}
+                        disabled={loadingMoreReviews}
+                        className="inline-flex items-center gap-2 text-sm text-[var(--dk-cta)] font-medium px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-[var(--dk-surface)] transition active:scale-95 disabled:opacity-60"
+                      >
+                        {loadingMoreReviews && <Loader2 className="w-4 h-4 animate-spin" />}
+                        نمایش دیدگاه‌های بیشتر
+                      </button>
                     </div>
-                  );
-                })
+                  )}
+
+                  {reviewsUsePagination && reviewsPageCount > 1 && (
+                    <div className="pt-4 animate-[fadeIn_0.45s_ease]">
+                      <p className="text-center text-xs text-[var(--dk-muted)] mb-2">
+                        {toFarsiDigits(reviewsTotal)} دیدگاه · صفحه {toFarsiDigits(reviewsPage)} از{' '}
+                        {toFarsiDigits(reviewsPageCount)}
+                      </p>
+                      <PaginationBar
+                        page={reviewsPage}
+                        pageCount={reviewsPageCount}
+                        onPageChange={setReviewsPage}
+                        animating={loadingMoreReviews}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}

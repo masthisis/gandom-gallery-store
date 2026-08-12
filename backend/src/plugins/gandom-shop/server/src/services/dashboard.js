@@ -79,8 +79,39 @@ module.exports = ({ strapi }) => ({
       itemCount: Array.isArray(o.items) ? o.items.length : 0,
     }));
 
+    const now = Date.now();
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const todayPaid = paid.filter((o) => new Date(o.createdAt).getTime() >= startOfToday.getTime());
+    const todayIncomeToman = todayPaid.reduce((s, o) => s + (Number(o.total) || 0), 0);
+
+    const pendingPaymentOrdersCount = list.filter((o) => o.payment_status === 'pending').length;
+
+    let failedPaymentsCount7d = 0;
+    let paymentSuccessRate7d = null;
+    try {
+      const txs = await strapi.db.query('plugin::webbycommerce.payment-transaction').findMany({
+        orderBy: { id: 'desc' },
+        limit: 500,
+      });
+      const recentTx = (txs || []).filter(
+        (t) => new Date(t.createdAt).getTime() >= sevenDaysAgo
+      );
+      const completed = recentTx.filter((t) => t.status === 'completed').length;
+      const failed = recentTx.filter((t) => t.status === 'failed').length;
+      failedPaymentsCount7d = failed;
+      const totalAttempts = completed + failed;
+      paymentSuccessRate7d =
+        totalAttempts > 0 ? Math.round((completed / totalAttempts) * 100) : null;
+    } catch {
+      failedPaymentsCount7d = 0;
+    }
+
     return {
       incomeToman,
+      todayIncomeToman,
       ordersCount: list.length,
       paidOrdersCount: paid.length,
       soldUnits,
@@ -88,6 +119,9 @@ module.exports = ({ strapi }) => ({
       lowStockThreshold: threshold,
       lowStockProducts,
       pendingCommentsCount,
+      pendingPaymentOrdersCount,
+      failedPaymentsCount7d,
+      paymentSuccessRate7d,
       recentOrders,
     };
   },
@@ -132,11 +166,43 @@ module.exports = ({ strapi }) => ({
     return { ok: true };
   },
 
-  async customers() {
+  async customers(query = {}) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number(query.pageSize) || 25));
+    const offset = (page - 1) * pageSize;
+    const sort = String(query.sort || 'createdAt');
+    const sortDir = query.sortDir === 'asc' ? 'asc' : 'desc';
+
+    const where = {};
+    if (query.q) {
+      const q = String(query.q).trim();
+      if (q) {
+        where.$or = [
+          { phone_no: { $containsi: q } },
+          { username: { $containsi: q } },
+          { email: { $containsi: q } },
+          { display_name: { $containsi: q } },
+          { first_name: { $containsi: q } },
+          { last_name: { $containsi: q } },
+        ];
+      }
+    }
+
+    const orderBy =
+      sort === 'name'
+        ? { display_name: sortDir }
+        : sort === 'ordersCount'
+          ? { id: sortDir }
+          : { createdAt: sortDir };
+
     const users = await strapi.db.query('plugin::users-permissions.user').findMany({
-      orderBy: { id: 'desc' },
-      limit: 200,
+      where,
+      orderBy,
+      limit: pageSize,
+      offset,
     });
+
+    const total = await strapi.db.query('plugin::users-permissions.user').count({ where });
 
     const result = [];
     for (const u of users || []) {
@@ -145,6 +211,13 @@ module.exports = ({ strapi }) => ({
         orderBy: { id: 'desc' },
         limit: 20,
       });
+      const ordersCount = await strapi.db.query('plugin::webbycommerce.order').count({
+        where: { user: u.id },
+      });
+
+      if (query.hasOrders === 'yes' && ordersCount === 0) continue;
+      if (query.hasOrders === 'no' && ordersCount > 0) continue;
+
       result.push({
         id: u.id,
         documentId: u.documentId,
@@ -155,7 +228,7 @@ module.exports = ({ strapi }) => ({
         last_name: u.last_name,
         display_name: u.display_name,
         createdAt: u.createdAt,
-        ordersCount: (orders || []).length,
+        ordersCount,
         orders: (orders || []).map((o) => ({
           id: o.id,
           order_number: o.order_number,
@@ -166,6 +239,18 @@ module.exports = ({ strapi }) => ({
         })),
       });
     }
-    return result;
+
+    const filteredTotal =
+      query.hasOrders === 'yes' || query.hasOrders === 'no' ? result.length : total;
+
+    return {
+      items: result,
+      pagination: {
+        page,
+        pageSize,
+        total: filteredTotal,
+        pageCount: Math.ceil(filteredTotal / pageSize) || 0,
+      },
+    };
   },
 });

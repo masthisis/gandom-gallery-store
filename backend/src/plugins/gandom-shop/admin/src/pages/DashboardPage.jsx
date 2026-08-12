@@ -66,6 +66,13 @@ const DashboardPage = () => {
           </Box>
           <Button
             onClick={() => {
+              window.location.href = `/admin/plugins/${PLUGIN_ID}/payments`;
+            }}
+          >
+            پرداخت‌ها
+          </Button>
+          <Button
+            onClick={() => {
               window.location.href = '/admin/content-manager/single-types/api::homepage.homepage';
             }}
           >
@@ -88,7 +95,17 @@ const DashboardPage = () => {
             <Flex gap={4} wrap="wrap" marginBottom={6}>
               {[
                 { label: 'درآمد (پرداخت‌شده)', value: formatToman(data.incomeToman) },
+                { label: 'درآمد امروز', value: formatToman(data.todayIncomeToman) },
                 { label: 'سفارش‌های پرداخت‌شده', value: String(data.paidOrdersCount ?? 0) },
+                { label: 'در انتظار پرداخت', value: String(data.pendingPaymentOrdersCount ?? 0) },
+                { label: 'پرداخت ناموفق (۷ روز)', value: String(data.failedPaymentsCount7d ?? 0) },
+                {
+                  label: 'نرخ موفقیت (۷ روز)',
+                  value:
+                    data.paymentSuccessRate7d != null
+                      ? `${data.paymentSuccessRate7d}%`
+                      : '—',
+                },
                 { label: 'کل سفارش‌ها', value: String(data.ordersCount ?? 0) },
                 { label: 'اقلام فروخته‌شده', value: String(data.soldUnits ?? 0) },
                 { label: 'دیدگاه در انتظار', value: String(data.pendingCommentsCount ?? 0) },

@@ -16,6 +16,7 @@
 | [02-webbycommerce.md](02-webbycommerce.md) | Plugin config + Persian workarounds |
 | [03-auth-sms.md](03-auth-sms.md) | Phone OTP + SMS.ir |
 | [04-payment-digipay.md](04-payment-digipay.md) | Digipay UPG |
+| [11-payment-admin-harness.md](11-payment-admin-harness.md) | Payment admin + E2E harness |
 | [05-homepage-cms.md](05-homepage-cms.md) | Homepage builder |
 | [06-storefront-ux.md](06-storefront-ux.md) | Storefront pages |
 | [07-backoffice-ux.md](07-backoffice-ux.md) | ~~Persian admin~~ → use Strapi Admin |

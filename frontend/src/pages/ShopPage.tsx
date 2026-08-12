@@ -1,12 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal } from 'lucide-react';
 import { getCategoryTree, getProductMetas, getProducts } from '../lib/catalog';
 import { ProductCard, type ProductCardData } from '../components/ProductCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { CategoryFilterTree } from '../components/CategoryFilterTree';
+import { ListingPaginationFooter } from '../components/ListingPaginationFooter';
+import {
+  ProductCardSkeleton,
+  ProductGridSkeleton,
+} from '../components/skeletons/ListingSkeletons';
 import { toFarsiDigits } from '../lib/format';
+import { findCategoryNode, getFilterSlugsForCategory } from '../lib/categoryTree';
 import type { CategoryItem } from '../components/dk/types';
 import { mergeProductMeta, metasFromResponse, type SpecItem } from '../lib/productMeta';
+import { usePaginatedSlice } from '../hooks/usePaginatedSlice';
+import { useListingScrollReveal } from '../hooks/useListingScrollReveal';
+
+const SHOP_PAGE_SIZE = 24;
 
 type SortKey = 'newest' | 'cheapest' | 'expensive' | 'sale';
 
@@ -23,15 +34,6 @@ function normalizeList(res: unknown): ProductCardData[] {
   if (Array.isArray(r?.data)) return r.data as ProductCardData[];
   if (Array.isArray(r?.products)) return r.products as ProductCardData[];
   return [];
-}
-
-function flattenCategories(tree: CategoryItem[]): CategoryItem[] {
-  const out: CategoryItem[] = [];
-  for (const c of tree) {
-    out.push(c);
-    if (c.children?.length) out.push(...flattenCategories(c.children));
-  }
-  return out;
 }
 
 function effectivePrice(p: ProductCardData): number {
@@ -57,7 +59,7 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
   const specFilter = params.get('spec') || ''; // format: Label:Value
 
   const [products, setProducts] = useState<ProductCardData[]>([]);
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [categoryTree, setCategoryTree] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterOpen, setFilterOpen] = useState(false);
   const [minPrice, setMinPrice] = useState('');
@@ -72,9 +74,9 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
           : Array.isArray(res)
             ? (res as CategoryItem[])
             : [];
-        setCategories(flattenCategories(data));
+        setCategoryTree(data);
       })
-      .catch(() => setCategories([]));
+      .catch(() => setCategoryTree([]));
   }, []);
 
   useEffect(() => {
@@ -116,14 +118,13 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
     let list = [...products];
 
     if (slug) {
+      const allowed = getFilterSlugsForCategory(categoryTree, slug);
       list = list.filter((p) => {
         const cats =
           (p as Record<string, unknown>).product_categories ||
           (p as Record<string, unknown>).categories ||
           [];
-        return (cats as { slug?: string; name?: string }[]).some(
-          (c) => c.slug === slug || c.name === slug
-        );
+        return (cats as { slug?: string }[]).some((c) => c.slug && allowed.has(c.slug));
       });
     }
 
@@ -183,9 +184,45 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
     }
 
     return list;
-  }, [products, slug, q, sort, minPrice, maxPrice, inStockOnly, specFilter]);
+  }, [products, slug, q, sort, minPrice, maxPrice, inStockOnly, specFilter, categoryTree]);
 
-  const catName = categories.find((c) => c.slug === slug)?.name;
+  const filterResetKey = `${slug}|${q}|${sort}|${specFilter}|${minPrice}|${maxPrice}|${inStockOnly}`;
+
+  const {
+    visibleItems,
+    hasMore,
+    loadMore,
+    loadingMore,
+    page,
+    pageCount,
+    setPage,
+    total,
+    usePagination,
+    paginationForced,
+  } = usePaginatedSlice(filtered, {
+    pageSize: SHOP_PAGE_SIZE,
+    mode: 'hybrid',
+    maxAutoLoads: 4,
+    resetKey: filterResetKey,
+  });
+
+  const listingRef = useRef<HTMLDivElement>(null);
+  const newBatchAnchorRef = useRef<HTMLDivElement>(null);
+  const newBatchStartIndex =
+    !usePagination && page > 1 ? (page - 1) * SHOP_PAGE_SIZE : -1;
+
+  useListingScrollReveal({
+    loadingMore,
+    page,
+    visibleCount: visibleItems.length,
+    pageSize: SHOP_PAGE_SIZE,
+    usePagination,
+    listingRef,
+    newBatchAnchorRef,
+    resetKey: filterResetKey,
+  });
+
+  const catName = slug ? findCategoryNode(categoryTree, slug)?.name : undefined;
   const title = q
     ? `نتایج جستجو برای «${q}»`
     : catName
@@ -209,28 +246,26 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
   const sidebar = (
     <aside className="bg-white rounded-2xl p-4 shadow-sm space-y-5">
       <div>
-        <h3 className="font-bold text-sm text-[#3f4064] mb-3">دسته‌بندی</h3>
-        <ul className="space-y-1 max-h-48 overflow-y-auto text-sm">
-          <li>
-            <Link
-              to="/shop"
-              className={`block py-1.5 px-2 rounded-lg hover:bg-[var(--dk-surface)] ${!slug ? 'text-[var(--dk-cta)] font-medium bg-[#fff0f2]' : 'text-[#3f4064]'}`}
-            >
-              همه محصولات
-            </Link>
-          </li>
-          {categories.map((c) => (
-            <li key={c.slug}>
-              <Link
-                to={`/category/${c.slug}`}
-                className={`block py-1.5 px-2 rounded-lg hover:bg-[var(--dk-surface)] ${slug === c.slug ? 'text-[var(--dk-cta)] font-medium bg-[#fff0f2]' : 'text-[#3f4064]'}`}
-              >
-                {c.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <h3 className="font-bold text-sm text-[#3f4064] mb-3">محدوده قیمت</h3>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            placeholder="از"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-[var(--dk-cta)]"
+          />
+          <input
+            type="number"
+            placeholder="تا"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-[var(--dk-cta)]"
+          />
+        </div>
       </div>
+
+      <CategoryFilterTree tree={categoryTree} activeSlug={slug} />
 
       {specOptions.slice(0, 6).map((group) => (
         <div key={group.label}>
@@ -255,26 +290,6 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
           </ul>
         </div>
       ))}
-
-      <div>
-        <h3 className="font-bold text-sm text-[#3f4064] mb-3">محدوده قیمت</h3>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="از"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-[var(--dk-cta)]"
-          />
-          <input
-            type="number"
-            placeholder="تا"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-[var(--dk-cta)]"
-          />
-        </div>
-      </div>
 
       <label className="flex items-center gap-2 text-sm text-[#3f4064] cursor-pointer">
         <input
@@ -370,13 +385,40 @@ export function ShopPage({ onAdd }: { onAdd: (p: ProductCardData) => void }) {
           </p>
 
           {loading ? (
-            <p className="text-[var(--dk-muted)] text-sm py-10 text-center">در حال بارگذاری...</p>
+            <ProductGridSkeleton count={8} />
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
-              {filtered.map((p) => (
-                <ProductCard key={p.id || p.slug} product={p} onAdd={() => onAdd(p)} />
-              ))}
-            </div>
+            <>
+              <div
+                ref={listingRef}
+                key={`shop-page-${page}-${usePagination ? 'p' : 'i'}`}
+                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4 animate-[fadeIn_0.35s_ease] scroll-mt-24"
+              >
+                {visibleItems.map((p, i) => (
+                  <div
+                    key={p.id || p.slug}
+                    ref={i === newBatchStartIndex ? newBatchAnchorRef : undefined}
+                  >
+                    <ProductCard product={p} onAdd={() => onAdd(p)} />
+                  </div>
+                ))}
+              </div>
+              <ListingPaginationFooter
+                hasMore={hasMore}
+                loadingMore={loadingMore}
+                onLoadMore={loadMore}
+                usePagination={usePagination}
+                paginationForced={paginationForced}
+                page={page}
+                pageCount={pageCount}
+                onPageChange={setPage}
+                total={total}
+                loadSkeleton={
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4 pt-2">
+                    <ProductCardSkeleton count={4} />
+                  </div>
+                }
+              />
+            </>
           ) : (
             <div className="text-center py-16 bg-white rounded-2xl">
               <p className="text-[var(--dk-muted)]">محصولی یافت نشد</p>
