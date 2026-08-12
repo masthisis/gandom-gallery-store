@@ -1,5 +1,33 @@
 # AGENTS.md — گندم گالری
 
+## Memory & context (graphify + Headroom)
+
+This repo has a **graphify knowledge graph** at `graphify-out/` (**987 nodes**, code + docs). Use it as primary codebase memory:
+
+```bash
+graphify query "<question>"     # scoped subgraph — use BEFORE Read/Grep/Glob
+graphify path "<A>" "<B>"       # dependency path between symbols
+graphify explain "<concept>"    # node neighborhood
+graphify update .               # refresh after code edits (AST-only, free)
+```
+
+- Read `graphify-out/GRAPH_REPORT.md` for architecture overview; `graphify-out/gandom_galery_shop-callflow.html` for call-flow diagrams.
+- MCP: `.cursor/mcp.json` → `graphify` tools (`query_graph`, `shortest_path`, etc.).
+- Git hooks auto-rebuild on commit. Verify: `scripts/verify-memory-setup.sh`.
+- Gemini key: `GOOGLE_API_KEY` in `.env` (gitignored) or `~/.zshrc` — [AI Studio keys](https://aistudio.google.com/app/apikey).
+
+**Headroom** compresses LLM context (~90% savings, `agent-90` profile). Proxy: `http://127.0.0.1:8787` (persistent, memory on).
+
+| Client | Base URL override |
+|--------|-------------------|
+| Cursor (OpenAI models) | `http://127.0.0.1:8787/p/gandom_galery_shop/v1` |
+| Cursor (Anthropic models) | `http://127.0.0.1:8787/p/gandom_galery_shop` |
+| Claude Code / Codex | auto via `headroom init` → `~/.claude/settings.json`, `~/.codex/config.toml` |
+
+Cursor: **Settings → Models → Override OpenAI Base URL** (see `.cursor/rules/headroom.mdc`).
+
+Workflow: **graphify query → targeted Read → edit → graphify update**.
+
 ## Locked decisions
 
 1. Use `@webbycrown/webbycommerce` — do not rebuild ecommerce in custom APIs.

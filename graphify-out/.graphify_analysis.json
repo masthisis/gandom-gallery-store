@@ -1,0 +1,1498 @@
+{
+  "communities": {
+    "0": [
+      "backend_src_plugins_gandom_shop_admin_src_components_pluginicon",
+      "backend_src_plugins_gandom_shop_admin_src_components_pluginicon_pluginicon",
+      "frontend_src_app",
+      "frontend_src_app_accountpage",
+      "frontend_src_app_app",
+      "frontend_src_app_appshell",
+      "frontend_src_app_cartpage",
+      "frontend_src_app_checkoutpage",
+      "frontend_src_app_cmspage",
+      "frontend_src_app_loadcart",
+      "frontend_src_app_paymentcallbackpage",
+      "frontend_src_app_routefallback",
+      "frontend_src_app_shoppage",
+      "frontend_src_components_addressfields",
+      "frontend_src_components_addressfields_addressfields",
+      "frontend_src_components_addressfields_province",
+      "frontend_src_components_addressfields_useaddressvalidation",
+      "frontend_src_components_authmodal",
+      "frontend_src_components_authmodal_authmodal",
+      "frontend_src_components_authmodal_props",
+      "frontend_src_components_cartdrawer",
+      "frontend_src_components_cartdrawer_cartdrawer",
+      "frontend_src_components_cartdrawer_cartline",
+      "frontend_src_components_cartdrawer_props",
+      "frontend_src_components_footer",
+      "frontend_src_components_footer_footer",
+      "frontend_src_components_footer_trust",
+      "frontend_src_components_header",
+      "frontend_src_components_header_header",
+      "frontend_src_components_header_props",
+      "frontend_src_components_minicartdropdown",
+      "frontend_src_components_minicartdropdown_minicartdropdown",
+      "frontend_src_components_minicartdropdown_props",
+      "frontend_src_components_searchdropdown",
+      "frontend_src_components_searchdropdown_normalizelist",
+      "frontend_src_components_searchdropdown_popular",
+      "frontend_src_components_searchdropdown_producthit",
+      "frontend_src_components_searchdropdown_props",
+      "frontend_src_components_searchdropdown_searchdropdown",
+      "frontend_src_components_toast",
+      "frontend_src_components_toast_toast",
+      "frontend_src_lib_api",
+      "frontend_src_lib_api_api",
+      "frontend_src_lib_api_getguestid",
+      "frontend_src_lib_api_gettoken",
+      "frontend_src_lib_api_request",
+      "frontend_src_lib_api_settoken",
+      "frontend_src_lib_format",
+      "frontend_src_lib_format_format_pref",
+      "frontend_src_lib_format_formatprice",
+      "frontend_src_lib_format_mediasize",
+      "frontend_src_lib_format_order_status_fa",
+      "frontend_src_lib_format_payment_status_fa",
+      "frontend_src_lib_format_tofarsidigits",
+      "frontend_src_lib_format_topluginaddress",
+      "frontend_src_lib_iranvalidation",
+      "frontend_src_lib_iranvalidation_addressformvalues",
+      "frontend_src_lib_iranvalidation_empty_address",
+      "frontend_src_lib_iranvalidation_isvalidiranpostalcode",
+      "frontend_src_lib_iranvalidation_isvalidpersianname",
+      "frontend_src_lib_iranvalidation_normalizeiranmobile",
+      "frontend_src_lib_iranvalidation_toasciidigits",
+      "frontend_src_lib_iranvalidation_validateaddressform",
+      "frontend_src_lib_store_settings",
+      "frontend_src_lib_store_settings_defaults",
+      "frontend_src_lib_store_settings_normalizestore",
+      "frontend_src_lib_store_settings_storesettings",
+      "frontend_src_lib_store_settings_storesettingscontext",
+      "frontend_src_lib_store_settings_storesettingsprovider",
+      "frontend_src_lib_store_settings_usestoresettings",
+      "frontend_src_main",
+      "frontend_src_pages_accountpage",
+      "frontend_src_pages_accountpage_accountpage",
+      "frontend_src_pages_accountpage_menu",
+      "frontend_src_pages_accountpage_section",
+      "frontend_src_pages_cartpage",
+      "frontend_src_pages_cartpage_cartpage",
+      "frontend_src_pages_checkoutpage",
+      "frontend_src_pages_checkoutpage_checkoutpage",
+      "frontend_src_pages_cmspage",
+      "frontend_src_pages_cmspage_cmspage",
+      "frontend_src_pages_paymentcallbackpage",
+      "frontend_src_pages_paymentcallbackpage_paymentcallbackpage",
+      "ref_react"
+    ],
+    "1": [
+      "scripts_gandom_liara",
+      "scripts_gandom_liara_cache_get",
+      "scripts_gandom_liara_cache_set",
+      "scripts_gandom_liara_cleanup_cache",
+      "scripts_gandom_liara_cmd_bucket_create",
+      "scripts_gandom_liara_cmd_bucket_list",
+      "scripts_gandom_liara_cmd_db_list",
+      "scripts_gandom_liara_cmd_db_psql",
+      "scripts_gandom_liara_cmd_db_resize",
+      "scripts_gandom_liara_cmd_db_start",
+      "scripts_gandom_liara_cmd_db_stop",
+      "scripts_gandom_liara_cmd_disk_create",
+      "scripts_gandom_liara_cmd_env_import",
+      "scripts_gandom_liara_cmd_env_list",
+      "scripts_gandom_liara_cmd_env_set",
+      "scripts_gandom_liara_cmd_env_unset",
+      "scripts_gandom_liara_cmd_logs",
+      "scripts_gandom_liara_cmd_network_create",
+      "scripts_gandom_liara_cmd_network_list",
+      "scripts_gandom_liara_cmd_plan_list",
+      "scripts_gandom_liara_cmd_restart",
+      "scripts_gandom_liara_cmd_seed_prod",
+      "scripts_gandom_liara_cmd_shell",
+      "scripts_gandom_liara_cmd_start",
+      "scripts_gandom_liara_cmd_status",
+      "scripts_gandom_liara_cmd_stop",
+      "scripts_gandom_liara_confirm",
+      "scripts_gandom_liara_deploy_all",
+      "scripts_gandom_liara_deploy_api",
+      "scripts_gandom_liara_deploy_web",
+      "scripts_gandom_liara_die",
+      "scripts_gandom_liara_disable_seed",
+      "scripts_gandom_liara_fetch_apps_json",
+      "scripts_gandom_liara_fetch_dbs_json",
+      "scripts_gandom_liara_header",
+      "scripts_gandom_liara_info",
+      "scripts_gandom_liara_invalidate_cache",
+      "scripts_gandom_liara_liara",
+      "scripts_gandom_liara_liara_args",
+      "scripts_gandom_liara_main",
+      "scripts_gandom_liara_main_menu",
+      "scripts_gandom_liara_mask_value",
+      "scripts_gandom_liara_menu_account",
+      "scripts_gandom_liara_menu_control",
+      "scripts_gandom_liara_menu_dbs",
+      "scripts_gandom_liara_menu_deploy",
+      "scripts_gandom_liara_menu_envs",
+      "scripts_gandom_liara_menu_infra",
+      "scripts_gandom_liara_menu_logs",
+      "scripts_gandom_liara_menu_maint",
+      "scripts_gandom_liara_menu_shell",
+      "scripts_gandom_liara_menu_status",
+      "scripts_gandom_liara_need_cmd",
+      "scripts_gandom_liara_ok",
+      "scripts_gandom_liara_pause",
+      "scripts_gandom_liara_pick_app",
+      "scripts_gandom_liara_pick_db",
+      "scripts_gandom_liara_probe_list",
+      "scripts_gandom_liara_prompt_line",
+      "scripts_gandom_liara_resolve_auth",
+      "scripts_gandom_liara_restore_gitignore",
+      "scripts_gandom_liara_sh__entry",
+      "scripts_gandom_liara_smoke_test",
+      "scripts_gandom_liara_spinner_run",
+      "scripts_gandom_liara_trigger_gh_cd",
+      "scripts_gandom_liara_usage",
+      "scripts_gandom_liara_warn"
+    ],
+    "2": [
+      "backend_src_index",
+      "backend_src_index_bootstrap",
+      "backend_src_index_ensuredefaultsettings",
+      "backend_src_index_ensurepublicpermissions",
+      "backend_src_index_register",
+      "backend_src_utils_mailer",
+      "backend_src_utils_mailer_ismailconfigured",
+      "backend_src_utils_mailer_mailconfig",
+      "backend_src_utils_mailer_mailpayload",
+      "backend_src_utils_mailer_sendmail",
+      "backend_src_utils_notification_hooks",
+      "backend_src_utils_notification_hooks_getlowstockthreshold",
+      "backend_src_utils_notification_hooks_lowstockcooldown",
+      "backend_src_utils_notification_hooks_maybenotifylowstock",
+      "backend_src_utils_notification_hooks_registernotificationhooks",
+      "backend_src_utils_notify_admin",
+      "backend_src_utils_notify_admin_buildmessage",
+      "backend_src_utils_notify_admin_event_toggle",
+      "backend_src_utils_notify_admin_getsettings",
+      "backend_src_utils_notify_admin_iseventenabled",
+      "backend_src_utils_notify_admin_notificationevent",
+      "backend_src_utils_notify_admin_notificationsettingsview",
+      "backend_src_utils_notify_admin_notifyadmin",
+      "backend_src_utils_notify_admin_notifypayload",
+      "backend_src_utils_seed_persian",
+      "backend_src_utils_seed_persian_categorytree",
+      "backend_src_utils_seed_persian_catseed",
+      "backend_src_utils_seed_persian_customers",
+      "backend_src_utils_seed_persian_ensurecustomer",
+      "backend_src_utils_seed_persian_localpx",
+      "backend_src_utils_seed_persian_pages",
+      "backend_src_utils_seed_persian_products",
+      "backend_src_utils_seed_persian_productseed",
+      "backend_src_utils_seed_persian_px",
+      "backend_src_utils_seed_persian_reviewseeds",
+      "backend_src_utils_seed_persian_richdesc",
+      "backend_src_utils_seed_persian_seedfavoritesandcomments",
+      "backend_src_utils_seed_persian_seedhomepagesections",
+      "backend_src_utils_seed_persian_seedorders",
+      "backend_src_utils_seed_persian_seedpersiancatalog",
+      "backend_src_utils_seed_persian_spec",
+      "backend_src_utils_seed_persian_upsertnavcategory",
+      "backend_src_utils_seed_persian_upsertproductmeta",
+      "backend_src_utils_seed_persian_upsertwccategory",
+      "backend_src_utils_seed_upload",
+      "backend_src_utils_seed_upload_assets_root",
+      "backend_src_utils_seed_upload_cache",
+      "backend_src_utils_seed_upload_extfromcontenttype",
+      "backend_src_utils_seed_upload_findexistingbyname",
+      "backend_src_utils_seed_upload_mimefor",
+      "backend_src_utils_seed_upload_publicgalleryurl",
+      "backend_src_utils_seed_upload_resolveasset",
+      "backend_src_utils_seed_upload_resolveassetsroot",
+      "backend_src_utils_seed_upload_uploadlocalfile",
+      "backend_src_utils_seed_upload_uploadresult",
+      "backend_src_utils_seed_upload_uploadseedasset",
+      "backend_src_utils_seed_upload_uploadseedfromurl",
+      "backend_src_utils_seed_upload_uploadseedimage",
+      "backend_src_utils_shop_owner_role",
+      "backend_src_utils_shop_owner_role_content_subjects",
+      "backend_src_utils_shop_owner_role_ensureshopownerrole",
+      "backend_src_utils_shop_owner_role_ensureshopowneruser",
+      "backend_src_utils_shop_owner_role_explorer_actions",
+      "backend_src_utils_shop_owner_role_global_actions",
+      "backend_src_utils_super_admin_user",
+      "backend_src_utils_super_admin_user_ensuresuperadminuser"
+    ],
+    "3": [
+      "frontend_src_app_homepage",
+      "frontend_src_components_dk_bannergrid",
+      "frontend_src_components_dk_bannergrid_bannergrid",
+      "frontend_src_components_dk_bannergrid_bannerimage",
+      "frontend_src_components_dk_bannergrid_props",
+      "frontend_src_components_dk_categorygrid",
+      "frontend_src_components_dk_categorygrid_categorygrid",
+      "frontend_src_components_dk_categorygrid_catimage",
+      "frontend_src_components_dk_categorygrid_props",
+      "frontend_src_components_dk_heroslider",
+      "frontend_src_components_dk_heroslider_heroslider",
+      "frontend_src_components_dk_heroslider_props",
+      "frontend_src_components_dk_heroslider_slideimage",
+      "frontend_src_components_dk_incredibleoffers",
+      "frontend_src_components_dk_incredibleoffers_incredibleoffers",
+      "frontend_src_components_dk_incredibleoffers_pad",
+      "frontend_src_components_dk_incredibleoffers_props",
+      "frontend_src_components_dk_incredibleoffers_usecountdown",
+      "frontend_src_components_dk_mixedslider",
+      "frontend_src_components_dk_mixedslider_imagesrc",
+      "frontend_src_components_dk_mixedslider_mixedslider",
+      "frontend_src_components_dk_mixedslider_props",
+      "frontend_src_components_dk_productslider",
+      "frontend_src_components_dk_productslider_productslider",
+      "frontend_src_components_dk_productslider_props",
+      "frontend_src_components_dk_sectionrenderer",
+      "frontend_src_components_dk_sectionrenderer_props",
+      "frontend_src_components_dk_sectionrenderer_sectionrenderer",
+      "frontend_src_components_dk_storyrow",
+      "frontend_src_components_dk_storyrow_props",
+      "frontend_src_components_dk_storyrow_storyimage",
+      "frontend_src_components_dk_storyrow_storyrow",
+      "frontend_src_components_dk_trustbadges",
+      "frontend_src_components_dk_trustbadges_icons",
+      "frontend_src_components_dk_trustbadges_props",
+      "frontend_src_components_dk_trustbadges_trustbadges",
+      "frontend_src_components_dk_types",
+      "frontend_src_components_dk_types_banneritem",
+      "frontend_src_components_dk_types_categoryitem",
+      "frontend_src_components_dk_types_homesection",
+      "frontend_src_components_dk_types_mixeditem",
+      "frontend_src_components_dk_types_slideitem",
+      "frontend_src_components_dk_types_storyitem",
+      "frontend_src_components_dk_types_trustbadgeitem",
+      "frontend_src_components_productcard",
+      "frontend_src_components_productcard_discountpercent",
+      "frontend_src_components_productcard_palette",
+      "frontend_src_components_productcard_placeholderdatauri",
+      "frontend_src_components_productcard_productcard",
+      "frontend_src_components_productcard_productcarddata",
+      "frontend_src_components_productcard_resolveimage",
+      "frontend_src_components_similarproducts",
+      "frontend_src_components_similarproducts_props",
+      "frontend_src_components_similarproducts_similarproducts",
+      "frontend_src_lib_format_mediaurl",
+      "frontend_src_lib_format_pickformaturl",
+      "frontend_src_pages_homepage",
+      "frontend_src_pages_homepage_homepage",
+      "frontend_src_pages_homepage_needsproductfallback",
+      "frontend_src_pages_homepage_normalizelist",
+      "frontend_src_pages_homepage_product_section_types",
+      "frontend_src_pages_homepage_props"
+    ],
+    "4": [
+      "backend_src_api_digipay_controllers_digipay",
+      "backend_src_api_digipay_controllers_digipay_callback",
+      "backend_src_api_digipay_controllers_digipay_createticket",
+      "backend_src_api_digipay_controllers_digipay_getaccesstoken",
+      "backend_src_api_digipay_controllers_digipay_getpaymentsettings",
+      "backend_src_api_digipay_controllers_digipay_paymentsettings",
+      "backend_src_api_digipay_controllers_digipay_refund",
+      "backend_src_api_digipay_controllers_digipay_resolveuser",
+      "backend_src_api_digipay_controllers_digipay_tomantorial",
+      "backend_src_api_favorite_controllers_favorite",
+      "backend_src_api_favorite_controllers_favorite_add",
+      "backend_src_api_favorite_controllers_favorite_hydrateproducts",
+      "backend_src_api_favorite_controllers_favorite_list",
+      "backend_src_api_favorite_controllers_favorite_remove",
+      "backend_src_api_favorite_controllers_favorite_status",
+      "backend_src_api_favorite_controllers_favorite_toggle",
+      "backend_src_api_iran_geo_controllers_iran_geo",
+      "backend_src_api_iran_geo_controllers_iran_geo_list",
+      "backend_src_api_iran_geo_controllers_iran_geo_province",
+      "backend_src_api_product_comment_controllers_product_comment",
+      "backend_src_api_product_comment_controllers_product_comment_create",
+      "backend_src_api_product_comment_controllers_product_comment_list",
+      "backend_src_api_product_comment_controllers_product_comment_mapcomment",
+      "backend_src_api_profile_controllers_profile",
+      "backend_src_api_profile_controllers_profile_createaddress",
+      "backend_src_api_profile_controllers_profile_deleteaddress",
+      "backend_src_api_profile_controllers_profile_mapaddress",
+      "backend_src_api_profile_controllers_profile_mapuser",
+      "backend_src_api_profile_controllers_profile_me",
+      "backend_src_api_profile_controllers_profile_savefromcheckout",
+      "backend_src_api_profile_controllers_profile_updateaddress",
+      "backend_src_api_profile_controllers_profile_updateme",
+      "backend_src_utils_apply_checkout_profile",
+      "backend_src_utils_apply_checkout_profile_applycheckoutprofile",
+      "backend_src_utils_iran_validation",
+      "backend_src_utils_iran_validation_addressinput",
+      "backend_src_utils_iran_validation_citybelongstoprovince",
+      "backend_src_utils_iran_validation_findprovince",
+      "backend_src_utils_iran_validation_isvalidiranpostalcode",
+      "backend_src_utils_iran_validation_isvalidpersianname",
+      "backend_src_utils_iran_validation_listprovinces",
+      "backend_src_utils_iran_validation_normalizeiranmobile",
+      "backend_src_utils_iran_validation_toasciidigits",
+      "backend_src_utils_iran_validation_towcaddress",
+      "backend_src_utils_iran_validation_validateaddressparts",
+      "backend_src_utils_resolve_user",
+      "backend_src_utils_resolve_user_resolveuser"
+    ],
+    "5": [
+      "frontend_src_app_productpage",
+      "frontend_src_components_breadcrumbs",
+      "frontend_src_components_breadcrumbs_breadcrumbs",
+      "frontend_src_components_breadcrumbs_crumb",
+      "frontend_src_components_dk_megamenu",
+      "frontend_src_components_dk_megamenu_megamenu",
+      "frontend_src_components_dk_megamenu_megamenutrigger",
+      "frontend_src_components_dk_megamenu_props",
+      "frontend_src_lib_catalog",
+      "frontend_src_lib_catalog_cache",
+      "frontend_src_lib_catalog_cacheentry",
+      "frontend_src_lib_catalog_getcached",
+      "frontend_src_lib_catalog_getcategorytree",
+      "frontend_src_lib_catalog_getproductmetas",
+      "frontend_src_lib_catalog_getproducts",
+      "frontend_src_lib_productmeta",
+      "frontend_src_lib_productmeta_mergeproductmeta",
+      "frontend_src_lib_productmeta_metasfromresponse",
+      "frontend_src_lib_productmeta_parsegalleryurls",
+      "frontend_src_lib_productmeta_parsespecs",
+      "frontend_src_lib_productmeta_productmetamap",
+      "frontend_src_lib_productmeta_specitem",
+      "frontend_src_pages_productpage",
+      "frontend_src_pages_productpage_collectimages",
+      "frontend_src_pages_productpage_findcategorypath",
+      "frontend_src_pages_productpage_navnode",
+      "frontend_src_pages_productpage_normalizelist",
+      "frontend_src_pages_productpage_productpage",
+      "frontend_src_pages_productpage_tab",
+      "frontend_src_pages_shoppage",
+      "frontend_src_pages_shoppage_discountpct",
+      "frontend_src_pages_shoppage_effectiveprice",
+      "frontend_src_pages_shoppage_flattencategories",
+      "frontend_src_pages_shoppage_getspecs",
+      "frontend_src_pages_shoppage_normalizelist",
+      "frontend_src_pages_shoppage_shoppage",
+      "frontend_src_pages_shoppage_sort_tabs",
+      "frontend_src_pages_shoppage_sortkey"
+    ],
+    "6": [
+      "backend_src_plugins_gandom_shop_server_src_bootstrap",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_approvecomment",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_customers",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_overview",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_pendingcomments",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_rejectcomment",
+      "backend_src_plugins_gandom_shop_server_src_controllers_dashboard_testemail",
+      "backend_src_plugins_gandom_shop_server_src_controllers_index",
+      "backend_src_plugins_gandom_shop_server_src_controllers_index_dashboard",
+      "backend_src_plugins_gandom_shop_server_src_index",
+      "backend_src_plugins_gandom_shop_server_src_index_bootstrap",
+      "backend_src_plugins_gandom_shop_server_src_index_controllers",
+      "backend_src_plugins_gandom_shop_server_src_index_register",
+      "backend_src_plugins_gandom_shop_server_src_index_routes",
+      "backend_src_plugins_gandom_shop_server_src_index_services",
+      "backend_src_plugins_gandom_shop_server_src_register",
+      "backend_src_plugins_gandom_shop_server_src_routes_index",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_customers",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_deletecomment",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_getlowstockthreshold",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_overview",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_pendingcomments",
+      "backend_src_plugins_gandom_shop_server_src_services_dashboard_setcommentvisibility",
+      "backend_src_plugins_gandom_shop_server_src_services_index",
+      "backend_src_plugins_gandom_shop_server_src_services_index_dashboard"
+    ],
+    "7": [
+      "designsystem",
+      "designsystem_10_extending_this_system",
+      "designsystem_11_machine_readable_tokens",
+      "designsystem_1_identity",
+      "designsystem_2_structure",
+      "designsystem_3_color",
+      "designsystem_4_typography",
+      "designsystem_5_spacing_layout",
+      "designsystem_6_depth_motion",
+      "designsystem_7_components",
+      "designsystem_8_states",
+      "designsystem_9_rules",
+      "designsystem_adding_a_new_screen",
+      "designsystem_base_unit",
+      "designsystem_border_radius",
+      "designsystem_design_md_digikala_دیجی_کالا_community",
+      "designsystem_do",
+      "designsystem_don_t",
+      "designsystem_elevation",
+      "designsystem_fonts",
+      "designsystem_how_to_reuse_this_design_md",
+      "designsystem_page_orginal",
+      "designsystem_page_types_likely_to_come_next",
+      "designsystem_palette",
+      "designsystem_scale",
+      "designsystem_versioning",
+      "designsystem_when_to_add_a_new_token_vs_reuse"
+    ],
+    "8": [
+      "agents_skills_graphify_skill",
+      "agents_skills_graphify_skill_for_graphify_add_and_watch",
+      "agents_skills_graphify_skill_for_graphify_query",
+      "agents_skills_graphify_skill_for_the_commit_hook_and_native_agents_md_integration",
+      "agents_skills_graphify_skill_for_update_and_cluster_only",
+      "agents_skills_graphify_skill_graphify",
+      "agents_skills_graphify_skill_honesty_rules",
+      "agents_skills_graphify_skill_interpreter_guard_for_subcommands",
+      "agents_skills_graphify_skill_part_a_structural_extraction_for_code_files",
+      "agents_skills_graphify_skill_part_b_semantic_extraction_parallel_subagents",
+      "agents_skills_graphify_skill_part_c_merge_ast_semantic_into_final_extraction",
+      "agents_skills_graphify_skill_step_0_github_repos_and_multi_path_merge_only_if_a_url_or_several_paths",
+      "agents_skills_graphify_skill_step_1_ensure_graphify_is_installed",
+      "agents_skills_graphify_skill_step_2_5_video_and_audio_only_if_video_files_detected",
+      "agents_skills_graphify_skill_step_2_detect_files",
+      "agents_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "agents_skills_graphify_skill_step_4_5_graph_health_check_read_only_integrity_gate",
+      "agents_skills_graphify_skill_step_4_build_graph_cluster_analyze_generate_outputs",
+      "agents_skills_graphify_skill_step_5_label_communities",
+      "agents_skills_graphify_skill_step_6_generate_obsidian_vault_opt_in_html",
+      "agents_skills_graphify_skill_step_9_save_manifest_update_cost_tracker_clean_up_and_report",
+      "agents_skills_graphify_skill_steps_6b_8_wiki_neo4j_falkordb_svg_graphml_mcp_benchmark_only_on_their_flags",
+      "agents_skills_graphify_skill_usage",
+      "agents_skills_graphify_skill_what_graphify_is_for",
+      "agents_skills_graphify_skill_what_you_must_do_when_invoked"
+    ],
+    "9": [
+      "frontend_tsconfig_app",
+      "frontend_tsconfig_app_compileroptions",
+      "frontend_tsconfig_app_compileroptions_allowarbitraryextensions",
+      "frontend_tsconfig_app_compileroptions_allowimportingtsextensions",
+      "frontend_tsconfig_app_compileroptions_erasablesyntaxonly",
+      "frontend_tsconfig_app_compileroptions_jsx",
+      "frontend_tsconfig_app_compileroptions_lib",
+      "frontend_tsconfig_app_compileroptions_module",
+      "frontend_tsconfig_app_compileroptions_moduledetection",
+      "frontend_tsconfig_app_compileroptions_moduleresolution",
+      "frontend_tsconfig_app_compileroptions_noemit",
+      "frontend_tsconfig_app_compileroptions_nofallthroughcasesinswitch",
+      "frontend_tsconfig_app_compileroptions_nounusedlocals",
+      "frontend_tsconfig_app_compileroptions_nounusedparameters",
+      "frontend_tsconfig_app_compileroptions_skiplibcheck",
+      "frontend_tsconfig_app_compileroptions_target",
+      "frontend_tsconfig_app_compileroptions_tsbuildinfofile",
+      "frontend_tsconfig_app_compileroptions_types",
+      "frontend_tsconfig_app_compileroptions_verbatimmodulesyntax",
+      "frontend_tsconfig_app_include",
+      "frontend_tsconfig_app_json_ref_dom",
+      "frontend_tsconfig_app_json_ref_es2023",
+      "ref_src",
+      "ref_vite_client"
+    ],
+    "10": [
+      "frontend_tsconfig_node",
+      "frontend_tsconfig_node_compileroptions",
+      "frontend_tsconfig_node_compileroptions_allowimportingtsextensions",
+      "frontend_tsconfig_node_compileroptions_erasablesyntaxonly",
+      "frontend_tsconfig_node_compileroptions_lib",
+      "frontend_tsconfig_node_compileroptions_module",
+      "frontend_tsconfig_node_compileroptions_moduledetection",
+      "frontend_tsconfig_node_compileroptions_noemit",
+      "frontend_tsconfig_node_compileroptions_nofallthroughcasesinswitch",
+      "frontend_tsconfig_node_compileroptions_nounusedlocals",
+      "frontend_tsconfig_node_compileroptions_nounusedparameters",
+      "frontend_tsconfig_node_compileroptions_skiplibcheck",
+      "frontend_tsconfig_node_compileroptions_target",
+      "frontend_tsconfig_node_compileroptions_tsbuildinfofile",
+      "frontend_tsconfig_node_compileroptions_types",
+      "frontend_tsconfig_node_compileroptions_verbatimmodulesyntax",
+      "frontend_tsconfig_node_include",
+      "frontend_tsconfig_node_json_ref_es2023",
+      "ref_node",
+      "ref_vite_config_ts"
+    ],
+    "11": [
+      "backend_src_plugins_gandom_shop_admin_src_index",
+      "backend_src_plugins_gandom_shop_admin_src_index_bootstrap",
+      "backend_src_plugins_gandom_shop_admin_src_index_commentsicon",
+      "backend_src_plugins_gandom_shop_admin_src_index_customersicon",
+      "backend_src_plugins_gandom_shop_admin_src_index_pluginicon",
+      "backend_src_plugins_gandom_shop_admin_src_index_register",
+      "backend_src_plugins_gandom_shop_admin_src_index_registertrads",
+      "backend_src_plugins_gandom_shop_admin_src_pages_commentspage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_commentspage_commentspage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_customerspage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_customerspage_customerspage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_customerspage_formattoman",
+      "backend_src_plugins_gandom_shop_admin_src_pages_customerspage_status_fa",
+      "backend_src_plugins_gandom_shop_admin_src_pages_dashboardpage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_dashboardpage_dashboardpage",
+      "backend_src_plugins_gandom_shop_admin_src_pages_dashboardpage_formattoman",
+      "backend_src_plugins_gandom_shop_admin_src_pages_dashboardpage_status_fa",
+      "backend_src_plugins_gandom_shop_admin_src_pluginid",
+      "backend_src_plugins_gandom_shop_admin_src_pluginid_plugin_id"
+    ],
+    "12": [
+      "backend_src_plugins_gandom_shop_package",
+      "backend_src_plugins_gandom_shop_package_dependencies",
+      "backend_src_plugins_gandom_shop_package_description",
+      "backend_src_plugins_gandom_shop_package_exports",
+      "backend_src_plugins_gandom_shop_package_exports_package_json",
+      "backend_src_plugins_gandom_shop_package_exports_strapi_admin",
+      "backend_src_plugins_gandom_shop_package_exports_strapi_server",
+      "backend_src_plugins_gandom_shop_package_name",
+      "backend_src_plugins_gandom_shop_package_strapi",
+      "backend_src_plugins_gandom_shop_package_strapi_admin_default",
+      "backend_src_plugins_gandom_shop_package_strapi_admin_import",
+      "backend_src_plugins_gandom_shop_package_strapi_admin_require",
+      "backend_src_plugins_gandom_shop_package_strapi_admin_source",
+      "backend_src_plugins_gandom_shop_package_strapi_description",
+      "backend_src_plugins_gandom_shop_package_strapi_displayname",
+      "backend_src_plugins_gandom_shop_package_strapi_kind",
+      "backend_src_plugins_gandom_shop_package_strapi_name",
+      "backend_src_plugins_gandom_shop_package_version"
+    ],
+    "13": [
+      "backend_package_dependencies",
+      "backend_package_dependencies_chartbrew_plugin_strapi",
+      "backend_package_dependencies_nodemailer",
+      "backend_package_dependencies_pg",
+      "backend_package_dependencies_react",
+      "backend_package_dependencies_strapi_database",
+      "backend_package_dependencies_strapi_plugin_cloud",
+      "backend_package_dependencies_strapi_provider_upload_aws_s3",
+      "backend_package_dependencies_webbycrown_webbycommerce",
+      "backend_package_json_react",
+      "chartbrew_plugin_strapi",
+      "nodemailer",
+      "pg",
+      "strapi_database",
+      "strapi_plugin_cloud",
+      "strapi_provider_upload_aws_s3",
+      "webbycrown_webbycommerce"
+    ],
+    "14": [
+      "backend_tsconfig_compileroptions",
+      "backend_tsconfig_compileroptions_esmoduleinterop",
+      "backend_tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "backend_tsconfig_compileroptions_incremental",
+      "backend_tsconfig_compileroptions_lib",
+      "backend_tsconfig_compileroptions_module",
+      "backend_tsconfig_compileroptions_moduleresolution",
+      "backend_tsconfig_compileroptions_noemitonerror",
+      "backend_tsconfig_compileroptions_noimplicitthis",
+      "backend_tsconfig_compileroptions_outdir",
+      "backend_tsconfig_compileroptions_resolvejsonmodule",
+      "backend_tsconfig_compileroptions_rootdir",
+      "backend_tsconfig_compileroptions_skiplibcheck",
+      "backend_tsconfig_compileroptions_strict",
+      "backend_tsconfig_compileroptions_target",
+      "ref_es2020"
+    ],
+    "15": [
+      "autoprefixer",
+      "frontend_package_devdependencies",
+      "frontend_package_devdependencies_autoprefixer",
+      "frontend_package_devdependencies_oxlint",
+      "frontend_package_devdependencies_postcss",
+      "frontend_package_devdependencies_tailwindcss",
+      "frontend_package_devdependencies_tailwindcss_vite",
+      "frontend_package_devdependencies_vite",
+      "frontend_package_devdependencies_vitejs_plugin_react",
+      "oxlint",
+      "postcss",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "16": [
+      "backend_src_api_category_tree_controllers_category_tree",
+      "backend_src_api_category_tree_controllers_category_tree_mapnode",
+      "backend_src_api_category_tree_controllers_category_tree_tree",
+      "backend_src_api_homepage_controllers_homepage",
+      "backend_src_api_homepage_controllers_homepage_componenttype",
+      "backend_src_api_homepage_controllers_homepage_find",
+      "backend_src_api_homepage_controllers_homepage_mapproduct",
+      "backend_src_api_homepage_controllers_homepage_mapslide",
+      "backend_src_api_homepage_controllers_homepage_parseids",
+      "backend_src_api_homepage_controllers_homepage_resolveproducts",
+      "backend_src_api_store_setting_controllers_store_setting",
+      "backend_src_api_store_setting_controllers_store_setting_find",
+      "backend_src_utils_media_url",
+      "backend_src_utils_media_url_mediaurl",
+      "backend_src_utils_media_url_publicmediabase"
+    ],
+    "17": [
+      "backend_src_admin_tsconfig_compileroptions",
+      "backend_src_admin_tsconfig_compileroptions_allowjs",
+      "backend_src_admin_tsconfig_compileroptions_allowsyntheticdefaultimports",
+      "backend_src_admin_tsconfig_compileroptions_esmoduleinterop",
+      "backend_src_admin_tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "backend_src_admin_tsconfig_compileroptions_jsx",
+      "backend_src_admin_tsconfig_compileroptions_module",
+      "backend_src_admin_tsconfig_compileroptions_moduleresolution",
+      "backend_src_admin_tsconfig_compileroptions_noemit",
+      "backend_src_admin_tsconfig_compileroptions_resolvejsonmodule",
+      "backend_src_admin_tsconfig_compileroptions_skiplibcheck",
+      "backend_src_admin_tsconfig_compileroptions_strict",
+      "backend_src_admin_tsconfig_compileroptions_target",
+      "backend_src_admin_tsconfig_compileroptions_usedefineforclassfields"
+    ],
+    "18": [
+      "backend_package",
+      "backend_package_description",
+      "backend_package_engines",
+      "backend_package_engines_node",
+      "backend_package_engines_npm",
+      "backend_package_name",
+      "backend_package_private",
+      "backend_package_strapi",
+      "backend_package_strapi_installid",
+      "backend_package_strapi_uuid",
+      "backend_package_version"
+    ],
+    "19": [
+      "backend_package_devdependencies_typescript",
+      "frontend_oxlintrc",
+      "frontend_oxlintrc_plugins",
+      "frontend_oxlintrc_rules",
+      "frontend_oxlintrc_rules_react_only_export_components",
+      "frontend_oxlintrc_rules_react_rules_of_hooks",
+      "frontend_oxlintrc_schema",
+      "frontend_package_devdependencies_typescript",
+      "ref_oxc",
+      "ref_typescript",
+      "ref_warn"
+    ],
+    "20": [
+      "backend_package_scripts",
+      "backend_package_scripts_build",
+      "backend_package_scripts_console",
+      "backend_package_scripts_deploy",
+      "backend_package_scripts_dev",
+      "backend_package_scripts_develop",
+      "backend_package_scripts_seed",
+      "backend_package_scripts_start",
+      "backend_package_scripts_strapi",
+      "backend_package_scripts_upgrade",
+      "backend_package_scripts_upgrade_dry"
+    ],
+    "21": [
+      "docs_liara_production_architecture",
+      "docs_liara_production_default_liara_urls_before_custom_domain",
+      "docs_liara_production_deploy",
+      "docs_liara_production_deploy_notes_strapi_build_timeout",
+      "docs_liara_production_future_custom_domain",
+      "docs_liara_production_github_secrets",
+      "docs_liara_production_install_cli",
+      "docs_liara_production_liara_production_گندم_گالری",
+      "docs_liara_production_logs_ops",
+      "docs_liara_production_ops_console_recommended",
+      "docs_liara_production_provision_one_time"
+    ],
+    "22": [
+      "docs_plans_09_qa_launch",
+      "docs_plans_09_qa_launch_checklist",
+      "docs_plans_09_qa_launch_qa_launch",
+      "docs_qa_checklist",
+      "docs_qa_checklist_backup_note",
+      "docs_qa_checklist_functional",
+      "docs_qa_checklist_ops",
+      "docs_qa_checklist_qa_launch_checklist_گندم_گالری",
+      "docs_qa_checklist_security",
+      "docs_qa_checklist_strapi_admin_shop_owner",
+      "docs_security_checklist"
+    ],
+    "23": [
+      "backend_package_dependencies_react_router_dom",
+      "backend_package_dependencies_strapi_strapi",
+      "backend_package_json_react_router_dom",
+      "backend_package_json_strapi_strapi",
+      "backend_src_plugins_gandom_shop_package_json_react",
+      "backend_src_plugins_gandom_shop_package_peerdependencies",
+      "backend_src_plugins_gandom_shop_package_peerdependencies_react",
+      "backend_src_plugins_gandom_shop_package_peerdependencies_react_router_dom",
+      "backend_src_plugins_gandom_shop_package_peerdependencies_strapi_strapi",
+      "frontend_package_dependencies_react_router_dom"
+    ],
+    "24": [
+      "frontend_package",
+      "frontend_package_name",
+      "frontend_package_private",
+      "frontend_package_scripts",
+      "frontend_package_scripts_build",
+      "frontend_package_scripts_dev",
+      "frontend_package_scripts_lint",
+      "frontend_package_scripts_preview",
+      "frontend_package_type",
+      "frontend_package_version"
+    ],
+    "25": [
+      "agents_skills_graphify_references_exports",
+      "agents_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "agents_skills_graphify_references_exports_step_6b_wiki_only_if_wiki_flag",
+      "agents_skills_graphify_references_exports_step_7_neo4j_export_only_if_neo4j_or_neo4j_push_flag",
+      "agents_skills_graphify_references_exports_step_7a_falkordb_export_only_if_falkordb_or_falkordb_push_flag",
+      "agents_skills_graphify_references_exports_step_7b_svg_export_only_if_svg_flag",
+      "agents_skills_graphify_references_exports_step_7c_graphml_export_only_if_graphml_flag",
+      "agents_skills_graphify_references_exports_step_7d_mcp_server_only_if_mcp_flag",
+      "agents_skills_graphify_references_exports_step_8_token_reduction_benchmark_only_if_total_words_5000"
+    ],
+    "26": [
+      "backend_package_dependencies_react_dom",
+      "backend_package_json_react_dom",
+      "backend_src_plugins_gandom_shop_package_peerdependencies_react_dom",
+      "frontend_package_dependencies",
+      "frontend_package_dependencies_lucide_react",
+      "frontend_package_dependencies_react",
+      "frontend_package_dependencies_react_dom",
+      "frontend_package_json_react",
+      "lucide_react"
+    ],
+    "27": [
+      "backend_package_devdependencies",
+      "backend_package_devdependencies_types_node",
+      "backend_package_devdependencies_types_nodemailer",
+      "backend_package_devdependencies_types_react",
+      "backend_package_json_types_node",
+      "backend_package_json_types_react",
+      "frontend_package_devdependencies_types_node",
+      "frontend_package_devdependencies_types_react",
+      "types_nodemailer"
+    ],
+    "28": [
+      "backend_src_admin_tsconfig",
+      "backend_src_admin_tsconfig_exclude",
+      "backend_src_admin_tsconfig_include",
+      "backend_src_admin_tsconfig_json_ref",
+      "backend_src_admin_tsconfig_json_ref_build",
+      "backend_src_admin_tsconfig_json_ref_dist",
+      "backend_tsconfig_json_ref_node_modules",
+      "ref_plugins_admin_src",
+      "ref_test_ts"
+    ],
+    "29": [
+      "backend_tsconfig_exclude",
+      "backend_tsconfig_json_ref_build",
+      "backend_tsconfig_json_ref_dist",
+      "ref_cache",
+      "ref_src_admin",
+      "ref_src_plugins",
+      "ref_strapi",
+      "ref_test",
+      "ref_tmp"
+    ],
+    "30": [
+      "backend_readme",
+      "backend_readme_build",
+      "backend_readme_community",
+      "backend_readme_deployment",
+      "backend_readme_develop",
+      "backend_readme_getting_started_with_strapi",
+      "backend_readme_learn_more",
+      "backend_readme_start"
+    ],
+    "31": [
+      "backend_src_api_auth_otp_controllers_auth_otp",
+      "backend_src_api_auth_otp_controllers_auth_otp_getsmssettings",
+      "backend_src_api_auth_otp_controllers_auth_otp_isdevotpmode",
+      "backend_src_api_auth_otp_controllers_auth_otp_isvalidiranmobile",
+      "backend_src_api_auth_otp_controllers_auth_otp_normalizephone",
+      "backend_src_api_auth_otp_controllers_auth_otp_request",
+      "backend_src_api_auth_otp_controllers_auth_otp_sendsmsirverify",
+      "backend_src_api_auth_otp_controllers_auth_otp_verify"
+    ],
+    "32": [
+      "agents",
+      "agents_agents_md_گندم_گالری",
+      "agents_commands",
+      "agents_locked_decisions",
+      "agents_memory_context_graphify_headroom",
+      "graphify",
+      "headroom"
+    ],
+    "33": [
+      "digipay_adapter",
+      "docs_architecture",
+      "docs_architecture_architecture_گندم_گالری",
+      "gandom_shop_plugin",
+      "shop_owner",
+      "sms_ir_adapter",
+      "strapi_5"
+    ],
+    "34": [
+      "docs_plans_00_index",
+      "docs_plans_00_index_architecture_lock",
+      "docs_plans_00_index_architecture_lock_updated",
+      "docs_plans_00_index_phase_docs",
+      "docs_plans_00_index_گندم_گالری_plan_index",
+      "docs_plans_08_content_policies",
+      "docs_plans_08_content_policies_phase_8_content_policies"
+    ],
+    "35": [
+      "docs_plans_01_foundation",
+      "docs_plans_01_foundation_acceptance",
+      "docs_plans_01_foundation_foundation",
+      "docs_plans_01_foundation_goals",
+      "docs_plans_02_webbycommerce_webbycommerce",
+      "docs_plans_10_digikala_parity_digikala_parity",
+      "webbycommerce_plugin"
+    ],
+    "36": [
+      "docs_security_checklist_admin_accounts_two_roles",
+      "docs_security_checklist_admin_surface",
+      "docs_security_checklist_auth_sessions",
+      "docs_security_checklist_data_payments",
+      "docs_security_checklist_ops",
+      "docs_security_checklist_secrets_config",
+      "docs_security_checklist_security_checklist_گندم_گالری_vibe_coded_app_hardening"
+    ],
+    "37": [
+      "readme_admin_email_notifications_liara",
+      "readme_content_manager_persian_labels",
+      "readme_menu_plugin_فروشگاه_گندم",
+      "readme_quick_start",
+      "readme_shop_owner_admin",
+      "readme_stack",
+      "readme_گندم_گالری"
+    ],
+    "38": [
+      "agents_skills_graphify_references_query",
+      "agents_skills_graphify_references_query_for_graphify_explain",
+      "agents_skills_graphify_references_query_for_graphify_path",
+      "agents_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "agents_skills_graphify_references_query_step_0_constrained_query_expansion_required_before_traversal",
+      "agents_skills_graphify_references_query_step_1_traversal"
+    ],
+    "39": [
+      "backend_tsconfig",
+      "backend_tsconfig_include",
+      "backend_tsconfig_json_ref",
+      "ref_js",
+      "ref_src_json",
+      "ref_ts"
+    ],
+    "40": [
+      "docs_plans_10_digikala_parity",
+      "docs_plans_10_digikala_parity_admin",
+      "docs_plans_10_digikala_parity_categories",
+      "docs_plans_10_digikala_parity_digikala_parity_storefront_strapi_admin",
+      "docs_plans_10_digikala_parity_homepage",
+      "docs_plans_10_digikala_parity_storefront"
+    ],
+    "41": [
+      "backend_config_plugins",
+      "backend_config_plugins_allowedmediatypes",
+      "backend_config_plugins_config",
+      "backend_config_plugins_deniedexecutabletypes",
+      "backend_config_plugins_uploadconfig"
+    ],
+    "42": [
+      "backend_readme_strapi",
+      "docs_plans_06_storefront_ux_storefront_ux",
+      "docs_plans_07_backoffice_ux_backoffice_ux",
+      "frontend_readme_frontend",
+      "github_workflows_liara_cd_deploy"
+    ],
+    "43": [
+      "docs_liara_production",
+      "docs_plans_index",
+      "liara_cloud",
+      "readme",
+      "webbycommerce"
+    ],
+    "44": [
+      "docs_liara_production_after_env_changes",
+      "docs_liara_production_console",
+      "docs_liara_production_environment_variables_best_practice",
+      "docs_liara_production_required_production_highlights",
+      "docs_liara_production_set_edit_cli_preferred"
+    ],
+    "45": [
+      "docs_plans_02_webbycommerce",
+      "docs_plans_02_webbycommerce_acceptance",
+      "docs_plans_02_webbycommerce_locked_workarounds",
+      "docs_plans_02_webbycommerce_phase_2_webbycommerce_persian_workarounds",
+      "docs_plans_02_webbycommerce_principle"
+    ],
+    "46": [
+      "docs_plans_03_auth_sms",
+      "docs_plans_03_auth_sms_acceptance",
+      "docs_plans_03_auth_sms_flow",
+      "docs_plans_03_auth_sms_phase_3_auth_sms_ir",
+      "docs_plans_03_auth_sms_settings_sms_setting"
+    ],
+    "47": [
+      "docs_plans_04_payment_digipay",
+      "docs_plans_04_payment_digipay_acceptance",
+      "docs_plans_04_payment_digipay_flow",
+      "docs_plans_04_payment_digipay_phase_4_digipay_upg",
+      "docs_plans_04_payment_digipay_settings_payment_setting"
+    ],
+    "48": [
+      "docs_plans_05_homepage_cms",
+      "docs_plans_05_homepage_cms_acceptance",
+      "docs_plans_05_homepage_cms_api",
+      "docs_plans_05_homepage_cms_homepage_cms",
+      "docs_plans_05_homepage_cms_sections_json_on_homepage_single_type"
+    ],
+    "49": [
+      "docs_plans_06_storefront_ux",
+      "docs_plans_06_storefront_ux_acceptance",
+      "docs_plans_06_storefront_ux_pages",
+      "docs_plans_06_storefront_ux_phase_6_storefront",
+      "docs_plans_06_storefront_ux_ux"
+    ],
+    "50": [
+      "docs_plans_07_backoffice_ux",
+      "docs_plans_07_backoffice_ux_acceptance",
+      "docs_plans_07_backoffice_ux_auth",
+      "docs_plans_07_backoffice_ux_modules",
+      "docs_plans_07_backoffice_ux_phase_7_backoffice"
+    ],
+    "51": [
+      "agents_skills_graphify_references_add_watch",
+      "agents_skills_graphify_references_add_watch_for_graphify_add",
+      "agents_skills_graphify_references_add_watch_for_watch",
+      "agents_skills_graphify_references_add_watch_graphify_reference_add_a_url_and_watch_a_folder"
+    ],
+    "52": [
+      "agents_skills_graphify_references_hooks",
+      "agents_skills_graphify_references_hooks_for_git_commit_hook",
+      "agents_skills_graphify_references_hooks_for_native_agents_md_integration",
+      "agents_skills_graphify_references_hooks_graphify_reference_commit_hook_and_native_agents_md_integration"
+    ],
+    "53": [
+      "agents_skills_graphify_references_update",
+      "agents_skills_graphify_references_update_for_cluster_only",
+      "agents_skills_graphify_references_update_for_update_incremental_re_extraction",
+      "agents_skills_graphify_references_update_graphify_reference_incremental_update_and_cluster_only"
+    ],
+    "54": [
+      "backend_src_admin_tsconfig_compileroptions_lib",
+      "backend_src_admin_tsconfig_json_ref_dom",
+      "ref_dom_iterable",
+      "ref_esnext"
+    ],
+    "55": [
+      "backend_src_api_nav_category_content_types_nav_category_lifecycles",
+      "backend_src_api_nav_category_content_types_nav_category_lifecycles_aftercreate",
+      "backend_src_api_nav_category_content_types_nav_category_lifecycles_afterupdate",
+      "backend_src_api_nav_category_content_types_nav_category_lifecycles_upsertwccategory"
+    ],
+    "56": [
+      "frontend_readme",
+      "frontend_readme_expanding_the_oxlint_configuration",
+      "frontend_readme_react_compiler",
+      "frontend_readme_react_typescript_vite"
+    ],
+    "57": [
+      "agents_skills_graphify_references_github_and_merge",
+      "agents_skills_graphify_references_github_and_merge_graphify_reference_github_clone_and_cross_repo_merge",
+      "agents_skills_graphify_references_github_and_merge_step_0_clone_github_repo_s_only_if_a_github_url_was_given"
+    ],
+    "58": [
+      "agents_skills_graphify_references_transcribe",
+      "agents_skills_graphify_references_transcribe_graphify_reference_transcribe_video_and_audio",
+      "agents_skills_graphify_references_transcribe_step_2_5_transcribe_video_audio_files_only_if_video_files_detected"
+    ],
+    "59": [
+      "backend_config_middlewares",
+      "backend_config_middlewares_config",
+      "backend_config_middlewares_mediasrchosts"
+    ],
+    "60": [
+      "backend_package_dependencies_styled_components",
+      "backend_package_json_styled_components",
+      "backend_src_plugins_gandom_shop_package_peerdependencies_styled_components"
+    ],
+    "61": [
+      "backend_package_devdependencies_types_react_dom",
+      "backend_package_json_types_react_dom",
+      "frontend_package_devdependencies_types_react_dom"
+    ],
+    "62": [
+      "backend_src_api_product_comment_services_product_comment",
+      "backend_src_api_product_comment_services_product_comment_create",
+      "backend_src_api_product_comment_services_product_comment_list"
+    ],
+    "63": [
+      "cursor_mcp",
+      "cursor_mcp_mcp_server_graphify",
+      "mcp_command_uvx"
+    ],
+    "64": [
+      "frontend_tsconfig",
+      "frontend_tsconfig_files",
+      "frontend_tsconfig_references"
+    ],
+    "65": [
+      "agents_skills_graphify_references_extraction_spec",
+      "agents_skills_graphify_references_extraction_spec_graphify_reference_extraction_subagent_prompt"
+    ],
+    "66": [
+      "backend_config_admin",
+      "backend_config_admin_config"
+    ],
+    "67": [
+      "backend_config_api",
+      "backend_config_api_config"
+    ],
+    "68": [
+      "backend_config_database",
+      "backend_config_database_config"
+    ],
+    "69": [
+      "backend_config_server",
+      "backend_config_server_config"
+    ],
+    "70": [
+      "backend_package_dependencies_strapi_plugin_users_permissions",
+      "strapi_plugin_users_permissions"
+    ],
+    "71": [
+      "backend_src_admin_app",
+      "backend_src_admin_app_bootstrap"
+    ],
+    "72": [
+      "backend_src_admin_app_example",
+      "backend_src_admin_app_example_bootstrap"
+    ],
+    "73": [
+      "backend_src_api_catalog_controllers_catalog",
+      "backend_src_api_catalog_controllers_catalog_list"
+    ],
+    "74": [
+      "backend_src_api_catalog_services_catalog",
+      "backend_src_api_catalog_services_catalog_list"
+    ],
+    "75": [
+      "backend_src_api_category_tree_services_category_tree",
+      "backend_src_api_category_tree_services_category_tree_tree"
+    ],
+    "76": [
+      "backend_src_types_nodemailer_d",
+      "backend_src_types_nodemailer_d_nodemailer"
+    ],
+    "77": [
+      "digipay_gateway",
+      "docs_plans_04_payment_digipay_payment_digipay"
+    ],
+    "78": [
+      "docs_plans_03_auth_sms_auth_sms",
+      "sms_ir_service"
+    ],
+    "79": [
+      "frontend_vite_config",
+      "frontend_vite_config_manualchunks"
+    ],
+    "80": [
+      "scripts_liara_deploy_api",
+      "scripts_liara_deploy_api_sh__entry"
+    ],
+    "81": [
+      "backend_scripts_persian_seed_data"
+    ],
+    "82": [
+      "backend_src_admin_vite_config_example"
+    ],
+    "83": [
+      "backend_src_api_auth_otp_routes_auth_otp"
+    ],
+    "84": [
+      "backend_src_api_auth_otp_services_auth_otp"
+    ],
+    "85": [
+      "backend_src_api_catalog_routes_catalog"
+    ],
+    "86": [
+      "backend_src_api_category_tree_routes_category_tree"
+    ],
+    "87": [
+      "backend_src_api_digipay_routes_digipay"
+    ],
+    "88": [
+      "backend_src_api_digipay_services_digipay"
+    ],
+    "89": [
+      "backend_src_api_favorite_routes_favorite"
+    ],
+    "90": [
+      "backend_src_api_favorite_services_favorite"
+    ],
+    "91": [
+      "backend_src_api_homepage_routes_homepage"
+    ],
+    "92": [
+      "backend_src_api_homepage_services_homepage"
+    ],
+    "93": [
+      "backend_src_api_iran_geo_routes_iran_geo"
+    ],
+    "94": [
+      "backend_src_api_iran_geo_services_iran_geo"
+    ],
+    "95": [
+      "backend_src_api_nav_category_controllers_nav_category"
+    ],
+    "96": [
+      "backend_src_api_nav_category_routes_nav_category"
+    ],
+    "97": [
+      "backend_src_api_nav_category_services_nav_category"
+    ],
+    "98": [
+      "backend_src_api_notification_setting_controllers_notification_setting"
+    ],
+    "99": [
+      "backend_src_api_notification_setting_routes_notification_setting"
+    ],
+    "100": [
+      "backend_src_api_notification_setting_services_notification_setting"
+    ],
+    "101": [
+      "backend_src_api_page_controllers_page"
+    ],
+    "102": [
+      "backend_src_api_page_routes_page"
+    ],
+    "103": [
+      "backend_src_api_page_services_page"
+    ],
+    "104": [
+      "backend_src_api_payment_setting_controllers_payment_setting"
+    ],
+    "105": [
+      "backend_src_api_payment_setting_routes_payment_setting"
+    ],
+    "106": [
+      "backend_src_api_payment_setting_services_payment_setting"
+    ],
+    "107": [
+      "backend_src_api_product_comment_routes_product_comment"
+    ],
+    "108": [
+      "backend_src_api_product_meta_controllers_product_meta"
+    ],
+    "109": [
+      "backend_src_api_product_meta_routes_product_meta"
+    ],
+    "110": [
+      "backend_src_api_product_meta_services_product_meta"
+    ],
+    "111": [
+      "backend_src_api_profile_routes_profile"
+    ],
+    "112": [
+      "backend_src_api_profile_services_profile"
+    ],
+    "113": [
+      "backend_src_api_sms_setting_controllers_sms_setting"
+    ],
+    "114": [
+      "backend_src_api_sms_setting_routes_sms_setting"
+    ],
+    "115": [
+      "backend_src_api_sms_setting_services_sms_setting"
+    ],
+    "116": [
+      "backend_src_api_store_comment_controllers_store_comment"
+    ],
+    "117": [
+      "backend_src_api_store_comment_routes_store_comment"
+    ],
+    "118": [
+      "backend_src_api_store_comment_services_store_comment"
+    ],
+    "119": [
+      "backend_src_api_store_setting_routes_store_setting"
+    ],
+    "120": [
+      "backend_src_api_store_setting_services_store_setting"
+    ],
+    "121": [
+      "backend_src_extensions_webbycommerce_strapi_server"
+    ],
+    "122": [
+      "designsystem_md"
+    ],
+    "123": [
+      "frontend_index_html_root"
+    ],
+    "124": [
+      "super_admin"
+    ]
+  },
+  "cohesion": {
+    "0": 0.060814687320711415,
+    "1": 0.11985526910900045,
+    "2": 0.057342657342657345,
+    "3": 0.06768905341089371,
+    "4": 0.1026827012025902,
+    "5": 0.11806543385490754,
+    "6": 0.07692307692307693,
+    "7": 0.07407407407407407,
+    "8": 0.08,
+    "9": 0.08333333333333333,
+    "10": 0.1,
+    "11": 0.19298245614035087,
+    "12": 0.1111111111111111,
+    "13": 0.11764705882352941,
+    "14": 0.125,
+    "15": 0.13333333333333333,
+    "16": 0.2761904761904762,
+    "17": 0.14285714285714285,
+    "18": 0.18181818181818182,
+    "19": 0.18181818181818182,
+    "20": 0.18181818181818182,
+    "21": 0.18181818181818182,
+    "22": 0.2,
+    "23": 0.2,
+    "24": 0.2,
+    "25": 0.2222222222222222,
+    "26": 0.2222222222222222,
+    "27": 0.2222222222222222,
+    "28": 0.2222222222222222,
+    "29": 0.2222222222222222,
+    "30": 0.25,
+    "31": 0.5714285714285714,
+    "32": 0.2857142857142857,
+    "33": 0.38095238095238093,
+    "34": 0.2857142857142857,
+    "35": 0.2857142857142857,
+    "36": 0.2857142857142857,
+    "37": 0.2857142857142857,
+    "38": 0.3333333333333333,
+    "39": 0.3333333333333333,
+    "40": 0.3333333333333333,
+    "41": 0.5,
+    "42": 0.4,
+    "43": 0.4,
+    "44": 0.4,
+    "45": 0.4,
+    "46": 0.4,
+    "47": 0.4,
+    "48": 0.4,
+    "49": 0.4,
+    "50": 0.4,
+    "51": 0.5,
+    "52": 0.5,
+    "53": 0.5,
+    "54": 0.5,
+    "55": 0.8333333333333334,
+    "56": 0.5,
+    "57": 0.6666666666666666,
+    "58": 0.6666666666666666,
+    "59": 0.6666666666666666,
+    "60": 0.6666666666666666,
+    "61": 0.6666666666666666,
+    "62": 0.6666666666666666,
+    "63": 0.6666666666666666,
+    "64": 0.6666666666666666,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0
+  },
+  "gods": [
+    {
+      "id": "ref_react",
+      "label": "react",
+      "degree": 24
+    },
+    {
+      "id": "scripts_gandom_liara_liara",
+      "label": "_liara()",
+      "degree": 24
+    },
+    {
+      "id": "frontend_src_lib_format_mediaurl",
+      "label": "mediaUrl()",
+      "degree": 22
+    },
+    {
+      "id": "scripts_gandom_liara_ok",
+      "label": "ok()",
+      "degree": 20
+    },
+    {
+      "id": "scripts_gandom_liara_warn",
+      "label": "warn()",
+      "degree": 20
+    },
+    {
+      "id": "scripts_gandom_liara_info",
+      "label": "info()",
+      "degree": 18
+    },
+    {
+      "id": "scripts_gandom_liara_main",
+      "label": "main()",
+      "degree": 18
+    },
+    {
+      "id": "frontend_tsconfig_app_compileroptions",
+      "label": "compilerOptions",
+      "degree": 18
+    },
+    {
+      "id": "frontend_src_lib_format_formatprice",
+      "label": "formatPrice()",
+      "degree": 17
+    },
+    {
+      "id": "frontend_src_lib_format_tofarsidigits",
+      "label": "toFarsiDigits()",
+      "degree": 17
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Digipay Adapter",
+      "target": "Strapi 5",
+      "source_files": [
+        "docs/architecture.md",
+        "README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "implements",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Digipay Adapter` unexpectedly reaches hub `Strapi 5`"
+    },
+    {
+      "source": "SMS.ir Adapter",
+      "target": "Strapi 5",
+      "source_files": [
+        "docs/architecture.md",
+        "README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "implements",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `SMS.ir Adapter` unexpectedly reaches hub `Strapi 5`"
+    },
+    {
+      "source": "CD-Liara Workflow",
+      "target": "Strapi Backend",
+      "source_files": [
+        ".github/workflows/liara-cd.yml",
+        "backend/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "CD-Liara Workflow",
+      "target": "Frontend React App",
+      "source_files": [
+        ".github/workflows/liara-cd.yml",
+        "frontend/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Phase 7: Backoffice UX",
+      "target": "Strapi Backend",
+      "source_files": [
+        "docs/plans/07-backoffice-ux.md",
+        "backend/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `react` connect `Frontend Core Components` to `Linting and Code Quality`, `Homepage Banners and Grids`, `Admin Plugin Pages`, `Catalog and Navigation UI`?",
+      "why": "High betweenness centrality (0.067) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `plugins` connect `Linting and Code Quality` to `Frontend Core Components`?",
+      "why": "High betweenness centrality (0.057) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Province`, `Props`, `Props` to the rest of the system?",
+      "why": "368 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Frontend Core Components` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.060814687320711415 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Liara CLI Scripts` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.11985526910900045 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Backend Initialization and Mail` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.057342657342657345 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Homepage Banners and Grids` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06768905341089371 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

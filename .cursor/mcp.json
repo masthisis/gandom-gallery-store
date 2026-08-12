@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "graphify": {
+      "command": "/home/mas/Projects/gandom_galery_shop/scripts/graphify-mcp.sh",
+      "args": []
+    }
+  }
+}

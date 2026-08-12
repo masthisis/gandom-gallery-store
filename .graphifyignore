@@ -1,0 +1,36 @@
+# Dependencies & build output
+node_modules/
+dist/
+build/
+.cache/
+.tmp/
+.strapi/
+public/uploads/
+
+# Lock files (no semantic value)
+package-lock.json
+**/package-lock.json
+
+# Seed / media assets (large, low graph value)
+backend/src/seed-assets/
+**/seed-assets/**
+
+# Generated / binary
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.svg
+*.ico
+*.woff
+*.woff2
+
+# Docker / env templates
+Dockerfile*
+docker-compose*.yml
+.env.example
+.env.production.example
+
+# Deprecated app
+backoffice/

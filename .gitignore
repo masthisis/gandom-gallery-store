@@ -1,3 +1,7 @@
+# Graphify (commit graphify-out/ for team; exclude local-only artifacts)
+graphify-out/cost.json
+graphify-out/cache/
+
 # Local / secret files — never commit
 .env
 .env.local

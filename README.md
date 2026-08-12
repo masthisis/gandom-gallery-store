@@ -21,7 +21,8 @@ docker compose up --build
 Dev OTP: `11111`  
 
 Plans: [docs/plans/00-index.md](docs/plans/00-index.md)  
-Production (Liara): [docs/liara-production.md](docs/liara-production.md)
+Production (Liara): [docs/liara-production.md](docs/liara-production.md)  
+Ops console: `./scripts/gandom-liara.sh` (redeploy, logs, shell, envs, DB, seed)
 
 ## Shop owner admin
 

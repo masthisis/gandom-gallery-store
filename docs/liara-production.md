@@ -136,13 +136,51 @@ Docs: [restart](https://docs.liara.ir/references/cli/restart-app/)
 - S3: `AWS_*` / `CDN_URL` from bucket SDK settings
 - `GANDOM_SEED=false` — do **not** set `OTP_DEV_CODE` or `ALLOW_DEV_OTP_IN_PRODUCTION`
 
-## Deploy
+## Ops console (recommended)
 
-Local / manual:
+Interactive Bash manager for redeploy + day-to-day Liara ops:
 
 ```bash
-# API (repo root)
-liara deploy --app=gandom-api --api-token="$LIARA_TOKEN" --platform=docker --port=1337 --build-location=iran --no-app-logs
+./scripts/gandom-liara.sh
+```
+
+Auth resolves automatically (CLI session → `$LIARA_TOKEN` → gitignored `liara` file). Never prints the token.
+
+Non-interactive shortcuts:
+
+```bash
+./scripts/gandom-liara.sh status
+./scripts/gandom-liara.sh deploy:all      # API (Strapi prebuild) + web + smoke
+./scripts/gandom-liara.sh deploy:api
+./scripts/gandom-liara.sh deploy:web
+./scripts/gandom-liara.sh deploy:cd       # trigger GitHub CD + watch
+./scripts/gandom-liara.sh restart gandom-api
+./scripts/gandom-liara.sh logs gandom-api -f
+./scripts/gandom-liara.sh shell gandom-api
+./scripts/gandom-liara.sh seed:prod       # one-time demo seed; always disables after
+```
+
+Menus cover: status, deploy, restart/start/stop, logs, Alpine shell (`/bin/sh`), env list/set/unset/import, databases (incl. `psql` via API shell), buckets/disks/networks, production seed, account/login.
+
+Legacy shim: `./scripts/liara-deploy-api.sh` → `gandom-liara.sh deploy:api`.
+
+## Deploy
+
+Local / manual (or use the ops console above):
+
+```bash
+# API (repo root) — prefer the console so Strapi admin is prebuilt
+./scripts/gandom-liara.sh deploy:api
+
+# Storefront
+./scripts/gandom-liara.sh deploy:web
+```
+
+Raw CLI equivalent:
+
+```bash
+# API (repo root) — remember to prebuild admin for basic plan timeout
+liara deploy --app=gandom-api --api-token="$LIARA_TOKEN" --platform=docker --port=1337 --build-location=germany --no-app-logs
 
 # Storefront
 liara deploy --app=gandom-web --path=frontend --api-token="$LIARA_TOKEN" --platform=docker --port=80 \
@@ -172,11 +210,15 @@ Note: `basic` feature plan has a **5-minute** build timeout — too short for co
 
 ## Logs & ops
 
+Prefer `./scripts/gandom-liara.sh` (status / logs / shell / env / db menus).
+
+Raw CLI:
+
 ```bash
 liara logs -a gandom-api --api-token="$LIARA_TOKEN"
-liara app:list --api-token="$LIARA_TOKEN"
-liara db:list --api-token="$LIARA_TOKEN"
-liara bucket:list --api-token="$LIARA_TOKEN"
+liara app list --api-token="$LIARA_TOKEN"
+liara db list --api-token="$LIARA_TOKEN"
+liara bucket list --api-token="$LIARA_TOKEN"
 ```
 
 ## Future custom domain

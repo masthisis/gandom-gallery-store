@@ -1,0 +1,43 @@
+---
+description: Headroom context compression for Cursor models
+alwaysApply: true
+---
+
+This project routes LLM traffic through **Headroom** (`agent-90` profile, ~90% token savings, persistent memory).
+
+## Status checks
+
+```bash
+headroom doctor
+headroom install status
+scripts/verify-memory-setup.sh
+```
+
+## Cursor setup (required once)
+
+Proxy must be healthy (`headroom install status`). Then in **Cursor → Settings → Models**:
+
+| Setting | Value |
+|---------|-------|
+| Override OpenAI Base URL | `http://127.0.0.1:8787/p/gandom_galery_shop/v1` |
+| Anthropic base URL (if shown) | `http://127.0.0.1:8787/p/gandom_galery_shop` |
+
+Use your normal provider API keys — Headroom forwards and compresses.
+
+Re-print project URLs anytime:
+
+```bash
+headroom wrap cursor --no-proxy
+```
+
+## Other agents (already configured globally)
+
+- **Codex** — routed via `~/.codex/config.toml` (`headroom init -g codex`)
+- **Claude Code** — routed via `~/.claude/settings.json` (when Claude CLI installed)
+
+## With graphify
+
+1. `graphify query "<question>"` first (scoped subgraph, low tokens)
+2. Read only lines you will edit
+3. `graphify update .` after code changes
+4. `headroom dashboard` — view compression savings
